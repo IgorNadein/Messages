@@ -1,8 +1,6 @@
 package com.afkanerd.deku.Router.ui.viewModels
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Database
@@ -24,6 +22,8 @@ import com.afkanerd.deku.Router.data.RouterWorkManager
 import com.afkanerd.deku.Router.data.RouterWorkManager.Companion.CONVERSATION_ID
 import com.afkanerd.deku.Router.data.RouterWorkManager.Companion.GATEWAY_SERVER_ID
 import com.afkanerd.deku.Router.data.models.GatewayServer
+import com.afkanerd.deku.security.SecureSessionStatus
+import com.afkanerd.deku.security.SecureSessionStatusResolver
 import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getDatabase
 import kotlinx.coroutines.Dispatchers
@@ -41,18 +41,8 @@ data class RoutedConversationsItems(
     var gatewayServerId: String,
 )
 class GatewayServerViewModel : ViewModel() {
-    private lateinit var gatewayServersList: LiveData<List<GatewayServer>>
-
     private val _workFlowItems = MutableStateFlow<List<RoutedConversationsItems>>(emptyList()) // default
     val workFlowItems: StateFlow<List<RoutedConversationsItems>> = _workFlowItems.asStateFlow()
-
-    operator fun get(context: Context): LiveData<List<GatewayServer>> {
-        if (!::gatewayServersList.isInitialized) {
-            gatewayServersList = MutableLiveData()
-            gatewayServersList = Datastore.getDatastore(context).gatewayServerDAO().all
-        }
-        return gatewayServersList
-    }
 
     fun getActiveWorkManagerItems(
         context: Context
@@ -80,10 +70,14 @@ class GatewayServerViewModel : ViewModel() {
         }
     }
 
-    fun route(
+    suspend fun route(
         context: Context,
         conversation: Conversations
     ) {
+        val address = conversation.sms?.address ?: return
+        if(SecureSessionStatusResolver.resolve(context, address) != SecureSessionStatus.PLAIN) {
+            return
+        }
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -134,42 +128,9 @@ class GatewayServerViewModel : ViewModel() {
                     routeMessageWorkRequest
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
 
     }
 
-    fun update(
-        context: Context,
-        gatewayClient: GatewayServer,
-        completeCallback: () -> Unit
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Datastore.getDatastore(context).gatewayServerDAO().update(gatewayClient)
-            completeCallback()
-        }
-    }
-
-    fun add(
-        context: Context,
-        gatewayClient: GatewayServer,
-        completeCallback: () -> Unit
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Datastore.getDatastore(context).gatewayServerDAO().insert(gatewayClient)
-            completeCallback()
-        }
-    }
-
-    fun delete(
-        context: Context,
-        gatewayClient: GatewayServer,
-        completeCallback: () -> Unit
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Datastore.getDatastore(context).gatewayServerDAO().delete(gatewayClient)
-            completeCallback()
-        }
-    }
 }

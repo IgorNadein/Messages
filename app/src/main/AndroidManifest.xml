@@ -14,8 +14,10 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
+        android:name="com.afkanerd.deku.MessagesApplication"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="false"
@@ -72,16 +74,8 @@
                 android:value="true" />
         </service>
 
-        <activity
-            android:name=".AboutActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name="com.afkanerd.deku.Images.Images.ImageViewActivity"
-            android:exported="false"/>
-
         <service
-            android:name="com.afkanerd.deku.MainActivity"
+            android:name="com.afkanerd.deku.messages.RespondViaMessageService"
             android:exported="true"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
             <intent-filter>
@@ -99,11 +93,12 @@
         <service
             android:name="com.afkanerd.deku.RemoteListeners.RemoteListenerConnectionService"
             android:exported="false"
-            android:foregroundServiceType="dataSync">
-            <intent-filter>
-                <action android:name="androidx.work.impl.foreground.SystemForegroundService" />
-            </intent-filter>
-        </service>
+            android:foregroundServiceType="dataSync" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
 
 <!--        <provider-->
 <!--            android:name="androidx.startup.InitializationProvider"-->
@@ -134,6 +129,10 @@
                 <action android:name="com.afkanerd.deku.NOTIFICATION_REPLY_ACTION_INTENT_ACTION_REPLAY" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name="com.afkanerd.deku.attachments.transport.AttachmentSmsStatusReceiver"
+            android:exported="false" />
 
     </application>
 

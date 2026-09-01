@@ -1,0 +1,4377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.12.2" type="incidents">
+
+    <incident
+        id="OldTargetApi"
+        severity="warning"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details.">
+        <fix-replace
+            description="Update targetSdkVersion to 37"
+            oldString="36"
+            replacement="37"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="29"
+            column="9"
+            startOffset="665"
+            endLine="29"
+            endColumn="21"
+            endOffset="677"/>
+    </incident>
+
+    <incident
+        id="VectorRaster"
+        severity="warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/dekusms_blue.xml"
+            line="2"
+            column="20"
+            startOffset="86"
+            endLine="2"
+            endColumn="25"
+            endOffset="91"/>
+    </incident>
+
+    <incident
+        id="VectorRaster"
+        severity="warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/dekusms_dark_theme.xml"
+            line="2"
+            column="20"
+            startOffset="86"
+            endLine="2"
+            endColumn="25"
+            endOffset="91"/>
+    </incident>
+
+    <incident
+        id="VectorRaster"
+        severity="warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/dekusms_default.xml"
+            line="2"
+            column="20"
+            startOffset="86"
+            endLine="2"
+            endColumn="25"
+            endOffset="91"/>
+    </incident>
+
+    <incident
+        id="VectorRaster"
+        severity="warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/set_default_sms_app.xml"
+            line="2"
+            column="20"
+            startOffset="86"
+            endLine="2"
+            endColumn="25"
+            endOffset="91"/>
+    </incident>
+
+    <incident
+        id="VectorRaster"
+        severity="warning"
+        message="Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/undraw_team_work_i1f3.xml"
+            line="3"
+            column="21"
+            startOffset="116"
+            endLine="3"
+            endColumn="26"
+            endOffset="121"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core-ktx than 1.17.0 is available: 1.19.0">
+        <fix-replace
+            description="Change to 1.19.0"
+            family="Update versions"
+            oldString="1.17.0"
+            replacement="1.19.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="68"
+            column="20"
+            startOffset="1549"
+            endLine="68"
+            endColumn="51"
+            endOffset="1580"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.appcompat:appcompat than 1.7.1 is available: 1.8.0">
+        <fix-replace
+            description="Change to 1.8.0"
+            family="Update versions"
+            oldString="1.7.1"
+            replacement="1.8.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="69"
+            column="20"
+            startOffset="1600"
+            endLine="69"
+            endColumn="56"
+            endOffset="1636"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of com.google.android.material:material than 1.13.0 is available: 1.14.0">
+        <fix-replace
+            description="Change to 1.14.0"
+            family="Update versions"
+            oldString="1.13.0"
+            replacement="1.14.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="70"
+            column="20"
+            startOffset="1656"
+            endLine="70"
+            endColumn="65"
+            endOffset="1701"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.paging:paging-common than 3.4.1 is available: 3.5.1">
+        <fix-replace
+            description="Change to 3.5.1"
+            family="Update versions"
+            oldString="3.4.1"
+            replacement="3.5.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="73"
+            column="20"
+            startOffset="1832"
+            endLine="73"
+            endColumn="57"
+            endOffset="1869"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1">
+        <fix-replace
+            description="Change to 1.2.1"
+            family="Update versions"
+            oldString="1.2.0"
+            replacement="1.2.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="111"
+            column="20"
+            startOffset="3388"
+            endLine="111"
+            endColumn="68"
+            endOffset="3436"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences-core than 1.2.0 is available: 1.2.1">
+        <fix-replace
+            description="Change to 1.2.1"
+            family="Update versions"
+            oldString="1.2.0"
+            replacement="1.2.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="112"
+            column="20"
+            startOffset="3456"
+            endLine="112"
+            endColumn="73"
+            endOffset="3509"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.work:work-runtime-ktx than 2.11.1 is available: 2.11.2">
+        <fix-replace
+            description="Change to 2.11.2"
+            family="Update versions"
+            oldString="2.11.1"
+            replacement="2.11.2"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="113"
+            column="20"
+            startOffset="3529"
+            endLine="113"
+            endColumn="59"
+            endOffset="3568"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1">
+        <fix-replace
+            description="Change to 1.2.1"
+            family="Update versions"
+            oldString="1.2.0"
+            replacement="1.2.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="114"
+            column="20"
+            startOffset="3588"
+            endLine="114"
+            endColumn="68"
+            endOffset="3636"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.sqlite:sqlite than 2.6.2 is available: 2.7.0">
+        <fix-replace
+            description="Change to 2.7.0"
+            family="Update versions"
+            oldString="2.6.2"
+            replacement="2.7.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="117"
+            column="9"
+            startOffset="3697"
+            endLine="117"
+            endColumn="39"
+            endOffset="3727"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1">
+        <fix-replace
+            description="Change to 1.2.1"
+            family="Update versions"
+            oldString="1.2.0"
+            replacement="1.2.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="120"
+            column="20"
+            startOffset="3867"
+            endLine="120"
+            endColumn="68"
+            endOffset="3915"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.datastore:datastore-preferences-core than 1.2.0 is available: 1.2.1">
+        <fix-replace
+            description="Change to 1.2.1"
+            family="Update versions"
+            oldString="1.2.0"
+            replacement="1.2.1"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="123"
+            column="20"
+            startOffset="3990"
+            endLine="123"
+            endColumn="73"
+            endOffset="4043"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlin.plugin.serialization than 2.3.10 is available: 2.4.10">
+        <fix-replace
+            description="Change to 2.4.10"
+            family="Update versions"
+            oldString="2.3.10"
+            replacement="2.4.10"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="5"
+            column="60"
+            startOffset="200"
+            endLine="5"
+            endColumn="68"
+            endOffset="208"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlinx:kotlinx-serialization-json than 1.10.0 is available: 1.11.0">
+        <fix-replace
+            description="Change to 1.11.0"
+            family="Update versions"
+            oldString="1.10.0"
+            replacement="1.11.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="79"
+            column="20"
+            startOffset="2190"
+            endLine="79"
+            endColumn="77"
+            endOffset="2247"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.googlecode.libphonenumber:libphonenumber than 9.0.25 is available: 9.0.38">
+        <fix-replace
+            description="Change to 9.0.38"
+            family="Update versions"
+            oldString="9.0.25"
+            replacement="9.0.38"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="82"
+            column="20"
+            startOffset="2327"
+            endLine="82"
+            endColumn="73"
+            endOffset="2380"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.google.code.gson:gson than 2.13.2 is available: 2.14.0">
+        <fix-replace
+            description="Change to 2.14.0"
+            family="Update versions"
+            oldString="2.13.2"
+            replacement="2.14.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="109"
+            column="20"
+            startOffset="3332"
+            endLine="109"
+            endColumn="54"
+            endOffset="3366"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of net.zetetic:sqlcipher-android than 4.14.1 is available: 4.18.0">
+        <fix-replace
+            description="Change to 4.18.0"
+            family="Update versions"
+            oldString="4.14.1"
+            replacement="4.18.0"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="116"
+            column="9"
+            startOffset="3646"
+            endLine="116"
+            endColumn="51"
+            endOffset="3688"/>
+    </incident>
+
+    <incident
+        id="Typos"
+        severity="warning"
+        message="Did you mean &quot;example!&quot; instead of &quot;example1&quot;?">
+        <fix-replace
+            description="Replace with &quot;example!&quot;"
+            oldString="example1"
+            replacement="example!"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+                startOffset="4232"
+                endOffset="4308"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="60"
+            column="123"
+            startOffset="4290"
+            endLine="60"
+            endColumn="131"
+            endOffset="4298"/>
+    </incident>
+
+    <incident
+        id="Typos"
+        severity="warning"
+        message="Did you mean &quot;English!&quot; instead of &quot;English1&quot;?">
+        <fix-replace
+            description="Replace with &quot;English!&quot;"
+            oldString="English1"
+            replacement="English!"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+                startOffset="31568"
+                endOffset="31576"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="470"
+            column="28"
+            startOffset="31568"
+            endLine="470"
+            endColumn="36"
+            endOffset="31576"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="226"
+                endOffset="353"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="5"
+            column="13"
+            startOffset="234"
+            endLine="5"
+            endColumn="58"
+            endOffset="279"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="322"
+                endOffset="441"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="6"
+            column="13"
+            startOffset="330"
+            endLine="6"
+            endColumn="65"
+            endOffset="382"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="391"
+                endOffset="505"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="6"
+            column="13"
+            startOffset="399"
+            endLine="6"
+            endColumn="58"
+            endOffset="444"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="408"
+                endOffset="522"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="7"
+            column="13"
+            startOffset="416"
+            endLine="7"
+            endColumn="58"
+            endOffset="461"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="599"
+                endOffset="713"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="8"
+            column="13"
+            startOffset="607"
+            endLine="8"
+            endColumn="65"
+            endOffset="659"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="832"
+                endOffset="939"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="11"
+            column="13"
+            startOffset="840"
+            endLine="11"
+            endColumn="65"
+            endOffset="892"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="867"
+                endOffset="984"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="12"
+            column="13"
+            startOffset="875"
+            endLine="12"
+            endColumn="65"
+            endOffset="927"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="944"
+                endOffset="1067"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="12"
+            column="13"
+            startOffset="952"
+            endLine="12"
+            endColumn="61"
+            endOffset="1000"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="989"
+                endOffset="1113"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="13"
+            column="13"
+            startOffset="997"
+            endLine="13"
+            endColumn="61"
+            endOffset="1045"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="1119"
+                endOffset="1217"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="15"
+            column="13"
+            startOffset="1127"
+            endLine="15"
+            endColumn="70"
+            endOffset="1184"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1074"
+                endOffset="1183"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="15"
+            column="13"
+            startOffset="1082"
+            endLine="15"
+            endColumn="70"
+            endOffset="1139"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_failed_channel_id&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1624"
+                endOffset="1752"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="22"
+            column="13"
+            startOffset="1632"
+            endLine="22"
+            endColumn="56"
+            endOffset="1675"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="22194"
+                endOffset="22323"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="263"
+            column="13"
+            startOffset="22202"
+            endLine="263"
+            endColumn="61"
+            endOffset="22250"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="21534"
+                endOffset="21647"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="307"
+            column="13"
+            startOffset="21542"
+            endLine="307"
+            endColumn="61"
+            endOffset="21590"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="30429"
+                endOffset="30534"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="368"
+            column="13"
+            startOffset="30437"
+            endLine="368"
+            endColumn="70"
+            endOffset="30494"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31442"
+                endOffset="31476"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="384"
+            column="13"
+            startOffset="31450"
+            endLine="384"
+            endColumn="24"
+            endOffset="31461"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;pause&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31481"
+                endOffset="31516"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="385"
+            column="13"
+            startOffset="31489"
+            endLine="385"
+            endColumn="25"
+            endOffset="31501"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;sending_stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31521"
+                endOffset="31584"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="386"
+            column="13"
+            startOffset="31529"
+            endLine="386"
+            endColumn="32"
+            endOffset="31548"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31589"
+                endOffset="31668"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="387"
+            column="13"
+            startOffset="31597"
+            endLine="387"
+            endColumn="38"
+            endOffset="31622"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31673"
+                endOffset="31748"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="388"
+            column="13"
+            startOffset="31681"
+            endLine="388"
+            endColumn="42"
+            endOffset="31710"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;retry&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31753"
+                endOffset="31792"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="389"
+            column="13"
+            startOffset="31761"
+            endLine="389"
+            endColumn="25"
+            endOffset="31773"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31797"
+                endOffset="31860"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="390"
+            column="13"
+            startOffset="31805"
+            endLine="390"
+            endColumn="38"
+            endOffset="31830"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="31865"
+                endOffset="31944"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="391"
+            column="13"
+            startOffset="31873"
+            endLine="391"
+            endColumn="47"
+            endOffset="31907"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="32824"
+                endOffset="32860"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="409"
+            column="13"
+            startOffset="32832"
+            endLine="409"
+            endColumn="24"
+            endOffset="32843"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;pause&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="32865"
+                endOffset="32900"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="410"
+            column="13"
+            startOffset="32873"
+            endLine="410"
+            endColumn="25"
+            endOffset="32885"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;sending_stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="32905"
+                endOffset="32969"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="411"
+            column="13"
+            startOffset="32913"
+            endLine="411"
+            endColumn="32"
+            endOffset="32932"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="29465"
+                endOffset="29570"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="412"
+            column="13"
+            startOffset="29473"
+            endLine="412"
+            endColumn="70"
+            endOffset="29530"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="32974"
+                endOffset="33054"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="412"
+            column="13"
+            startOffset="32982"
+            endLine="412"
+            endColumn="38"
+            endOffset="33007"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="33059"
+                endOffset="33144"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="413"
+            column="13"
+            startOffset="33067"
+            endLine="413"
+            endColumn="42"
+            endOffset="33096"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;retry&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="33149"
+                endOffset="33190"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="414"
+            column="13"
+            startOffset="33157"
+            endLine="414"
+            endColumn="25"
+            endOffset="33169"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="33195"
+                endOffset="33270"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="415"
+            column="13"
+            startOffset="33203"
+            endLine="415"
+            endColumn="38"
+            endOffset="33228"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="33275"
+                endOffset="33375"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="416"
+            column="13"
+            startOffset="33283"
+            endLine="416"
+            endColumn="47"
+            endOffset="33317"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30475"
+                endOffset="30519"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="428"
+            column="13"
+            startOffset="30483"
+            endLine="428"
+            endColumn="24"
+            endOffset="30494"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;pause&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30524"
+                endOffset="30559"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="429"
+            column="13"
+            startOffset="30532"
+            endLine="429"
+            endColumn="25"
+            endOffset="30544"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;sending_stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30564"
+                endOffset="30622"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="430"
+            column="13"
+            startOffset="30572"
+            endLine="430"
+            endColumn="32"
+            endOffset="30591"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30627"
+                endOffset="30700"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="431"
+            column="13"
+            startOffset="30635"
+            endLine="431"
+            endColumn="38"
+            endOffset="30660"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30705"
+                endOffset="30783"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="432"
+            column="13"
+            startOffset="30713"
+            endLine="432"
+            endColumn="42"
+            endOffset="30742"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;retry&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30788"
+                endOffset="30835"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="433"
+            column="13"
+            startOffset="30796"
+            endLine="433"
+            endColumn="25"
+            endOffset="30808"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30840"
+                endOffset="30905"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="434"
+            column="13"
+            startOffset="30848"
+            endLine="434"
+            endColumn="38"
+            endOffset="30873"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+                startOffset="30910"
+                endOffset="30990"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="435"
+            column="13"
+            startOffset="30918"
+            endLine="435"
+            endColumn="47"
+            endOffset="30952"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33164"
+                endOffset="33208"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="471"
+            column="13"
+            startOffset="33172"
+            endLine="471"
+            endColumn="24"
+            endOffset="33183"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;pause&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33213"
+                endOffset="33248"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="472"
+            column="13"
+            startOffset="33221"
+            endLine="472"
+            endColumn="25"
+            endOffset="33233"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;sending_stop&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33253"
+                endOffset="33311"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="473"
+            column="13"
+            startOffset="33261"
+            endLine="473"
+            endColumn="32"
+            endOffset="33280"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33316"
+                endOffset="33394"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="474"
+            column="13"
+            startOffset="33324"
+            endLine="474"
+            endColumn="38"
+            endOffset="33349"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33399"
+                endOffset="33477"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="475"
+            column="13"
+            startOffset="33407"
+            endLine="475"
+            endColumn="42"
+            endOffset="33436"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;retry&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33482"
+                endOffset="33530"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="476"
+            column="13"
+            startOffset="33490"
+            endLine="476"
+            endColumn="25"
+            endOffset="33502"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33535"
+                endOffset="33600"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="477"
+            column="13"
+            startOffset="33543"
+            endLine="477"
+            endColumn="38"
+            endOffset="33568"/>
+    </incident>
+
+    <incident
+        id="ExtraTranslation"
+        severity="fatal"
+        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="33605"
+                endOffset="33684"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="478"
+            column="13"
+            startOffset="33613"
+            endLine="478"
+            endColumn="47"
+            endOffset="33647"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;app_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="16"
+                endOffset="78"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="2"
+            column="29"
+            startOffset="40"
+            endLine="2"
+            endColumn="49"
+            endOffset="60"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;app_name&quot; has been marked as translatable=&quot;false&quot; elsewhere (usually in the `values` folder), but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="55"
+                endOffset="96"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="3"
+            column="13"
+            startOffset="63"
+            endLine="3"
+            endColumn="28"
+            endOffset="78"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;privacy_policy_url&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="83"
+                endOffset="191"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="3"
+            column="39"
+            startOffset="117"
+            endLine="3"
+            endColumn="59"
+            endOffset="137"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;privacy_policy_url&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="101"
+                endOffset="209"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="4"
+            column="39"
+            startOffset="135"
+            endLine="4"
+            endColumn="59"
+            endOffset="155"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;running_gateway_clients_channel_name&quot; has been marked as translatable=&quot;false&quot; elsewhere (usually in the `values` folder), but is translated to &quot;fr&quot; (French) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="132"
+                endOffset="221"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="4"
+            column="13"
+            startOffset="140"
+            endLine="4"
+            endColumn="56"
+            endOffset="183"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;foreground_service_failed_channel_name&quot; has been marked as translatable=&quot;false&quot; elsewhere (usually in the `values` folder), but is translated to &quot;fr&quot; (French) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+                startOffset="226"
+                endOffset="353"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="5"
+            column="13"
+            startOffset="234"
+            endLine="5"
+            endColumn="58"
+            endOffset="279"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;running_gateway_clients_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="279"
+                endOffset="386"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="5"
+            column="57"
+            startOffset="331"
+            endLine="5"
+            endColumn="77"
+            endOffset="351"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;foreground_service_failed_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="391"
+                endOffset="505"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="6"
+            column="59"
+            startOffset="445"
+            endLine="6"
+            endColumn="79"
+            endOffset="465"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;running_gateway_clients_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="296"
+                endOffset="403"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="6"
+            column="57"
+            startOffset="348"
+            endLine="6"
+            endColumn="77"
+            endOffset="368"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;foreground_service_failed_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="408"
+                endOffset="522"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="7"
+            column="59"
+            startOffset="462"
+            endLine="7"
+            endColumn="79"
+            endOffset="482"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;message_failed_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="510"
+                endOffset="597"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="7"
+            column="48"
+            startOffset="553"
+            endLine="7"
+            endColumn="68"
+            endOffset="573"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;message_failed_channel_name&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="527"
+                endOffset="614"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="8"
+            column="48"
+            startOffset="570"
+            endLine="8"
+            endColumn="68"
+            endOffset="590"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;gateway_client_service_notification_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="1222"
+                endOffset="1315"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="16"
+            column="59"
+            startOffset="1276"
+            endLine="16"
+            endColumn="79"
+            endOffset="1296"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;gateway_client_service_notification_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1188"
+                endOffset="1281"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="16"
+            column="59"
+            startOffset="1242"
+            endLine="16"
+            endColumn="79"
+            endOffset="1262"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;message_failed_notification_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="1320"
+                endOffset="1405"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="17"
+            column="51"
+            startOffset="1366"
+            endLine="17"
+            endColumn="71"
+            endOffset="1386"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;message_failed_notification_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1286"
+                endOffset="1371"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="17"
+            column="51"
+            startOffset="1332"
+            endLine="17"
+            endColumn="71"
+            endOffset="1352"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;incoming_messages_channel_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1378"
+                endOffset="1490"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="20"
+            column="49"
+            startOffset="1422"
+            endLine="20"
+            endColumn="69"
+            endOffset="1442"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;running_gateway_clients_channel_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1495"
+                endOffset="1619"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="21"
+            column="55"
+            startOffset="1545"
+            endLine="21"
+            endColumn="75"
+            endOffset="1565"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;foreground_service_failed_channel_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1624"
+                endOffset="1752"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="22"
+            column="57"
+            startOffset="1676"
+            endLine="22"
+            endColumn="77"
+            endOffset="1696"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;message_failed_channel_id&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="1757"
+                endOffset="1863"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="23"
+            column="46"
+            startOffset="1798"
+            endLine="23"
+            endColumn="66"
+            endOffset="1818"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_advanced_developers_key&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="6163"
+                endOffset="6273"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="81"
+            column="53"
+            startOffset="6211"
+            endLine="81"
+            endColumn="73"
+            endOffset="6231"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_locale&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="6278"
+                endOffset="6354"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="82"
+            column="36"
+            startOffset="6309"
+            endLine="82"
+            endColumn="56"
+            endOffset="6329"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_advanced_developers_key&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="6554"
+                endOffset="6664"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="98"
+            column="53"
+            startOffset="6602"
+            endLine="98"
+            endColumn="73"
+            endOffset="6622"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_locale&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="6669"
+                endOffset="6745"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="99"
+            column="36"
+            startOffset="6700"
+            endLine="99"
+            endColumn="56"
+            endOffset="6720"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_default_virtualhost&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="9429"
+                endOffset="9519"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="109"
+            column="64"
+            startOffset="9488"
+            endLine="109"
+            endColumn="84"
+            endOffset="9508"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_default_port&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="9524"
+                endOffset="9610"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="110"
+            column="57"
+            startOffset="9576"
+            endLine="110"
+            endColumn="77"
+            endOffset="9596"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_amqp_protocol&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="9615"
+                endOffset="9702"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="111"
+            column="58"
+            startOffset="9668"
+            endLine="111"
+            endColumn="78"
+            endOffset="9688"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_amqps_protocol&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="9707"
+                endOffset="9799"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="112"
+            column="59"
+            startOffset="9761"
+            endLine="112"
+            endColumn="79"
+            endOffset="9781"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_default_virtualhost&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="9691"
+                endOffset="9781"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="133"
+            column="64"
+            startOffset="9750"
+            endLine="133"
+            endColumn="84"
+            endOffset="9770"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_default_port&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="9786"
+                endOffset="9872"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="134"
+            column="57"
+            startOffset="9838"
+            endLine="134"
+            endColumn="77"
+            endOffset="9858"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_amqp_protocol&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="9879"
+                endOffset="9966"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="137"
+            column="58"
+            startOffset="9932"
+            endLine="137"
+            endColumn="78"
+            endOffset="9952"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;settings_gateway_client_amqps_protocol&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="9971"
+                endOffset="10063"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="138"
+            column="59"
+            startOffset="10025"
+            endLine="138"
+            endColumn="79"
+            endOffset="10045"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;about_deku_github_titile&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="12088"
+                endOffset="12164"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="140"
+            column="45"
+            startOffset="12128"
+            endLine="140"
+            endColumn="65"
+            endOffset="12148"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;about_deku_github_url&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="12648"
+                endOffset="12765"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="143"
+            column="42"
+            startOffset="12685"
+            endLine="143"
+            endColumn="62"
+            endOffset="12705"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;about_deku_github_titile&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="12302"
+                endOffset="12378"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="180"
+            column="45"
+            startOffset="12342"
+            endLine="180"
+            endColumn="65"
+            endOffset="12362"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;about_deku_github_url&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="12822"
+                endOffset="12939"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="183"
+            column="42"
+            startOffset="12859"
+            endLine="183"
+            endColumn="62"
+            endOffset="12879"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;conversation_shortcode_learn_more_ok&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="16768"
+                endOffset="16852"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="190"
+            column="57"
+            startOffset="16820"
+            endLine="190"
+            endColumn="77"
+            endOffset="16840"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;configs_load_natives&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="17790"
+                endOffset="17868"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="207"
+            column="41"
+            startOffset="17826"
+            endLine="207"
+            endColumn="61"
+            endOffset="17846"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;conversations_secure_conversation_request_information_deku_encryption_link&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;de&quot; (German) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+                startOffset="18706"
+                endOffset="18918"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="215"
+            column="95"
+            startOffset="18796"
+            endLine="215"
+            endColumn="115"
+            endOffset="18816"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;conversation_shortcode_learn_more_ok&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="16906"
+                endOffset="16990"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="239"
+            column="57"
+            startOffset="16958"
+            endLine="239"
+            endColumn="77"
+            endOffset="16978"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;language_english_value&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="17439"
+                endOffset="17509"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="252"
+            column="43"
+            startOffset="17477"
+            endLine="252"
+            endColumn="63"
+            endOffset="17497"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;language_french_value&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="17514"
+                endOffset="17583"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="253"
+            column="42"
+            startOffset="17551"
+            endLine="253"
+            endColumn="62"
+            endOffset="17571"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;language_russian_value&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="17588"
+                endOffset="17658"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="254"
+            column="43"
+            startOffset="17626"
+            endLine="254"
+            endColumn="63"
+            endOffset="17646"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;language_german_value&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="17663"
+                endOffset="17732"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="255"
+            column="42"
+            startOffset="17700"
+            endLine="255"
+            endColumn="62"
+            endOffset="17720"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;sample_date&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="17739"
+                endOffset="17809"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="258"
+            column="32"
+            startOffset="17766"
+            endLine="258"
+            endColumn="52"
+            endOffset="17786"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;configs_load_natives&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="18366"
+                endOffset="18444"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="267"
+            column="41"
+            startOffset="18402"
+            endLine="267"
+            endColumn="61"
+            endOffset="18422"/>
+    </incident>
+
+    <incident
+        id="Untranslatable"
+        severity="warning"
+        message="The resource string &quot;conversations_secure_conversation_request_information_deku_encryption_link&quot; is marked as translatable=&quot;false&quot;, but is translated to &quot;pl&quot; (Polish) here">
+        <fix-replace
+            description="Remove translation"
+            replacement=""
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+                startOffset="19318"
+                endOffset="19530"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="277"
+            column="95"
+            startOffset="19408"
+            endLine="277"
+            endColumn="115"
+            endOffset="19428"/>
+    </incident>
+
+    <incident
+        id="PluralsCandidate"
+        severity="warning"
+        message="Formatting %d followed by words (&quot;sent&quot;): This should probably be a plural rather than a string">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="468"
+            column="5"
+            startOffset="31422"
+            endLine="468"
+            endColumn="55"
+            endOffset="31472"/>
+    </incident>
+
+    <incident
+        id="UnsafeProtectedBroadcastReceiver"
+        severity="warning"
+        message="This broadcast receiver declares an intent-filter for a protected broadcast action string, which can only be sent by the system, not third-party applications. However, the receiver&apos;s onReceive method does not appear to call getAction to ensure that the received Intent&apos;s action string matches the expected value, potentially making it possible for another actor to send a spoofed intent with no action string or a different action string and cause undesired behavior. In this case, it is possible that the onReceive method passed the received Intent to another method that checked the action string. If so, this finding can safely be ignored.">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/receivers/MmsReceiverBroadcastReceiver.kt"
+            line="16"
+            column="18"
+            startOffset="619"
+            endLine="16"
+            endColumn="27"
+            endOffset="628"/>
+    </incident>
+
+    <incident
+        id="ExportedReceiver"
+        severity="warning"
+        message="Exported receiver does not require permission">
+        <fix-attribute
+            description="Set permission"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="permission"
+            value="TODO"
+            point="4"
+            mark="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="78"
+            column="10"
+            startOffset="3723"
+            endLine="78"
+            endColumn="18"
+            endOffset="3731"/>
+    </incident>
+
+    <incident
+        id="ExportedReceiver"
+        severity="warning"
+        message="Exported receiver does not require permission">
+        <fix-attribute
+            description="Set permission"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="permission"
+            value="TODO"
+            point="4"
+            mark="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="99"
+            column="10"
+            startOffset="4605"
+            endLine="99"
+            endColumn="18"
+            endOffset="4613"/>
+    </incident>
+
+    <incident
+        id="SystemPermissionTypo"
+        severity="warning"
+        message="Did you mean `android.permission.WRITE_OBB`?">
+        <fix-replace
+            description="Replace with android.permission.WRITE_OBB"
+            oldString="android.permission.WRITE_SMS"
+            replacement="android.permission.WRITE_OBB"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="10"
+            column="36"
+            startOffset="571"
+            endLine="10"
+            endColumn="64"
+            endOffset="599"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="331"
+            column="30"
+            startOffset="26900"
+            endLine="331"
+            endColumn="42"
+            endOffset="26912"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="332"
+            column="30"
+            startOffset="26951"
+            endLine="332"
+            endColumn="42"
+            endOffset="26963"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="343"
+            column="37"
+            startOffset="28135"
+            endLine="343"
+            endColumn="60"
+            endOffset="28158"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="357"
+            column="30"
+            startOffset="28579"
+            endLine="357"
+            endColumn="41"
+            endOffset="28590"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="358"
+            column="30"
+            startOffset="28629"
+            endLine="358"
+            endColumn="42"
+            endOffset="28641"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
+            line="358"
+            column="36"
+            startOffset="29740"
+            endLine="358"
+            endColumn="58"
+            endOffset="29762"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="369"
+            column="37"
+            startOffset="29762"
+            endLine="369"
+            endColumn="71"
+            endOffset="29796"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="375"
+            column="30"
+            startOffset="26100"
+            endLine="375"
+            endColumn="48"
+            endOffset="26118"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="376"
+            column="30"
+            startOffset="26157"
+            endLine="376"
+            endColumn="42"
+            endOffset="26169"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
+            line="384"
+            column="36"
+            startOffset="31310"
+            endLine="384"
+            endColumn="55"
+            endOffset="31329"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="387"
+            column="37"
+            startOffset="27292"
+            endLine="387"
+            endColumn="57"
+            endOffset="27312"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
+            line="402"
+            column="36"
+            startOffset="28791"
+            endLine="402"
+            endColumn="51"
+            endOffset="28806"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="419"
+            column="30"
+            startOffset="28914"
+            endLine="419"
+            endColumn="42"
+            endOffset="28926"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="420"
+            column="30"
+            startOffset="28965"
+            endLine="420"
+            endColumn="42"
+            endOffset="28977"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="431"
+            column="37"
+            startOffset="30074"
+            endLine="431"
+            endColumn="55"
+            endOffset="30092"/>
+    </incident>
+
+    <incident
+        id="TypographyEllipsis"
+        severity="warning"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?">
+        <fix-replace
+            description="Replace with …"
+            oldString="..."
+            replacement="…"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
+            line="446"
+            column="36"
+            startOffset="31628"
+            endLine="446"
+            endColumn="57"
+            endOffset="31649"/>
+    </incident>
+
+    <incident
+        id="IconLocation"
+        severity="warning"
+        message="Found bitmap drawable `res/drawable/egs_cyberpunk2077_cdprojektred_s1_03_2560x1440_359e77d3cd0a40aebf3bbc130d14c5c7.webp` in densityless folder">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/drawable/egs_cyberpunk2077_cdprojektred_s1_03_2560x1440_359e77d3cd0a40aebf3bbc130d14c5c7.webp"/>
+    </incident>
+
+    <incident
+        id="ButtonCase"
+        severity="warning"
+        message="The standard Android way to capitalize cancel is &quot;Cancel&quot; (tip: use `@android:string/cancel` instead)">
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
+            line="165"
+            column="48"
+            startOffset="11031"
+            endLine="165"
+            endColumn="54"
+            endOffset="11037"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `String.toUri` instead?">
+        <fix-replace
+            description="Replace with the toUri extension function"
+            family="Replace with the toUri extension function"
+            robot="true"
+            independent="true"
+            oldString="Uri.parse(&quot;android.resource://${packageName}/$drawableId&quot;)"
+            replacement="&quot;android.resource://${packageName}/$drawableId&quot;.toUri()"
+            reformat="value"
+            imports="androidx.core.net.toUri"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Activity.kt"
+                startOffset="3866"
+                endOffset="3924"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Activity.kt"
+            line="116"
+            column="12"
+            startOffset="3866"
+            endLine="116"
+            endColumn="70"
+            endOffset="3924"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `String.toUri` instead?">
+        <fix-replace
+            description="Replace with the toUri extension function"
+            family="Replace with the toUri extension function"
+            robot="true"
+            independent="true"
+            oldString="Uri.parse(uriString)"
+            replacement="uriString.toUri()"
+            reformat="value"
+            imports="androidx.core.net.toUri"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/data/data/models/MmsParser.kt"
+                startOffset="9808"
+                endOffset="9828"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/data/data/models/MmsParser.kt"
+            line="291"
+            column="19"
+            startOffset="9808"
+            endLine="291"
+            endColumn="39"
+            endOffset="9828"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="13342"
+                    endOffset="13347"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;)&quot;"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="13347"
+                    endOffset="13348"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;with(&quot;"
+                robot="true"
+                independent="true"
+                oldString="with("
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="13319"
+                    endOffset="13324"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;apply()&quot;"
+                robot="true"
+                independent="true"
+                oldString="apply()"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="14062"
+                    endOffset="14069"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+            line="359"
+            column="10"
+            startOffset="13324"
+            endLine="359"
+            endColumn="34"
+            endOffset="13348"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="14871"
+                    endOffset="14876"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;)&quot;"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="14876"
+                    endOffset="14877"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;with(&quot;"
+                robot="true"
+                independent="true"
+                oldString="with("
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="14848"
+                    endOffset="14853"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;apply()&quot;"
+                robot="true"
+                independent="true"
+                oldString="apply()"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+                    startOffset="14925"
+                    endOffset="14932"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
+            line="403"
+            column="10"
+            startOffset="14853"
+            endLine="403"
+            endColumn="34"
+            endOffset="14877"/>
+    </incident>
+
+    <incident
+        id="KtxExtensionAvailable"
+        severity="informational"
+        message="Add suffix `-ktx` to enable the Kotlin extensions for this library">
+        <fix-replace
+            description="Replace with KTX dependency"
+            oldString="androidx.paging:paging-common"
+            replacement="androidx.paging:paging-common-ktx"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="73"
+            column="20"
+            startOffset="1832"
+            endLine="73"
+            endColumn="57"
+            endOffset="1869"/>
+    </incident>
+
+    <incident
+        id="KtxExtensionAvailable"
+        severity="informational"
+        message="Add suffix `-ktx` to enable the Kotlin extensions for this library">
+        <fix-replace
+            description="Replace with KTX dependency"
+            oldString="androidx.sqlite:sqlite"
+            replacement="androidx.sqlite:sqlite-ktx"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="117"
+            column="9"
+            startOffset="3697"
+            endLine="117"
+            endColumn="39"
+            endOffset="3727"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.ktx`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-ktx`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.ktx"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="1549"
+                endOffset="1580"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="68"
+            column="20"
+            startOffset="1549"
+            endLine="68"
+            endColumn="51"
+            endOffset="1580"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.appcompat`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-appcompat`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.appcompat"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="1600"
+                endOffset="1636"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="69"
+            column="20"
+            startOffset="1600"
+            endLine="69"
+            endColumn="56"
+            endOffset="1636"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.material`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `material`"
+            robot="true"
+            independent="true"
+            replacement="libs.material"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="1656"
+                endOffset="1701"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="70"
+            column="20"
+            startOffset="1656"
+            endLine="70"
+            endColumn="65"
+            endOffset="1701"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-room-room-common-jvm4"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxRoomRoomCommonJvm2 = &quot;2.8.4&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxRoomRoomCommonJvm2 = &quot;2.8.4&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-room-room-common-jvm4 = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;androidxRoomRoomCommonJvm2&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-room-room-common-jvm4 = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;androidxRoomRoomCommonJvm2&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="5075"
+                    endOffset="5075"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.room.room.common.jvm4"
+                robot="true"
+                replacement="libs.androidx.room.room.common.jvm4"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="1721"
+                    endOffset="1758"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="71"
+            column="20"
+            startOffset="1721"
+            endLine="71"
+            endColumn="57"
+            endOffset="1758"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.room:room-runtime is already available as `androidx-room-runtime`, but using version 2.8.1 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-room-room-runtime-v284-x4"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxRoomRoomRuntime2 = &quot;2.8.4&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxRoomRoomRuntime2 = &quot;2.8.4&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-room-room-runtime-v284-x4 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;androidxRoomRoomRuntime2&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-room-room-runtime-v284-x4 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;androidxRoomRoomRuntime2&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="5075"
+                        endOffset="5075"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.room.room.runtime.v284.x4"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.room.room.runtime.v284.x4"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="1778"
+                        endOffset="1812"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-room-runtime` (version 2.8.1)"
+                replacement="libs.androidx.room.runtime"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="1778"
+                    endOffset="1812"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="72"
+            column="20"
+            startOffset="1778"
+            endLine="72"
+            endColumn="54"
+            endOffset="1812"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-paging-paging-common4"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxPagingPagingCommon2 = &quot;3.4.1&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxPagingPagingCommon2 = &quot;3.4.1&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-paging-paging-common4 = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;androidxPagingPagingCommon2&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-paging-paging-common4 = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;androidxPagingPagingCommon2&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="4688"
+                    endOffset="4688"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.paging.paging.common4"
+                robot="true"
+                replacement="libs.androidx.paging.paging.common4"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="1832"
+                    endOffset="1869"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="73"
+            column="20"
+            startOffset="1832"
+            endLine="73"
+            endColumn="57"
+            endOffset="1869"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.junit`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `junit`"
+            robot="true"
+            independent="true"
+            replacement="libs.junit"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="1893"
+                endOffset="1913"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="74"
+            column="24"
+            startOffset="1893"
+            endLine="74"
+            endColumn="44"
+            endOffset="1913"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for org-robolectric-robolectric6"
+            robot="true">
+            <fix-replace
+                description="Replace with orgRobolectricRobolectric4 = &quot;4.16.1&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="orgRobolectricRobolectric4 = &quot;4.16.1&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="998"
+                    endOffset="998"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with org-robolectric-robolectric6 = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;orgRobolectricRobolectric4&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="org-robolectric-robolectric6 = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;orgRobolectricRobolectric4&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="8601"
+                    endOffset="8601"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.org.robolectric.robolectric6"
+                robot="true"
+                replacement="libs.org.robolectric.robolectric6"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="1937"
+                    endOffset="1973"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="75"
+            column="24"
+            startOffset="1937"
+            endLine="75"
+            endColumn="60"
+            endOffset="1973"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.junit`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-junit`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.junit"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="2004"
+                endOffset="2035"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="76"
+            column="31"
+            startOffset="2004"
+            endLine="76"
+            endColumn="62"
+            endOffset="2035"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.espresso.core`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-espresso-core`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.espresso.core"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="2066"
+                endOffset="2110"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="77"
+            column="31"
+            startOffset="2066"
+            endLine="77"
+            endColumn="75"
+            endOffset="2110"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.room:room-compiler is already available as `androidx-room-compiler`, but using version 2.8.1 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-room-room-compiler-v284-x4"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxRoomRoomCompiler2 = &quot;2.8.4&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxRoomRoomCompiler2 = &quot;2.8.4&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-room-room-compiler-v284-x4 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;androidxRoomRoomCompiler2&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-room-room-compiler-v284-x4 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;androidxRoomRoomCompiler2&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="5075"
+                        endOffset="5075"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.room.room.compiler.v284.x4"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.room.room.compiler.v284.x4"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="2135"
+                        endOffset="2170"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-room-compiler` (version 2.8.1)"
+                replacement="libs.androidx.room.compiler"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="2135"
+                    endOffset="2170"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="78"
+            column="25"
+            startOffset="2135"
+            endLine="78"
+            endColumn="60"
+            endOffset="2170"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (org.jetbrains.kotlinx:kotlinx-serialization-json is already available as `kotlinx-serialization-json`, but using version 1.9.0 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with orgJetbrainsKotlinxKotlinxSerializationJson5 = &quot;1.10.0&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="orgJetbrainsKotlinxKotlinxSerializationJson5 = &quot;1.10.0&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="998"
+                        endOffset="998"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;orgJetbrainsKotlinxKotlinxSerializationJson5&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;orgJetbrainsKotlinxKotlinxSerializationJson5&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="8601"
+                        endOffset="8601"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.org.jetbrains.kotlinx.kotlinx.serialization.json.v1100.x6"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.org.jetbrains.kotlinx.kotlinx.serialization.json.v1100.x6"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="2190"
+                        endOffset="2247"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `kotlinx-serialization-json` (version 1.9.0)"
+                replacement="libs.kotlinx.serialization.json"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="2190"
+                    endOffset="2247"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="79"
+            column="20"
+            startOffset="2190"
+            endLine="79"
+            endColumn="77"
+            endOffset="2247"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.android.smsmms`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `android-smsmms`"
+            robot="true"
+            independent="true"
+            replacement="libs.android.smsmms"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="2268"
+                endOffset="2307"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="81"
+            column="20"
+            startOffset="2268"
+            endLine="81"
+            endColumn="59"
+            endOffset="2307"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (com.googlecode.libphonenumber:libphonenumber is already available as `libphonenumber`, but using version 9.0.15 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for com-googlecode-libphonenumber-libphonenumber-v9025-x4"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with comGooglecodeLibphonenumberLibphonenumber3 = &quot;9.0.25&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="comGooglecodeLibphonenumberLibphonenumber3 = &quot;9.0.25&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="268"
+                        endOffset="268"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with com-googlecode-libphonenumber-libphonenumber-v9025-x4 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;comGooglecodeLibphonenumberLibphonenumber3&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="com-googlecode-libphonenumber-libphonenumber-v9025-x4 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;comGooglecodeLibphonenumberLibphonenumber3&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="7207"
+                        endOffset="7207"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.com.googlecode.libphonenumber.libphonenumber.v9025.x4"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.com.googlecode.libphonenumber.libphonenumber.v9025.x4"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="2327"
+                        endOffset="2380"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `libphonenumber` (version 9.0.15)"
+                replacement="libs.libphonenumber"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="2327"
+                    endOffset="2380"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="82"
+            column="20"
+            startOffset="2327"
+            endLine="82"
+            endColumn="73"
+            endOffset="2380"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.gson`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `gson`"
+            robot="true"
+            independent="true"
+            replacement="libs.gson"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="3332"
+                endOffset="3366"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="109"
+            column="20"
+            startOffset="3332"
+            endLine="109"
+            endColumn="54"
+            endOffset="3366"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x16"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxDatastoreDatastorePreferences15 = &quot;1.2.0&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxDatastoreDatastorePreferences15 = &quot;1.2.0&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-datastore-datastore-preferences-v120-x16 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences15&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-datastore-datastore-preferences-v120-x16 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences15&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="2382"
+                        endOffset="2382"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x16"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.datastore.datastore.preferences.v120.x16"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="3388"
+                        endOffset="3436"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-datastore-preferences` (version 1.1.7)"
+                replacement="libs.androidx.datastore.preferences"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3388"
+                    endOffset="3436"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="111"
+            column="20"
+            startOffset="3388"
+            endLine="111"
+            endColumn="68"
+            endOffset="3436"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-core11"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxDatastoreDatastorePreferencesCore9 = &quot;1.2.0&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxDatastoreDatastorePreferencesCore9 = &quot;1.2.0&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-datastore-datastore-preferences-core11 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore9&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-datastore-datastore-preferences-core11 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore9&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="2382"
+                    endOffset="2382"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.datastore.datastore.preferences.core11"
+                robot="true"
+                replacement="libs.androidx.datastore.datastore.preferences.core11"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3456"
+                    endOffset="3509"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="112"
+            column="20"
+            startOffset="3456"
+            endLine="112"
+            endColumn="73"
+            endOffset="3509"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-work-work-runtime-ktx4"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxWorkWorkRuntimeKtx2 = &quot;2.11.1&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxWorkWorkRuntimeKtx2 = &quot;2.11.1&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-work-work-runtime-ktx4 = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;androidxWorkWorkRuntimeKtx2&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-work-work-runtime-ktx4 = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;androidxWorkWorkRuntimeKtx2&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="6729"
+                    endOffset="6729"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.work.work.runtime.ktx4"
+                robot="true"
+                replacement="libs.androidx.work.work.runtime.ktx4"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3529"
+                    endOffset="3568"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="113"
+            column="20"
+            startOffset="3529"
+            endLine="113"
+            endColumn="59"
+            endOffset="3568"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x17"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxDatastoreDatastorePreferences16 = &quot;1.2.0&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxDatastoreDatastorePreferences16 = &quot;1.2.0&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-datastore-datastore-preferences-v120-x17 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences16&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-datastore-datastore-preferences-v120-x17 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences16&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="2382"
+                        endOffset="2382"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x17"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.datastore.datastore.preferences.v120.x17"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="3588"
+                        endOffset="3636"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-datastore-preferences` (version 1.1.7)"
+                replacement="libs.androidx.datastore.preferences"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3588"
+                    endOffset="3636"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="114"
+            column="20"
+            startOffset="3588"
+            endLine="114"
+            endColumn="68"
+            endOffset="3636"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for net-zetetic-sqlcipher-android26"
+            robot="true">
+            <fix-replace
+                description="Replace with netZeteticSqlcipherAndroid25 = &quot;4.14.1&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="netZeteticSqlcipherAndroid25 = &quot;4.14.1&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="998"
+                    endOffset="998"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with net-zetetic-sqlcipher-android26 = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;netZeteticSqlcipherAndroid25&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="net-zetetic-sqlcipher-android26 = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;netZeteticSqlcipherAndroid25&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="8601"
+                    endOffset="8601"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.net.zetetic.sqlcipher.android26"
+                robot="true"
+                replacement="libs.net.zetetic.sqlcipher.android26"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3646"
+                    endOffset="3688"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="116"
+            column="9"
+            startOffset="3646"
+            endLine="116"
+            endColumn="51"
+            endOffset="3688"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-sqlite-sqlite27"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxSqliteSqlite25 = &quot;2.6.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxSqliteSqlite25 = &quot;2.6.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-sqlite-sqlite27 = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;androidxSqliteSqlite25&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-sqlite-sqlite27 = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;androidxSqliteSqlite25&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="5623"
+                    endOffset="5623"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.sqlite.sqlite27"
+                robot="true"
+                replacement="libs.androidx.sqlite.sqlite27"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3697"
+                    endOffset="3727"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="117"
+            column="9"
+            startOffset="3697"
+            endLine="117"
+            endColumn="39"
+            endOffset="3727"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.security.crypto`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-security-crypto`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.security.crypto"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="3747"
+                endOffset="3788"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="118"
+            column="20"
+            startOffset="3747"
+            endLine="118"
+            endColumn="61"
+            endOffset="3788"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x18"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxDatastoreDatastorePreferences17 = &quot;1.2.0&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxDatastoreDatastorePreferences17 = &quot;1.2.0&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-datastore-datastore-preferences-v120-x18 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences17&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-datastore-datastore-preferences-v120-x18 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences17&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="2382"
+                        endOffset="2382"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x18"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.datastore.datastore.preferences.v120.x18"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="3867"
+                        endOffset="3915"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-datastore-preferences` (version 1.1.7)"
+                replacement="libs.androidx.datastore.preferences"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3867"
+                    endOffset="3915"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="120"
+            column="20"
+            startOffset="3867"
+            endLine="120"
+            endColumn="68"
+            endOffset="3915"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-core12"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxDatastoreDatastorePreferencesCore10 = &quot;1.2.0&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxDatastoreDatastorePreferencesCore10 = &quot;1.2.0&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-datastore-datastore-preferences-core12 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore10&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-datastore-datastore-preferences-core12 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore10&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="2382"
+                    endOffset="2382"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.datastore.datastore.preferences.core12"
+                robot="true"
+                replacement="libs.androidx.datastore.datastore.preferences.core12"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3990"
+                    endOffset="4043"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="123"
+            column="20"
+            startOffset="3990"
+            endLine="123"
+            endColumn="73"
+            endOffset="4043"/>
+    </incident>
+
+</incidents>

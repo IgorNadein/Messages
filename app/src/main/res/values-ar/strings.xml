@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Deku SMS</string>
+    <string name="app_name">الرسائل</string>
     <string name="incoming_messages_channel_name">الرسائل الواردة</string>
     <string name="incoming_messages_channel_description">يتم استدعاؤه عند استلام رسالة جديدة.</string>
     <string name="running_gateway_clients_channel_description">تنبيهات عند استماع عملاء البوابة.</string>
@@ -355,4 +355,58 @@
     <string name="conversations_secure_conversation_request_information">يمكنك إرسال طلب لتشفير الرسائل إلى جميع مستخدمي تطبيق Deku SMS. بمجرد موافقتهم، يمكنكم البدء بالتواصل بشكل آمن.</string>
     <string name="click_to_add_queues">• انقر لإضافة قوائم الانتظار</string>
     <string name="press_and_hold_to_manage">• اضغط مع الاستمرار للإدارة</string>
+    <string name="oneui_developer_warning">يمكن لأدوات تصحيح الأخطاء تغيير بيانات التطبيق المحلية. وهي لا ترسل رسائل SMS حقيقية.</string>
+    <string name="oneui_developer_trigger_mms">إنشاء إشعار MMS تجريبي</string>
+    <string name="oneui_developer_trigger_mms_description">يضيف المحادثة المحلية والإشعار التجريبيين نفسيهما كما في الشاشة السابقة.</string>
+    <string name="oneui_developer_clear_history">مسح سجل الرسائل المحلي</string>
+    <string name="oneui_developer_clear_history_description">يزيل المحادثات المستوردة من هذا التطبيق. لا تُحذف رسائل SMS من النظام.</string>
+    <string name="oneui_developer_clear_confirmation_title">هل تريد مسح السجل المحلي؟</string>
+    <string name="oneui_developer_clear_confirmation_text">سيؤدي هذا إلى إزالة كل المحادثات المخزنة داخل «الرسائل». لن تتأثر الرسائل في قاعدة بيانات نظام Android.</string>
+    <string name="oneui_developer_sample_created">تم إنشاء إشعار MMS تجريبي.</string>
+    <string name="oneui_developer_history_cleared">تم مسح سجل الرسائل المحلي.</string>
+    <string name="oneui_gateway_delete_confirmation">هل تريد حذف إعداد البوابة هذا؟</string>
+    <string name="oneui_media_saved">تم حفظ المرفق.</string>
+    <string name="oneui_activate">تفعيل</string>
+    <string name="oneui_deactivate">إلغاء التفعيل</string>
+    <string name="oneui_remote_listener_delete_confirmation">هل تريد حذف هذا المستمع البعيد وجميع قوائمه؟</string>
+    <string name="oneui_remote_queue_delete_confirmation">هل تريد حذف قائمة الانتظار هذه؟</string>
+    <string name="oneui_remote_permissions_required">يلزم منح أذونات الرسائل القصيرة وحالة الهاتف لتفعيل المستمع.</string>
+    <string name="oneui_remote_queues">قوائم الانتظار</string>
+    <string name="oneui_developer_import_native">استيراد قاعدة SMS/MMS للنظام</string>
+    <string name="oneui_developer_import_native_description">استعادة تصدير SMS/MMS خام إلى موفّر رسائل نظام Android.</string>
+    <string name="oneui_developer_clear_native">مسح قاعدة SMS/MMS للنظام</string>
+    <string name="oneui_developer_clear_native_description">حذف كل رسائل SMS وMMS من موفّر رسائل Android. لا تُمسح قاعدة التطبيق الخاصة فورًا.</string>
+    <string name="oneui_developer_clear_native_confirmation_title">حذف رسائل النظام؟</string>
+    <string name="oneui_developer_clear_native_confirmation_text">سيؤدي هذا إلى حذف كل رسائل SMS وMMS نهائيًا من قاعدة نظام Android. تبقى الرسائل المخزنة داخل «الرسائل» حتى التحديث التالي.</string>
+    <string name="oneui_developer_native_imported">تم استيراد MMS: %1$d، الأجزاء: %2$d، العناوين: %3$d.</string>
+    <string name="oneui_developer_native_cleared">تم مسح قاعدة SMS/MMS للنظام.</string>
+    <string name="oneui_notification_reply_failed">تعذّر إرسال الرد. افتح المحادثة للتحقق من حالة الأمان.</string>
+    <string name="oneui_all_messages">الكل</string>
+    <string name="oneui_selection_count">المحدد: %1$d</string>
+    <string name="oneui_conversation_selected">تم تحديد المحادثة</string>
+    <string name="oneui_cancel">إلغاء</string>
+    <string name="oneui_select_recipient">اختيار مستلم</string>
+    <string name="oneui_remove_recipient">إزالة المستلم</string>
+    <string name="oneui_options">خيارات</string>
+    <string name="oneui_notifications_compact">تنبيهات</string>
+    <plurals name="oneui_unread_messages">
+        <item quantity="one">رسالة واحدة غير مقروءة</item>
+        <item quantity="two">رسالتان غير مقروءتين</item>
+        <item quantity="few">%1$d رسائل غير مقروءة</item>
+        <item quantity="many">%1$d رسالة غير مقروءة</item>
+        <item quantity="other">%1$d رسالة غير مقروءة</item>
+    </plurals>
+    <string name="oneui_view_unread">عرض</string>
+    <string name="oneui_dismiss_unread_summary">إخفاء ملخص الرسائل غير المقروءة</string>
+    <string name="oneui_add_category">إضافة فئة</string>
+    <string name="oneui_add_conversations">إضافة محادثات</string>
+    <string name="oneui_category_name">اسم الفئة</string>
+    <string name="oneui_next">التالي</string>
+    <string name="oneui_select_conversations">اختر المحادثات</string>
+    <string name="oneui_add_category_action">إضافة</string>
+    <string name="oneui_cancel_category">إلغاء</string>
+    <string name="oneui_conversations_category">المحادثات</string>
+    <string name="oneui_filter_folders">تصفية المحادثات</string>
+    <string name="oneui_conversations_navigation">المحادثات</string>
+    <string name="oneui_contacts_navigation">جهات الاتصال</string>
 </resources>

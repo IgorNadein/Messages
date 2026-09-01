@@ -1,0 +1,29 @@
+package com.afkanerd.smswithoutborders_libsmsmms.data.data.models
+
+import android.content.Context
+import android.os.Bundle
+import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
+
+class SmsManager(private val smsSender: SmsSender) {
+    fun sendSms(
+        context: Context,
+        text: String,
+        address: String,
+        subscriptionId: Long,
+        threadId: Int,
+        data: ByteArray? = null,
+        bundle: Bundle = Bundle(),
+        callback: (Conversations?) -> Unit
+    ) {
+        smsSender.sendSms(
+            context = context,
+            text = text,
+            address = address,
+            subscriptionId = subscriptionId,
+            threadId = threadId,
+            data = data,
+            callback = callback,
+            bundle = bundle
+        )
+    }
+}

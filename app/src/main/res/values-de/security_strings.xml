@@ -1,0 +1,20 @@
+<resources>
+    <string name="security_title">Sicherheit</string>
+    <string name="security_verified">✓ Verifiziert</string>
+    <string name="security_unverified">Nicht verifiziert — Sicherheitsnummer vergleichen oder QR-Code scannen</string>
+    <string name="security_legacy_unverified">Alte, nicht verifizierte Sitzung — eine neue sichere Sitzung starten</string>
+    <string name="security_key_changed">Der Sicherheitsschlüssel dieses Kontakts wurde geändert. Das Senden ist gesperrt.</string>
+    <string name="security_rekey_required">Die neue Identität wurde akzeptiert. Ein neuer sicherer Schlüsselaustausch ist erforderlich.</string>
+    <string name="security_safety_number">Sicherheitsnummer</string>
+    <string name="security_show_qr">QR-Code anzeigen</string>
+    <string name="security_scan_qr">QR-Code des Kontakts scannen</string>
+    <string name="security_scan_prompt">Identitäts-QR-Code des Kontakts scannen</string>
+    <string name="security_your_qr">Ihr Identitäts-QR-Code</string>
+    <string name="security_verified_success">Identität verifiziert</string>
+    <string name="security_verification_failed">Der QR-Code stimmt nicht mit diesem Kontakt überein</string>
+    <string name="security_accept_new_key">Neuen Schlüssel akzeptieren und neue Sitzung verlangen</string>
+    <string name="security_renew_session">Sichere Sitzung erneuern</string>
+    <string name="security_renew_session_description">Die aktuellen Sitzungsschlüssel werden verworfen und eine signierte Anfrage für neue Schlüssel wird gesendet. Die verifizierte Kontaktidentität bleibt erhalten.</string>
+    <string name="security_renew_confirm">Schlüssel erneuern</string>
+    <string name="security_decryption_failed">Die geschützte Nachricht konnte nicht entschlüsselt werden. Erneuern Sie die sichere Sitzung.</string>
+</resources>

@@ -1,0 +1,310 @@
+package com.afkanerd.smswithoutborders_libsmsmms.data.data.models
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.database.Cursor
+import android.net.Uri
+import android.provider.OpenableColumns
+import android.provider.Telephony
+import android.util.Xml
+import androidx.core.net.toUri
+import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.findRCSPhoneNumbers
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.parseRawMmsContents
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.resolveMmsAddressing
+import com.klinker.android.send_message.Settings
+import org.xmlpull.v1.XmlPullParser
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.text.MessageFormat
+
+object MmsParser {
+    const val COLUMN_CONTENT_LOCATION = 0
+
+    private const val ELEMENT_TAG_IMAGE: String = "img"
+    private const val ELEMENT_TAG_AUDIO: String = "audio"
+    private const val ELEMENT_TAG_VIDEO: String = "video"
+    private const val ELEMENT_TAG_VCARD: String = "vcard"
+    private const val ELEMENT_TAG_REF: String = "ref"
+
+    private val ELEMENT_TAGS = arrayOf(
+        ELEMENT_TAG_IMAGE, ELEMENT_TAG_VIDEO, ELEMENT_TAG_AUDIO, ELEMENT_TAG_VCARD, ELEMENT_TAG_REF
+    )
+
+
+    fun parseAttachmentNames(text: String): List<String> {
+        val parser = Xml.newPullParser()
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+        parser.setInput(text.reader())
+        parser.nextTag()
+        return readSmil(parser)
+    }
+
+    private fun readSmil(parser: XmlPullParser): List<String> {
+        parser.require(XmlPullParser.START_TAG, null, "smil")
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.eventType != XmlPullParser.START_TAG) {
+                continue
+            }
+
+            if (parser.name == "body") {
+                return readBody(parser)
+            } else {
+                skip(parser)
+            }
+        }
+
+        return emptyList()
+    }
+
+    private fun readBody(parser: XmlPullParser): List<String> {
+        val names = mutableListOf<String>()
+        parser.require(XmlPullParser.START_TAG, null, "body")
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.eventType != XmlPullParser.START_TAG) {
+                continue
+            }
+
+            if (parser.name == "par") {
+                parser.require(XmlPullParser.START_TAG, null, "par")
+                while (parser.next() != XmlPullParser.END_TAG) {
+                    if (parser.eventType != XmlPullParser.START_TAG) {
+                        continue
+                    }
+
+                    if (parser.name in ELEMENT_TAGS) {
+                        names.add(parser.getAttributeValue(null, "src"))
+                        skip(parser)
+                    } else {
+                        skip(parser)
+                    }
+                }
+            } else {
+                skip(parser)
+            }
+        }
+        return names
+    }
+
+    private fun skip(parser: XmlPullParser) {
+        if (parser.eventType != XmlPullParser.START_TAG) {
+            throw IllegalStateException()
+        }
+
+        var depth = 1
+        while (depth != 0) {
+            when (parser.next()) {
+                XmlPullParser.END_TAG -> depth--
+                XmlPullParser.START_TAG -> depth++
+            }
+        }
+    }
+
+    fun getMmsContentLocation(context: Context, uri: Uri): String? {
+        val projection = arrayOf(
+            Telephony.Mms.CONTENT_LOCATION,
+            Telephony.Mms.LOCKED
+        )
+
+        val cursor = context.contentResolver.query(
+            uri,
+            projection,
+            null,
+            null,
+            null
+        )
+
+        if (cursor != null) {
+            try {
+                if ((cursor.count == 1) && cursor.moveToFirst()) {
+                    val location = cursor.getString(COLUMN_CONTENT_LOCATION)
+                    cursor.close()
+                    return location
+                }
+            } finally {
+                cursor.close()
+            }
+        }
+        return null
+    }
+
+    fun getFileName(context: Context, uri: Uri): String? {
+        var name: String? = null
+        val cursor = context.contentResolver.query(
+            uri,
+            null,
+            null,
+            null,
+            null
+        )
+
+        cursor?.use{
+            if (it.moveToFirst()) {
+                val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (index != -1) {
+                    name = it.getString(index)
+                }
+            }
+        }
+        return name
+    }
+
+    fun getSendMessageSettings(group: Boolean = false): Settings {
+        val settings = Settings()
+        settings.useSystemSending = true
+        settings.deliveryReports = true
+        settings.sendLongAsMms = false
+//        settings.sendLongAsMmsAfter = 1
+        settings.group = group
+        return settings
+    }
+
+    data class ParsedMms(
+        var id: Long,
+        var text: String? = null,
+        var mimeType: String? = null,
+        var filename: String? = null,
+        var contentUri: Uri? = null,
+        var filepath: String? = null,
+    ){
+        fun getConversation(context: Context, cursor: Cursor): Conversations? {
+            val mms = parseRawMmsContents(cursor)
+            // Keep the authoritative Telephony provider thread id. Recreating it
+            // for each MMS is slow and may produce a different id for group MMS.
+            val threadId = mms.thread_id
+            val outgoing = mms.msg_box != Telephony.Mms.MESSAGE_BOX_INBOX
+            val addressing = context.resolveMmsAddressing(
+                messageId = id,
+                threadId = threadId,
+                subscriptionId = mms.sub_id?.toInt(),
+                outgoing = outgoing,
+            )
+            val participants = addressing.participantAddresses
+                .map { context.normalizeMmsAddress(it) }
+                .filter(String::isNotBlank)
+                .distinct()
+                .sorted()
+            if(participants.isEmpty()) return null
+            val senderAddress = addressing.senderAddress
+                ?.let { context.normalizeMmsAddress(it) }
+                ?.takeIf(String::isNotBlank)
+            val threadAddress = participants.joinToString(",")
+
+            val sms = SmsMmsNatives.Sms(
+//                _id = (System.currentTimeMillis()/1000L),
+                _id = id,
+                thread_id = threadId,
+                address = threadAddress,
+                sub_id = mms.sub_id ?: -1,
+                date = mms.date * 1000L,
+                date_sent = mms.date_sent,
+                // msg_box uses the same inbox/sent/draft/outbox/failed values as
+                // the SMS envelope consumed by the UI. m_type is the MMS PDU type
+                // (for example 132 = retrieve-conf) and made incoming MMS appear sent.
+                type = mms.msg_box,
+                status = mms.msg_box,
+                body = text ?: "",
+                read = mms.read ?: 0
+            )
+
+            return Conversations(
+                sms = sms,
+                mms = mms,
+                sender_address = senderAddress,
+                mms_text = text,
+                mms_mimetype = mimeType,
+                mms_filename = filename,
+                mms_filepath = filepath,
+                mms_content_uri = contentUri?.toString(),
+            ).apply {
+                participantAddresses = participants
+            }
+        }
+    }
+
+    @SuppressLint("Range")
+    fun parse(
+        context: Context,
+        cursor: Cursor
+    ): Conversations? {
+        val uri = "content://mms/part".toUri()
+        val id = cursor.getLong(cursor
+            .getColumnIndexOrThrow(Telephony.Mms._ID))
+
+        val textOnly = cursor.getInt(cursor
+            .getColumnIndexOrThrow(Telephony.Mms.TEXT_ONLY)).run { this == 1 }
+
+        val parsedMms = ParsedMms(id)
+        context.contentResolver.query(
+            uri,
+            null,
+            "${Telephony.Mms.Part.MSG_ID} = ?",
+            arrayOf(id.toString()),
+            null
+        )?.let { partCursor ->
+            if (partCursor.moveToFirst()) {
+                do {
+                    val pid = partCursor.getString(partCursor
+                        .getColumnIndex(Telephony.Mms.Part._ID))
+
+                    val type = partCursor.getString(partCursor
+                        .getColumnIndex(Telephony.Mms.Part.CONTENT_TYPE))
+
+                    val data = partCursor.getString(partCursor
+                        .getColumnIndex(Telephony.Mms.Part._DATA))
+
+                    if(!data.isNullOrEmpty())
+                        parsedMms.filepath = data
+
+                    if ("text/plain" == type) {
+                        if (parsedMms.text.isNullOrEmpty())
+                            parsedMms.text = partCursor.getString(partCursor
+                                .getColumnIndex(Telephony.Mms.Part.TEXT))
+                    } else if (type != "application/smil") {
+                        if(parsedMms.contentUri == null) {
+                            parsedMms.mimeType = type
+                            parsedMms.contentUri = ("content://mms/part/$pid").toUri()
+                        }
+                    } else {
+                        val text = partCursor.getString(partCursor
+                            .getColumnIndex(Telephony.Mms.Part.TEXT))
+                        try {
+                            parsedMms.filename = parseAttachmentNames(text).firstOrNull()
+                        } catch (e: Exception) {
+                        }
+                    }
+                } while (partCursor.moveToNext())
+            }
+            partCursor.close()
+        }
+
+        return parsedMms.getConversation(context, cursor)
+    }
+
+    fun getMmsContent(context: Context, uri: Uri): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+
+        try {
+            context.contentResolver.openInputStream(uri).use { inputStream ->
+                if (inputStream != null) {
+                    val buffer = ByteArray(4096)
+                    var bytesRead: Int
+                    while ((inputStream.read(buffer).also { bytesRead = it }) != -1) {
+                        outputStream.write(buffer, 0, bytesRead)
+                    }
+                }
+            }
+        } catch (e: IOException) {
+        }
+
+        return outputStream.toByteArray()
+    }
+
+}
+
+private fun Context.normalizeMmsAddress(address: String): String {
+    val trimmed = address.trim()
+    return findRCSPhoneNumbers(trimmed)?.singleOrNull()
+        ?: runCatching { makeE16PhoneNumber(trimmed) }.getOrDefault(trimmed)
+}

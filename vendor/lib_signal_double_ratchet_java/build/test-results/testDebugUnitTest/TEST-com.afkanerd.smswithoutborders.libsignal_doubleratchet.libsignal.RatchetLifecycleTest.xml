@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.afkanerd.smswithoutborders.libsignal_doubleratchet.libsignal.RatchetLifecycleTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-08-31T16:19:53.701Z" hostname="kali" time="0.156">
+  <properties/>
+  <testcase name="tamperingAndWrongAssociatedDataFailAuthentication" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.libsignal.RatchetLifecycleTest" time="0.024"/>
+  <testcase name="oneHundredAlternatingMessagesSurviveRestartAfterEveryMessage" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.libsignal.RatchetLifecycleTest" time="0.11"/>
+  <testcase name="outOfOrderMessagesUsePersistedSkippedKeysAndDuplicatesFail" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.libsignal.RatchetLifecycleTest" time="0.006"/>
+  <testcase name="veryLongUnicodePayloadRoundTrips" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.libsignal.RatchetLifecycleTest" time="0.016"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

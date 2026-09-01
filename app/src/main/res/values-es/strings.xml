@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Deku SMS</string>
+    <string name="app_name">Mensajes</string>
     <string name="incoming_messages_channel_name">Mensajes entrantes</string>
     <string name="incoming_messages_channel_description">Se llama cuando se recibe un mensaje nuevo.</string>
     <string name="running_gateway_clients_channel_description">Alertas cuando las clientas de la puerta de enlace están escuchando.</string>
@@ -356,4 +356,55 @@
     <string name="conversations_secure_conversation_request_information">Puedes enviar una solicitud para cifrar mensajes a todos usando Deku SMS. Una vez que acepten, podrán comunicarse de forma segura.</string>
     <string name="click_to_add_queues">• Haga clic para agregar colas</string>
     <string name="press_and_hold_to_manage">• Mantenga pulsado para administrar</string>
+    <string name="oneui_developer_warning">Las herramientas de depuración pueden cambiar los datos locales de la aplicación. No envían SMS reales.</string>
+    <string name="oneui_developer_trigger_mms">Crear notificación MMS de prueba</string>
+    <string name="oneui_developer_trigger_mms_description">Añade la misma conversación local y notificación de prueba que la pantalla anterior.</string>
+    <string name="oneui_developer_clear_history">Borrar historial local de mensajes</string>
+    <string name="oneui_developer_clear_history_description">Elimina de esta aplicación las conversaciones importadas. Los SMS del sistema no se borran.</string>
+    <string name="oneui_developer_clear_confirmation_title">¿Borrar el historial local?</string>
+    <string name="oneui_developer_clear_confirmation_text">Se eliminarán todas las conversaciones guardadas en Mensajes. Los mensajes de la base de datos del sistema Android no se verán afectados.</string>
+    <string name="oneui_developer_sample_created">Se ha creado la notificación MMS de prueba.</string>
+    <string name="oneui_developer_history_cleared">Se ha borrado el historial local de mensajes.</string>
+    <string name="oneui_gateway_delete_confirmation">¿Eliminar esta configuración de puerta de enlace?</string>
+    <string name="oneui_media_saved">Adjunto guardado.</string>
+    <string name="oneui_activate">Activar</string>
+    <string name="oneui_deactivate">Desactivar</string>
+    <string name="oneui_remote_listener_delete_confirmation">¿Eliminar este receptor remoto y todas sus colas?</string>
+    <string name="oneui_remote_queue_delete_confirmation">¿Eliminar esta cola?</string>
+    <string name="oneui_remote_permissions_required">Se necesitan permisos de SMS y estado del teléfono para activar un receptor.</string>
+    <string name="oneui_remote_queues">Colas</string>
+    <string name="oneui_developer_import_native">Importar base de datos SMS/MMS del sistema</string>
+    <string name="oneui_developer_import_native_description">Restaura una exportación sin procesar de SMS/MMS en el proveedor de mensajes del sistema Android.</string>
+    <string name="oneui_developer_clear_native">Borrar base de datos SMS/MMS del sistema</string>
+    <string name="oneui_developer_clear_native_description">Elimina todos los SMS y MMS del proveedor de mensajes de Android. La base privada de la aplicación no se borra inmediatamente.</string>
+    <string name="oneui_developer_clear_native_confirmation_title">¿Eliminar mensajes del sistema?</string>
+    <string name="oneui_developer_clear_native_confirmation_text">Esto elimina permanentemente todos los SMS y MMS de la base del sistema Android. Los mensajes almacenados en Mensajes permanecerán hasta la próxima actualización.</string>
+    <string name="oneui_developer_native_imported">MMS importados: %1$d, partes: %2$d, direcciones: %3$d.</string>
+    <string name="oneui_developer_native_cleared">Base de datos SMS/MMS del sistema borrada.</string>
+    <string name="oneui_notification_reply_failed">No se envió la respuesta. Abre la conversación para comprobar el estado de seguridad.</string>
+    <string name="oneui_all_messages">Todo</string>
+    <string name="oneui_selection_count">Seleccionado: %1$d</string>
+    <string name="oneui_conversation_selected">Conversación seleccionada</string>
+    <string name="oneui_cancel">Cancelar</string>
+    <string name="oneui_select_recipient">Seleccionar destinatario</string>
+    <string name="oneui_remove_recipient">Quitar destinatario</string>
+    <string name="oneui_options">Opciones</string>
+    <string name="oneui_notifications_compact">Alertas</string>
+    <plurals name="oneui_unread_messages">
+        <item quantity="one">%1$d mensaje sin leer</item>
+        <item quantity="other">%1$d mensajes sin leer</item>
+    </plurals>
+    <string name="oneui_view_unread">Ver</string>
+    <string name="oneui_dismiss_unread_summary">Cerrar resumen de mensajes sin leer</string>
+    <string name="oneui_add_category">Añadir categoría</string>
+    <string name="oneui_add_conversations">Añadir conversaciones</string>
+    <string name="oneui_category_name">Nombre de la categoría</string>
+    <string name="oneui_next">Siguiente</string>
+    <string name="oneui_select_conversations">Seleccionar conversaciones</string>
+    <string name="oneui_add_category_action">Añadir</string>
+    <string name="oneui_cancel_category">Cancelar</string>
+    <string name="oneui_conversations_category">Conversaciones</string>
+    <string name="oneui_filter_folders">Filtrar conversaciones</string>
+    <string name="oneui_conversations_navigation">Conversaciones</string>
+    <string name="oneui_contacts_navigation">Contactos</string>
 </resources>

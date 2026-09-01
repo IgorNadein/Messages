@@ -24,15 +24,22 @@ import com.afkanerd.deku.RemoteListeners.Models.RemoteListeners
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersQueues
 import com.afkanerd.deku.Router.data.dao.GatewayServerDAO
 import com.afkanerd.deku.Router.data.models.GatewayServer
+import com.afkanerd.deku.attachments.storage.AttachmentTransferDao
+import com.afkanerd.deku.attachments.storage.AttachmentTransferEntity
+import com.afkanerd.deku.attachments.storage.AttachmentOfferFragmentDao
+import com.afkanerd.deku.attachments.storage.AttachmentOfferFragmentEntity
 import com.afkanerd.smswithoutborders_libsmsmms.data.Cryptography.getDatabasePassword
 import com.afkanerd.smswithoutborders_libsmsmms.data.DatabaseImpl
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
+import net.zetetic.database.sqlcipher.SQLiteDatabase
+import java.io.File
 import kotlin.concurrent.Volatile
 
 
 @Database(
-    entities = [GatewayServer::class, RemoteListenersQueues::class, RemoteListeners::class],
-    version = 31,
+    entities = [GatewayServer::class, RemoteListenersQueues::class, RemoteListeners::class,
+        AttachmentTransferEntity::class, AttachmentOfferFragmentEntity::class],
+    version = 32,
     autoMigrations = [AutoMigration(from = 9, to = 10), AutoMigration(
         from = 10,
         to = 11
@@ -67,16 +74,38 @@ import kotlin.concurrent.Volatile
         from = 28,
         to = 29,
         spec = Migrate28To29::class
-    ), AutoMigration(from = 29, to = 30), AutoMigration(from = 30, to = 31)]
+    ), AutoMigration(from = 29, to = 30), AutoMigration(from = 30, to = 31),
+        AutoMigration(from = 31, to = 32)]
 )
 abstract class Datastore : RoomDatabase() {
+    @Volatile
+    private var retainedPassword: com.afkanerd.smswithoutborders_libsmsmms.data.Cryptography.SecretBytes? = null
+
     abstract fun gatewayServerDAO(): GatewayServerDAO
 
     abstract fun remoteListenerDAO(): RemoteListenerDAO
     abstract fun remoteListenersQueuesDao(): RemoteListenersQueuesDao
+    abstract fun attachmentTransferDao(): AttachmentTransferDao
+    abstract fun attachmentOfferFragmentDao(): AttachmentOfferFragmentDao
 
     init {
         System.loadLibrary("sqlcipher")
+    }
+
+    private fun retainPassword(
+        password: com.afkanerd.smswithoutborders_libsmsmms.data.Cryptography.SecretBytes,
+    ) {
+        check(retainedPassword == null) { "Database password is already attached" }
+        retainedPassword = password
+    }
+
+    override fun close() {
+        try {
+            super.close()
+        } finally {
+            retainedPassword?.close()
+            retainedPassword = null
+        }
     }
 
     @DeleteTable(tableName = "CustomKeyStore")
@@ -141,11 +170,14 @@ abstract class Datastore : RoomDatabase() {
         }
 
         private fun create(context: Context) {
-            getDatabasePassword(context, dbKeystoreAlias).use { password ->
+            System.loadLibrary("sqlcipher")
+            val password = getDatabasePassword(context, dbKeystoreAlias)
+            try {
                 val databaseFile = context.getDatabasePath(databaseName)
 
                 password.useRaw { rawBytes ->
-                    datastore = databaseBuilder(
+                    migrateLegacyZeroPassword(databaseFile, rawBytes)
+                    val database = databaseBuilder(
                         context = context.applicationContext,
                         klass = Datastore::class.java,
                         databaseFile.absolutePath,
@@ -153,7 +185,59 @@ abstract class Datastore : RoomDatabase() {
                         .openHelperFactory(SupportOpenHelperFactory(rawBytes))
                         .fallbackToDestructiveMigration(false)
                         .build()
+                    try {
+                        // SQLCipher's connection pool retains this passphrase to open
+                        // additional connections. Keep it alive until Room is closed.
+                        database.openHelper.writableDatabase
+                        database.retainPassword(password)
+                        datastore = database
+                    } catch(error: Exception) {
+                        database.close()
+                        throw error
+                    }
                 }
+            } catch(error: Exception) {
+                password.close()
+                throw error
+            }
+        }
+
+        /** Migrates databases created by the old zeroed-password bug. */
+        private fun migrateLegacyZeroPassword(databaseFile: File, password: ByteArray) {
+            if(!databaseFile.exists()) return
+
+            var database: SQLiteDatabase? = null
+            val passwordError = try {
+                database = SQLiteDatabase.openDatabase(
+                    databaseFile.absolutePath,
+                    password,
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE,
+                    null,
+                )
+                return
+            } catch(error: Exception) {
+                error
+            } finally {
+                database?.close()
+            }
+
+            val legacyPassword = ByteArray(password.size)
+            try {
+                database = SQLiteDatabase.openDatabase(
+                    databaseFile.absolutePath,
+                    legacyPassword,
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE,
+                    null,
+                )
+                database.changePassword(password)
+            } catch(error: Exception) {
+                passwordError.addSuppressed(error)
+                throw passwordError
+            } finally {
+                database?.close()
+                legacyPassword.fill(0)
             }
         }
     }

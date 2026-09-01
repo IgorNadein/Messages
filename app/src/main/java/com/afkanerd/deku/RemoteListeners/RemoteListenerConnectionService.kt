@@ -27,13 +27,15 @@ import androidx.work.WorkManager
 import com.afkanerd.deku.Datastore
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.MainActivity
-import com.afkanerd.deku.RemoteListeners.Models.RemoteListener.RemoteListenersViewModel
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListeners
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersHandler
 import com.afkanerd.deku.RemoteListeners.RMQ.RMQConnectionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.security.Permission
 
 class RemoteListenerConnectionService : Service() {
@@ -51,6 +53,11 @@ class RemoteListenerConnectionService : Service() {
     // TODO: when the state changes in here, you should know - else would have false readings
     private val rmqConnectionHandlerObserver = Observer<List<RMQConnectionHandler>> { rch ->
         numberStarted = rch.filter { it.connection.isOpen }.size
+        connectedListenerIdsMutable.value = rch
+            .asSequence()
+            .filter { it.connection.isOpen }
+            .map { it.id }
+            .toSet()
 
         CoroutineScope(Dispatchers.Default).launch {
             val remoteListeners = Datastore.getDatastore(applicationContext).remoteListenerDAO().all
@@ -185,6 +192,7 @@ class RemoteListenerConnectionService : Service() {
         rmqConnectionHandlers.removeObserver(rmqConnectionHandlerObserver)
         remoteListenersLiveData.removeObserver(remoteListenerObserver)
         rmqConnectionHandlers.value?.forEach {  it.close() }
+        connectedListenerIdsMutable.value = emptySet()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -268,8 +276,12 @@ class RemoteListenerConnectionService : Service() {
                 } else { 0 }
             )
         } catch(e: Exception) {
-            e.printStackTrace()
         }
     }
 
+    companion object {
+        private val connectedListenerIdsMutable = MutableStateFlow<Set<Long>>(emptySet())
+        val connectedListenerIds: StateFlow<Set<Long>> =
+            connectedListenerIdsMutable.asStateFlow()
+    }
 }

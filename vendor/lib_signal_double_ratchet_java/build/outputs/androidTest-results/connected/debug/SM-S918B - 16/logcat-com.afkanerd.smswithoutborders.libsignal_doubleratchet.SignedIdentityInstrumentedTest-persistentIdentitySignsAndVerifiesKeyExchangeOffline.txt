@@ -1,0 +1,52 @@
+08-31 15:27:14.811 26359 26378 I TestRunner: started: persistentIdentitySignsAndVerifiesKeyExchangeOffline(com.afkanerd.smswithoutborders.libsignal_doubleratchet.SignedIdentityInstrumentedTest)
+08-31 15:27:14.885  1085  1085 I lmkd    : 7(delay), 0(swap), 0(freelimit), 0(reentrymode) memory pressure events were skipped after a kill!
+08-31 15:27:14.942  5614  5614 I Routine@Core[5.0.03.22]: WatchPluginStateGetter: BroadcastReceiver::onReceive
+08-31 15:27:14.943  5614  5614 W Routine@Core[5.0.03.22]: WatchPluginStateGetter: receiveResultFromBroadcast.onReceive: errorMessage - ERROR_MSG_NO_ACTIVATED_DEVICE
+08-31 15:27:14.944  5614  6259 I Routine@Core[5.0.03.22]: Pref: putSharedPrefsData: key=WATCH_DND_SYNC_ENABLED, data.size=4
+08-31 15:27:14.947  5614  6259 I Routine@Core[5.0.03.22]: WatchPluginStateGetter: isDNDSyncEnabled: true
+08-31 15:27:14.951  5614  6259 I Routine@Core[5.0.03.22]: WearCommonDataStore: getLastConnectedNodeId: 86126e03
+08-31 15:27:14.969  4126  4172 D SatelliteController: isInCarrierRoamingNbIotNtn: satellite is disabled
+08-31 15:27:14.970  4126  4172 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+08-31 15:27:14.970  4126  4172 D SatelliteController: updateLastNotifiedCarrierRoamingNtnSignalStrengthAndNotify(2)
+08-31 15:27:14.970  4126  4172 D SatelliteController: updateLastNotifiedCarrierRoamingNtnSignalStrengthAndNotify(2) lastNotifiedSignalStrength level: 0
+08-31 15:27:14.970  4126  4172 D SatelliteController: updateLastNotifiedCarrierRoamingNtnSignalStrengthAndNotify(2) currSignalStrength level: 0
+08-31 15:27:14.986  1085  1085 I lmkd    : cached 5, sandbox(not0) 5
+08-31 15:27:14.986  1085  1085 I lmkd    : Reclaim 'com.google.android.apps.work.clouddpc' (13630), uid 10519, oom_score_adj 999, state 19 to free 85928kB rss, 22972kB swap; reason: low watermark is breached or filecache is low (2212504kB).; level: 1
+08-31 15:27:14.992  2943  5886 W LocationManagerService: onFreezeStateChanged, uid[10519]=false
+08-31 15:27:15.010  6307  6370 V OsAgent : broadcastSystemEvent - 7
+08-31 15:27:15.010  5614  6291 I Routine@Core[5.0.03.22]: AppFunctionsActionHandler: isSupported: supportStatus = SUPPORTED, tag = appfunction://com.sec.android.app.clockpackage#clock_startStopwatch
+08-31 15:27:15.016  2943  3896 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+08-31 15:27:15.016  2943  3896 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+08-31 15:27:15.016  2943  3896 D InetDiagMessage: Destroyed live tcp sockets for uids={10519} in 2ms
+08-31 15:27:15.017  2943  3896 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+08-31 15:27:15.018  2943  3896 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+08-31 15:27:15.018  2943  3896 D InetDiagMessage: Destroyed live tcp sockets for uids={20519} in 1ms
+08-31 15:27:15.029  2943  3315 I libprocessgroup: Removed cgroup /sys/fs/cgroup/apps/uid_10519/pid_13630
+08-31 15:27:15.030  1689  1689 I Zygote  : Process 13630 exited due to signal 9 (Killed)
+08-31 15:27:15.042  5253 26340 I SearchableManager: invalidate: com.afkanerd.smswithoutborders.libsignal_doubleratchet.test
+08-31 15:27:15.055  5614  6291 I Routine@Core[5.0.03.22]: AppFunctionsActionHandler: isSupported: supportStatus = SUPPORTED, tag = appfunction://com.sec.android.app.clockpackage#clock_findAlarms
+08-31 15:27:15.089  1085  1085 I lmkd    : 5(delay), 0(swap), 0(freelimit), 0(reentrymode) memory pressure events were skipped after a kill!
+08-31 15:27:15.097  1085  1085 I lmkd    : cached 5, sandbox(not0) 5
+08-31 15:27:15.098  1085  1085 I lmkd    : Reclaim 'com.google.android.apps.restore' (25879), uid 10243, oom_score_adj 999, state 19 to free 91488kB rss, 23768kB swap; reason: min watermark is breached or filecache is low (2229004kB).; level: 1
+08-31 15:27:15.099  1085  1101 W lowmemorykiller: Failed to get t_pid for '0' of pid(25879)
+08-31 15:27:15.113  1085  1101 I lowmemorykiller: Process 25879 was reaped in 12ms
+08-31 15:27:15.124  5614  6291 I Routine@Core[5.0.03.22]: AppFunctionsActionHandler: isSupported: supportStatus = SUPPORTED, tag = appfunction://com.samsung.android.app.reminder#tasks_findTasks
+08-31 15:27:15.124  1689  1689 I Zygote  : Process 25879 exited due to signal 9 (Killed)
+08-31 15:27:15.124  1085  1085 I lmkd    : cached 5, sandbox(not0) 5
+08-31 15:27:15.125  1085  1085 I lmkd    : Reclaim 'com.wsomacp' (27436), uid 10099, oom_score_adj 999, state 19 to free 84200kB rss, 15984kB swap; reason: min2x watermark is breached even after kill; level: 1
+08-31 15:27:15.129  6307  6370 V OsAgent : broadcastSystemEvent - 7
+08-31 15:27:15.132  1085  1100 I lowmemorykiller: Process 27436 was reaped in 4ms
+08-31 15:27:15.132  4903  4903 D SubscreenNotificationListCoordinator: onAfterRenderList() isSubScreen = false, pluginLockMode = 0, doNotShowOnCover = false
+08-31 15:27:15.132  4903  4903 I DateTimeView: getTimeFormat
+08-31 15:27:15.133  4903  4903 I DateTimeView: getTimeFormat
+08-31 15:27:15.133  4903  4903 I LockscreenNotificationIconsOnlyController: onNotificationInfoUpdated 0
+08-31 15:27:15.133  4903  4903 I AODNotificationManager: updateNotification()
+08-31 15:27:15.136  2943  3315 I libprocessgroup: Removed cgroup /sys/fs/cgroup/apps/uid_10243/pid_25879
+08-31 15:27:15.143  1689  1689 I Zygote  : Process 27436 exited due to signal 9 (Killed)
+08-31 15:27:15.143  1085  1085 I lmkd    : cached 5, sandbox(not0) 5
+08-31 15:27:15.143  1085  1085 I lmkd    : Reclaim 'com.facebook.appmanager' (9400), uid 1010176, oom_score_adj 999, state 19 to free 88084kB rss, 23376kB swap; reason: low watermark is breached or filecache is low (2234220kB).; level: 1
+08-31 15:27:15.155  1085  1101 I lowmemorykiller: Process 9400 was reaped in 12ms
+08-31 15:27:15.163  1689  1689 I Zygote  : Process 9400 exited due to signal 9 (Killed)
+08-31 15:27:15.163  1085  1085 I lmkd    : cached 5, sandbox(not0) 5
+08-31 15:27:15.164  1085  1085 I lmkd    : Reclaim 'com.facebook.system' (30619), uid 1010073, oom_score_adj 999, state 19 to free 81780kB rss, 16244kB swap; reason: low watermark is breached or filecache is low (2235444kB).; level: 1
+08-31 15:27:15.167 26359 26378 I TestRunner: finished: persistentIdentitySignsAndVerifiesKeyExchangeOffline(com.afkanerd.smswithoutborders.libsignal_doubleratchet.SignedIdentityInstrumentedTest)

@@ -1,0 +1,20 @@
+<resources>
+    <string name="security_title">Bezpieczeństwo</string>
+    <string name="security_verified">✓ Zweryfikowano</string>
+    <string name="security_unverified">Niezweryfikowano — porównaj numer bezpieczeństwa lub zeskanuj kod QR</string>
+    <string name="security_legacy_unverified">Stara niezweryfikowana sesja — rozpocznij nową bezpieczną sesję</string>
+    <string name="security_key_changed">Klucz bezpieczeństwa tego kontaktu uległ zmianie. Wysyłanie jest zablokowane.</string>
+    <string name="security_rekey_required">Nowa tożsamość została zaakceptowana. Wymagana jest nowa bezpieczna wymiana kluczy.</string>
+    <string name="security_safety_number">Numer bezpieczeństwa</string>
+    <string name="security_show_qr">Pokaż kod QR</string>
+    <string name="security_scan_qr">Skanuj QR kontaktu</string>
+    <string name="security_scan_prompt">Zeskanuj kod QR tożsamości kontaktu</string>
+    <string name="security_your_qr">Twój kod QR tożsamości</string>
+    <string name="security_verified_success">Tożsamość zweryfikowana</string>
+    <string name="security_verification_failed">Kod QR nie pasuje do tego kontaktu</string>
+    <string name="security_accept_new_key">Zaakceptuj nowy klucz i odnów sesję</string>
+    <string name="security_renew_session">Odnów bezpieczną sesję</string>
+    <string name="security_renew_session_description">Bieżące klucze sesji zostaną usunięte i zostanie wysłane podpisane żądanie nowych kluczy. Zweryfikowana tożsamość kontaktu zostanie zachowana.</string>
+    <string name="security_renew_confirm">Odnów klucze</string>
+    <string name="security_decryption_failed">Nie udało się odszyfrować chronionej wiadomości. Odnów bezpieczną sesję.</string>
+</resources>

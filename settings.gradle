@@ -6,5 +6,9 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 }
-rootProject.name = "swob_server"
+rootProject.name = "Сообщения"
 include ':app'
+include ':lib_smsmms_android'
+project(':lib_smsmms_android').projectDir = file('vendor/lib_smsmms_android')
+include ':lib_signal_double_ratchet_java'
+project(':lib_signal_double_ratchet_java').projectDir = file('vendor/lib_signal_double_ratchet_java')

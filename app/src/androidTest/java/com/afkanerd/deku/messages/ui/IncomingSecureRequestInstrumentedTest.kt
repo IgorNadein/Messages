@@ -1,0 +1,45 @@
+package com.afkanerd.deku.messages.ui
+
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.platform.app.InstrumentationRegistry
+import com.afkanerd.deku.DefaultSMS.R
+import com.afkanerd.deku.messages.domain.ConversationSecurityState
+import com.afkanerd.deku.messages.ui.theme.MessagesAppTheme
+import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.Test
+
+class IncomingSecureRequestInstrumentedTest {
+    @get:Rule
+    val composeRule = createComposeRule()
+
+    @Test
+    fun incomingRequestRendersAcceptAndDispatchesNonRenewalAction() {
+        var forceRenewal: Boolean? = null
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val acceptText = context.getString(
+            R.string.conversations_secure_conversation_request_agree
+        )
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                SecuritySheet(
+                    state = ConversationSecurityState.REQUEST_RECEIVED,
+                    contactName = "+79990000000",
+                    fingerprint = null,
+                    busy = false,
+                    onAction = { forceRenewal = it },
+                    onAcceptChangedIdentity = {},
+                    onShowQr = {},
+                    onScanQr = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(acceptText).assertIsDisplayed().performClick()
+        assertEquals(false, forceRenewal)
+    }
+}

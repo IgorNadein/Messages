@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.afkanerd.smswithoutborders.libsignal_doubleratchet.RatchetEnvelopeTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-31T16:19:53.617Z" hostname="kali" time="0.019">
+  <properties/>
+  <testcase name="corruptEnvelopeFailsClosed" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.RatchetEnvelopeTest" time="0.006"/>
+  <testcase name="legacyRawRatchetStateMigratesIntoEnvelope" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.RatchetEnvelopeTest" time="0.006"/>
+  <testcase name="pendingCiphertextAndStateSurviveRestart" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.RatchetEnvelopeTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

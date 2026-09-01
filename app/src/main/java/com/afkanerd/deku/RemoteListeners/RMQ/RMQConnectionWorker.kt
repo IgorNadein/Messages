@@ -18,10 +18,10 @@ import com.afkanerd.deku.RemoteListeners.Models.RemoteListeners
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersHandler
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersQueues
 import com.afkanerd.deku.RemoteListeners.RemoteListenerConnectionService
+import com.afkanerd.smswithoutborders_libsmsmms.data.data.models.ContextSmsSender
 import com.afkanerd.smswithoutborders_libsmsmms.data.data.models.SmsManager
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getSimCardInformation
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getThreadId
-import com.afkanerd.smswithoutborders_libsmsmms.ui.viewModels.ConversationsViewModel
 import com.rabbitmq.client.Channel
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.ConsumerShutdownSignalCallback
@@ -108,7 +108,6 @@ class RMQConnectionWorker(
         try {
             mService.putRmqConnection(rmqConnectionHandler)
         } catch(e: Exception) {
-            e.printStackTrace()
         }
 
         return rmqConnectionHandler
@@ -140,7 +139,6 @@ class RMQConnectionWorker(
 
             rmqConnectionHandler = RMQConnectionHandler(remoteListener.id, connection)
         } catch(e: Exception) {
-            e.printStackTrace()
             if(::rmqConnectionHandler.isInitialized)
                 rmqConnectionHandler.close()
             throw e
@@ -208,7 +206,6 @@ class RMQConnectionWorker(
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             throw e
         }
     }
@@ -240,7 +237,6 @@ class RMQConnectionWorker(
                     consumerTag: String,
                     sig: ShutdownSignalException
                 ) {
-                    sig.printStackTrace()
                     rmqConnectionHandler.removeChannelWithConsumerTag(consumerTag)
                 }
             })
@@ -282,7 +278,6 @@ class RMQConnectionWorker(
                                                 if (it.isOpen) it.basicReject(deliveryTag, true)
                                             }
                                         } catch(e: Exception) {
-                                            e.printStackTrace()
                                         }
                                     }
                                 }
@@ -312,7 +307,7 @@ class RMQConnectionWorker(
         bundle.putLong(RMQConnectionHandler.RMQ_DELIVERY_TAG, deliveryTag)
         bundle.putLong(RMQConnectionHandler.RMQ_ID, rmqConnectionId)
 
-        SmsManager(ConversationsViewModel()).sendSms(
+        SmsManager(ContextSmsSender()).sendSms(
             context = context,
             text = smsRequest.text,
             address = smsRequest.to,
@@ -333,18 +328,15 @@ class RMQConnectionWorker(
                 consumerTag = consumerTag
             )?.let { channel ->
                 val message = String(delivery.body, StandardCharsets.UTF_8)
-                Log.d(javaClass.name, "Remote listener incoming: $message")
                 val smsRequest: SMSRequest? = run {
                     try {
                         return@run Json.decodeFromString<SMSRequest>(message)
                     } catch(e: SerializationException) {
-                        e.printStackTrace()
                         channel.let {
                             if (it.isOpen)
                                 it.basicReject(delivery.envelope.deliveryTag, false)
                         }
                     } catch(e: Exception) {
-                        e.printStackTrace()
                     }
                     null
                 }
@@ -357,7 +349,6 @@ class RMQConnectionWorker(
                             rmqConnectionId
                         )
                     } catch (e: Exception) {
-                        e.printStackTrace()
                         when(e) {
                             is SerializationException -> {
                                 channel.let {
@@ -372,7 +363,6 @@ class RMQConnectionWorker(
                                 }
                             }
                             else -> {
-                                e.printStackTrace()
                             }
                         }
                     }

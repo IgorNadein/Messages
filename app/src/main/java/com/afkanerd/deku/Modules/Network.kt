@@ -7,12 +7,14 @@ import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
+import java.net.URI
 
 class Network {
     data class NetworkResponseResults(val response: Response,
                                       val result: Result<String, java.lang.Exception>)
     companion object {
         fun requestGet(url: String, headers: Headers? = null) : NetworkResponseResults{
+            requireHttps(url)
             val (_, response, result) = if(headers.isNullOrEmpty())
                 url.httpGet()
                     .responseString()
@@ -34,7 +36,7 @@ class Network {
 
         fun jsonRequestDelete(url: String, payload: String, headers: Headers? = null) :
                 NetworkResponseResults {
-            println("url: $url")
+            requireHttps(url)
             val (_, response, result) = if(headers.isNullOrEmpty())
                 Fuel.delete(url)
                         .jsonBody(payload)
@@ -47,7 +49,7 @@ class Network {
 
             return when(result) {
                 is Result.Failure -> {
-                    Log.w(javaClass.name, "Response text - ${String(response.data)}")
+                    Log.w(javaClass.name, "HTTP request failed with status ${response.statusCode}")
                     NetworkResponseResults(response, Result.Failure(result.error))
                 }
 
@@ -58,7 +60,7 @@ class Network {
         }
         fun jsonRequestPut(url: String, payload: String, headers: Headers? = null) :
                 NetworkResponseResults {
-            println("url: $url")
+            requireHttps(url)
             val (_, response, result) = if(headers.isNullOrEmpty())
                 Fuel.put(url)
                         .jsonBody(payload)
@@ -71,7 +73,7 @@ class Network {
 
             return when(result) {
                 is Result.Failure -> {
-                    Log.w(javaClass.name, "Response text - ${String(response.data)}")
+                    Log.w(javaClass.name, "HTTP request failed with status ${response.statusCode}")
                     NetworkResponseResults(response, Result.Failure(result.error))
                 }
 
@@ -82,6 +84,7 @@ class Network {
         }
 
         fun jsonRequestPost(url: String, payload: String, headers: Headers? = null) : NetworkResponseResults {
+            requireHttps(url)
             val (_, response, result) = if(headers.isNullOrEmpty())
                 Fuel.post(url)
                         .jsonBody(payload)
@@ -101,6 +104,17 @@ class Network {
                 is Result.Success -> {
                     NetworkResponseResults(response, Result.Success(result.get()))
                 }
+            }
+        }
+
+        internal fun requireHttps(url: String) {
+            val uri = try {
+                URI(url)
+            } catch(e: Exception) {
+                throw IllegalArgumentException("Invalid gateway URL", e)
+            }
+            require(uri.scheme.equals("https", ignoreCase = true) && !uri.host.isNullOrBlank()) {
+                "Gateway URL must use HTTPS"
             }
         }
     }

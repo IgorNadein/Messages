@@ -1,0 +1,11 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.afkanerd.smswithoutborders.libsignal_doubleratchet" >
+4
+5    <uses-sdk android:minSdkVersion="24" />
+6
+7    <application android:label="@string/app_name" />
+7-->/home/lizerk/Dev/Сообщения/vendor/lib_signal_double_ratchet_java/src/main/AndroidManifest.xml:4:5-5:43
+7-->/home/lizerk/Dev/Сообщения/vendor/lib_signal_double_ratchet_java/src/main/AndroidManifest.xml:5:9-41
+8
+9</manifest>

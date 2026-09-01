@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Messages</string>
     <string name="incoming_messages_channel_name">Messages entrants</string>
     <string name="running_gateway_clients_channel_name">Exécution de passerelles SMS</string>
     <string name="foreground_service_failed_channel_name">Les clients de la passerelle SMS se reconnectent automatiquement</string>
@@ -368,4 +369,55 @@
     <string name="language_spanish">Espagnol</string>
     <string name="language_arabic">arabe</string>
 
+    <string name="oneui_developer_warning">Les outils de débogage peuvent modifier les données locales de l’application. Ils n’envoient pas de véritable SMS.</string>
+    <string name="oneui_developer_trigger_mms">Créer une notification MMS de test</string>
+    <string name="oneui_developer_trigger_mms_description">Ajoute la même conversation locale et la même notification de test que l’ancien écran.</string>
+    <string name="oneui_developer_clear_history">Effacer l’historique local des messages</string>
+    <string name="oneui_developer_clear_history_description">Supprime de cette application les conversations importées. Les SMS système ne sont pas supprimés.</string>
+    <string name="oneui_developer_clear_confirmation_title">Effacer l’historique local ?</string>
+    <string name="oneui_developer_clear_confirmation_text">Toutes les conversations stockées dans Messages seront supprimées. Les messages de la base de données système Android ne seront pas affectés.</string>
+    <string name="oneui_developer_sample_created">Notification MMS de test créée.</string>
+    <string name="oneui_developer_history_cleared">Historique local des messages effacé.</string>
+    <string name="oneui_gateway_delete_confirmation">Supprimer cette configuration de passerelle ?</string>
+    <string name="oneui_media_saved">Pièce jointe enregistrée.</string>
+    <string name="oneui_activate">Activer</string>
+    <string name="oneui_deactivate">Désactiver</string>
+    <string name="oneui_remote_listener_delete_confirmation">Supprimer cet écouteur distant et toutes ses files ?</string>
+    <string name="oneui_remote_queue_delete_confirmation">Supprimer cette file ?</string>
+    <string name="oneui_remote_permissions_required">Les autorisations SMS et état du téléphone sont requises pour activer un écouteur.</string>
+    <string name="oneui_remote_queues">Files</string>
+    <string name="oneui_developer_import_native">Importer la base SMS/MMS système</string>
+    <string name="oneui_developer_import_native_description">Restaurer une exportation SMS/MMS brute dans le fournisseur de messages système Android.</string>
+    <string name="oneui_developer_clear_native">Effacer la base SMS/MMS système</string>
+    <string name="oneui_developer_clear_native_description">Supprimer tous les SMS et MMS du fournisseur de messages Android. La base privée de l’application n’est pas effacée immédiatement.</string>
+    <string name="oneui_developer_clear_native_confirmation_title">Supprimer les messages système ?</string>
+    <string name="oneui_developer_clear_native_confirmation_text">Tous les SMS et MMS seront définitivement supprimés de la base système Android. Les messages mis en cache dans Messages resteront jusqu’à la prochaine actualisation.</string>
+    <string name="oneui_developer_native_imported">MMS importés : %1$d, parties : %2$d, adresses : %3$d.</string>
+    <string name="oneui_developer_native_cleared">Base SMS/MMS système effacée.</string>
+    <string name="oneui_notification_reply_failed">La réponse n’a pas été envoyée. Ouvrez la conversation pour vérifier l’état de sécurité.</string>
+    <string name="oneui_all_messages">Tout</string>
+    <string name="oneui_selection_count">Sélectionné : %1$d</string>
+    <string name="oneui_conversation_selected">Conversation sélectionnée</string>
+    <string name="oneui_cancel">Annuler</string>
+    <string name="oneui_select_recipient">Sélectionner un destinataire</string>
+    <string name="oneui_remove_recipient">Supprimer le destinataire</string>
+    <string name="oneui_options">Options</string>
+    <string name="oneui_notifications_compact">Alertes</string>
+    <plurals name="oneui_unread_messages">
+        <item quantity="one">%1$d message non lu</item>
+        <item quantity="other">%1$d messages non lus</item>
+    </plurals>
+    <string name="oneui_view_unread">Afficher</string>
+    <string name="oneui_dismiss_unread_summary">Fermer le résumé des messages non lus</string>
+    <string name="oneui_add_category">Ajouter une catégorie</string>
+    <string name="oneui_add_conversations">Ajouter des conversations</string>
+    <string name="oneui_category_name">Nom de la catégorie</string>
+    <string name="oneui_next">Suivant</string>
+    <string name="oneui_select_conversations">Sélectionner des conversations</string>
+    <string name="oneui_add_category_action">Ajouter</string>
+    <string name="oneui_cancel_category">Annuler</string>
+    <string name="oneui_conversations_category">Conversations</string>
+    <string name="oneui_filter_folders">Filtrer les conversations</string>
+    <string name="oneui_conversations_navigation">Conversations</string>
+    <string name="oneui_contacts_navigation">Contacts</string>
 </resources>

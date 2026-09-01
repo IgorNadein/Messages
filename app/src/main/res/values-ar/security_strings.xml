@@ -1,0 +1,20 @@
+<resources>
+    <string name="security_title">الأمان</string>
+    <string name="security_verified">✓ تم التحقق</string>
+    <string name="security_unverified">غير متحقق — قارن رقم الأمان أو امسح رمز QR</string>
+    <string name="security_legacy_unverified">جلسة قديمة غير متحقق منها — ابدأ جلسة آمنة جديدة</string>
+    <string name="security_key_changed">تغيّر مفتاح الأمان لجهة الاتصال هذه. تم حظر الإرسال.</string>
+    <string name="security_rekey_required">تم قبول الهوية الجديدة. يلزم تبادل مفاتيح آمن جديد.</string>
+    <string name="security_safety_number">رقم الأمان</string>
+    <string name="security_show_qr">إظهار رمز QR</string>
+    <string name="security_scan_qr">مسح QR لجهة الاتصال</string>
+    <string name="security_scan_prompt">امسح رمز QR لهوية جهة الاتصال</string>
+    <string name="security_your_qr">رمز QR لهويتك</string>
+    <string name="security_verified_success">تم التحقق من الهوية</string>
+    <string name="security_verification_failed">رمز QR لا يطابق جهة الاتصال هذه</string>
+    <string name="security_accept_new_key">قبول المفتاح الجديد وطلب جلسة جديدة</string>
+    <string name="security_renew_session">تجديد الجلسة الآمنة</string>
+    <string name="security_renew_session_description">سيتم حذف مفاتيح الجلسة الحالية وإرسال طلب موقّع لمفاتيح جديدة. سيتم الاحتفاظ بهوية جهة الاتصال التي تم التحقق منها.</string>
+    <string name="security_renew_confirm">تجديد المفاتيح</string>
+    <string name="security_decryption_failed">تعذّر فك تشفير الرسالة المحمية. جدّد الجلسة الآمنة.</string>
+</resources>

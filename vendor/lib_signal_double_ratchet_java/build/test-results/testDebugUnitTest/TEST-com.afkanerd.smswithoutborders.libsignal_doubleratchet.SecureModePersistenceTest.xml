@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.afkanerd.smswithoutborders.libsignal_doubleratchet.SecureModePersistenceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-08-31T16:19:53.640Z" hostname="kali" time="0.053">
+  <properties/>
+  <testcase name="onlyResponderMayCreateTheInitialReceivingState" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.SecureModePersistenceTest" time="0.015"/>
+  <testcase name="explicitModeSchemaSurvivesObfuscationIndependentRoundTrip" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.SecureModePersistenceTest" time="0.015"/>
+  <testcase name="onlyInitiatorMayCreateTheFirstSendingChain" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.SecureModePersistenceTest" time="0.011"/>
+  <testcase name="brokenModeSurvivesPersistenceRoundTrip" classname="com.afkanerd.smswithoutborders.libsignal_doubleratchet.SecureModePersistenceTest" time="0.011"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

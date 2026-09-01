@@ -1,0 +1,32 @@
+<variant
+    name="release"
+    package="com.afkanerd.lib_smsmms_android"
+    minSdkVersion="24"
+    targetSdkVersion="36.0"
+    mergedManifest="build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml"
+    proguardFiles="build/intermediates/default_proguard_files/global/proguard-android-optimize.txt-8.12.2:proguard-rules.pro"
+    resourceConfigurations="en,fr,ru,de,pl"
+    partialResultsDir="build/intermediates/lint_partial_results/release/lintAnalyzeRelease/out"
+    desugaredMethodsFiles="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/e03acc9f724a6fdf6e4a1662d8abe185/transformed/D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/main/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/release/java:src/main/kotlin:src/release/kotlin"
+        resDirectories="src/main/res:src/release/res"
+        assetsDirectories="src/main/assets:src/release/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build/intermediates/javac/release/compileReleaseJavaWithJavac/classes:build/tmp/kotlin-classes/release:build/generated/ksp/release/resources:build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar"
+      type="MAIN"
+      applicationId="com.afkanerd.lib_smsmms_android"
+      generatedSourceFolders="build/generated/ksp/release/java:build/generated/ksp/release/kotlin:build/generated/ap_generated_sources/release/out:build/generated/source/buildConfig/release"
+      generatedResourceFolders="build/generated/res/resValues/release"
+      desugaredMethodsFiles="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/e03acc9f724a6fdf6e4a1662d8abe185/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

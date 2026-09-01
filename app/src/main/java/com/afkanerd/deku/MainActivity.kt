@@ -12,64 +12,36 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.window.layout.WindowInfoTracker
-import com.afkanerd.deku.DefaultSMS.AboutActivity
-import com.afkanerd.deku.DefaultSMS.ui.SecureConversationComposable
-import com.afkanerd.deku.DefaultSMS.ui.components.KeyExchangeType
-import com.afkanerd.deku.DefaultSMS.ui.viewModels.SecureConversationViewModel
-import com.afkanerd.deku.RemoteListeners.Models.RemoteListener.RemoteListenerQueuesViewModel
-import com.afkanerd.deku.RemoteListeners.Models.RemoteListener.RemoteListenersViewModel
 import com.afkanerd.deku.RemoteListeners.RemoteListenerConnectionService
-import com.afkanerd.deku.RemoteListeners.ui.RMQAddComposable
-import com.afkanerd.deku.RemoteListeners.ui.RMQMainComposable
-import com.afkanerd.deku.RemoteListeners.ui.RMQQueuesComposable
-import com.afkanerd.deku.Router.ui.GatewayClientsMainView
-import com.afkanerd.deku.Router.ui.RoutedMessagesMainView
-import com.afkanerd.deku.Router.ui.viewModels.GatewayServerViewModel
-import com.afkanerd.lib_smsmms_android.R
+import com.afkanerd.deku.messages.domain.ExternalMessageRoute
+import com.afkanerd.deku.messages.domain.ExternalMessageRouteMapper
+import com.afkanerd.deku.security.SecureCiphertextSanitizer
+import com.afkanerd.deku.messages.ui.MessagesNavHost
+import com.afkanerd.deku.messages.ui.theme.MessagesAppTheme
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.NEW_NOTIFICATION_ACTION
-import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getDatabase
-import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.isDefault
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getNativesLoaded
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
-import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.setNativesLoaded
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.settingsGetTheme
-import com.afkanerd.smswithoutborders_libsmsmms.ui.components.NavHostControllerInstance
+import com.afkanerd.smswithoutborders_libsmsmms.ui.navigation.ComposeNewMessageScreenNav
 import com.afkanerd.smswithoutborders_libsmsmms.ui.navigation.ConversationsScreenNav
-import com.afkanerd.smswithoutborders_libsmsmms.ui.viewModels.ConversationsViewModel
-import com.afkanerd.smswithoutborders_libsmsmms.ui.viewModels.SearchViewModel
-import com.afkanerd.smswithoutborders_libsmsmms.ui.viewModels.ThreadsViewModel
-import com.example.compose.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(){
 
     private lateinit var navController: NavHostController
-    private val threadsViewModel: ThreadsViewModel by viewModels()
-    private val conversationViewModel: ConversationsViewModel by viewModels()
-    private val secureViewModel: SecureConversationViewModel by viewModels()
-    private val gatewayServerViewModel: GatewayServerViewModel by viewModels()
-    private val searchViewModel: SearchViewModel by viewModels()
-
-    private lateinit var remoteListenersViewModel: RemoteListenersViewModel
-    private val remoteListenersProjectsViewModel:
-            RemoteListenerQueuesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,133 +51,30 @@ class MainActivity : AppCompatActivity(){
             window.isNavigationBarContrastEnforced = false
         }
 
-        remoteListenersViewModel = RemoteListenersViewModel(applicationContext)
+        lifecycleScope.launch(Dispatchers.IO) {
+            // First launch imports Telephony rows asynchronously. Wait for that
+            // boundary before hiding secure ciphertext left by older builds that
+            // swallowed decryption failures.
+            var attemptsRemaining = 240
+            while(!getNativesLoaded() && attemptsRemaining-- > 0) delay(250)
+            SecureCiphertextSanitizer.sanitize(applicationContext)
+        }
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                WindowInfoTracker.getOrCreate(this@MainActivity)
-                    .windowLayoutInfo(this@MainActivity)
-                    .collect { newLayoutInfo ->
-                        setContent {
-                            navController = rememberNavController()
-                            AppTheme {
-                                Surface(Modifier
-                                    .fillMaxSize()
-                                ) {
-                                    NavHostControllerInstance(
-                                        newLayoutInfo = newLayoutInfo,
-                                        navController = navController,
-                                        threadsViewModel = threadsViewModel,
-                                        searchViewModel = searchViewModel,
-                                        threadsMainMenuItems = {
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = stringResource(R.string.homepage_menu_routed),
-                                                        color = MaterialTheme.colorScheme.onBackground
-                                                    )
-                                                },
-                                                onClick = {
-                                                    navController.navigate(RemoteForwardingScreen)
-                                                    it(false)
-                                                }
-                                            )
-
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = stringResource(R.string.remote_listeners),
-                                                        color = MaterialTheme.colorScheme.onBackground
-                                                    )
-                                                },
-                                                onClick = {
-                                                    navController.navigate(RemoteListenersScreen)
-                                                    it(false)
-                                                }
-                                            )
-
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = stringResource(R.string.about_deku),
-                                                        color = MaterialTheme.colorScheme.onBackground
-                                                    )
-                                                },
-                                                onClick = {
-                                                    navController.navigate(AboutScreen)
-                                                    it(false)
-                                                }
-                                            )
-                                        },
-                                        customMenuItems = {
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        text = stringResource(com.afkanerd.deku.DefaultSMS.R.string.secure),
-                                                        color = MaterialTheme.colorScheme.onBackground
-                                                    )
-                                                },
-                                                onClick = {
-                                                    secureViewModel.setModal(true)
-                                                    it(false)
-                                                }
-                                            )
-                                        },
-                                        conversationsCustomViewModel = secureViewModel, //This can be an array
-                                        conversationsCustomComposable = { vm ->
-                                            SecureConversationComposable(
-                                                vm as SecureConversationViewModel
-                                            )
-                                        },
-                                        conversationsCustomDataView = {
-                                            KeyExchangeType(it)
-                                        },
-                                        conversationsViewModel = conversationViewModel,
-                                    ) {
-                                        composable<RemoteListenersQueuesScreen> {
-                                            RMQQueuesComposable(
-                                                remoteListenersViewModel = remoteListenersViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                        composable<RemoteListenersAddScreen> {
-                                            RMQAddComposable(
-                                                remoteListenerViewModel = remoteListenersViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                        composable<RemoteListenersScreen> {
-                                            RMQMainComposable(
-                                                remoteListenerViewModel = remoteListenersViewModel,
-                                                remoteListenerQueuesViewModel = remoteListenersProjectsViewModel,
-                                                navController = navController
-                                            )
-                                        }
-                                        composable<GatewayClientsListScreen> {
-                                            GatewayClientsMainView(
-                                                navController,
-                                                gatewayServerViewModel
-                                            )
-                                        }
-                                        composable<RemoteForwardingScreen> {
-                                            RoutedMessagesMainView(
-                                                navController,
-                                                gatewayServerViewModel,
-                                            )
-                                        }
-                                        composable<AboutScreen> {
-                                            startActivity(
-                                                Intent(applicationContext,
-                                                    AboutActivity::class.java))
-                                            finish()
-                                        }
-                                    }
-
-                                    processIntent(navController)
-                                }
-                            }
-                        }
-                    }
+        val messageService = (application as MessagesApplication).messageService
+        val appSettingsService = (application as MessagesApplication).appSettingsService
+        val developerToolsService = (application as MessagesApplication).developerToolsService
+        setContent {
+            navController = rememberNavController()
+            MessagesAppTheme {
+                Surface(Modifier.fillMaxSize()) {
+                    MessagesNavHost(
+                        navController = navController,
+                        messageService = messageService,
+                        appSettingsService = appSettingsService,
+                        developerToolsService = developerToolsService,
+                    )
+                    LaunchedEffect(Unit) { processIntent(navController) }
+                }
             }
         }
     }
@@ -218,34 +87,41 @@ class MainActivity : AppCompatActivity(){
 
     private fun processIntent(navController: NavController, newIntent: Intent? = null) {
         val intent = newIntent ?: intent
-        when(intent.action) {
-            intent.NEW_NOTIFICATION_ACTION -> {
-                val address = intent.getStringExtra("address")
-                address?.let {
-                    intent.removeExtra("address")
-                    navController.navigate(ConversationsScreenNav(address))
-                }
+        if(intent.getBooleanExtra(EXTRA_EXTERNAL_ROUTE_CONSUMED, false)) return
+
+        val route = when(intent.action) {
+            notificationAction -> ExternalMessageRouteMapper.fromNotification(
+                intent.getStringExtra("address")
+            )
+            Intent.ACTION_SEND -> ExternalMessageRouteMapper.fromSharedText(
+                intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()
+            )
+            Intent.ACTION_SENDTO -> ExternalMessageRouteMapper.fromSendTo(
+                dataUri = intent.dataString,
+                smsBody = intent.getStringExtra("sms_body"),
+                sharedText = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString(),
+            )
+            else -> null
+        }
+
+        if(intent.action in EXTERNAL_ROUTE_ACTIONS) {
+            intent.putExtra(EXTRA_EXTERNAL_ROUTE_CONSUMED, true)
+        }
+        when(route) {
+            is ExternalMessageRoute.RecipientPicker -> navController.navigate(
+                ComposeNewMessageScreenNav(text = route.text)
+            ) {
+                launchSingleTop = true
             }
-            Intent.ACTION_SEND -> {
-
+            is ExternalMessageRoute.Conversation -> navController.navigate(
+                ConversationsScreenNav(
+                    address = makeE16PhoneNumber(route.address),
+                    text = route.text,
+                )
+            ) {
+                launchSingleTop = true
             }
-            Intent.ACTION_SENDTO -> {
-                intent.data?.let { uri ->
-                    val address = makeE16PhoneNumber(uri.toString())
-
-                    val text = intent.getStringExtra("sms_body")
-                        ?: intent.getStringExtra(Intent.EXTRA_TEXT)
-
-                    intent.removeExtra("sms_body")
-                    intent.removeExtra(Intent.EXTRA_TEXT)
-                    intent.data = null
-
-                    navController.navigate(ConversationsScreenNav(
-                        address = address,
-                        text = text,
-                    ))
-                }
-            }
+            null -> Unit
         }
     }
 
@@ -275,10 +151,20 @@ class MainActivity : AppCompatActivity(){
                             startService(intent)
                         }
                     } catch(e: Exception) {
-                        e.printStackTrace()
                     }
                 }
             }
         }
+    }
+
+    private companion object {
+        const val EXTRA_EXTERNAL_ROUTE_CONSUMED =
+            "com.afkanerd.deku.extra.EXTERNAL_ROUTE_CONSUMED"
+        val notificationAction = Intent().NEW_NOTIFICATION_ACTION
+        val EXTERNAL_ROUTE_ACTIONS = setOf(
+            notificationAction,
+            Intent.ACTION_SEND,
+            Intent.ACTION_SENDTO,
+        )
     }
 }

@@ -105,9 +105,10 @@ android {
 
     buildTypes {
         debug {
-//            minifyEnabled false
-            minifyEnabled true
-            shrinkResources true
+            applicationIdSuffix ".audit"
+            versionNameSuffix "-audit"
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             testProguardFiles 'proguard-rules.pro'
         }
@@ -158,8 +159,8 @@ androidComponents {
 }
 
 dependencies {
-    implementation 'com.github.smswithoutborders:lib_smsmms_android:c403a77de8'
-    implementation 'com.github.smswithoutborders:lib_signal_double_ratchet_java:ad727a57b3'
+    implementation project(':lib_smsmms_android')
+    implementation project(':lib_signal_double_ratchet_java')
     androidTestImplementation libs.androidx.room.testing
     implementation libs.androidx.activity
     def paging_version = "3.3.0"
@@ -202,7 +203,6 @@ dependencies {
     implementation libs.prov
 
     implementation libs.lz4
-    implementation libs.androidx.preference
 
     implementation libs.amqp.client
 
@@ -227,6 +227,8 @@ dependencies {
     implementation libs.fuel.coroutines
 
     implementation libs.kotlinx.serialization.json
+    implementation 'com.google.zxing:core:3.5.4'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
     implementation libs.androidx.startup.runtime
     implementation libs.androidx.security.crypto
@@ -259,7 +261,7 @@ dependencies {
     debugImplementation libs.androidx.ui.tooling
 
     // UI Tests
-//    androidTestImplementation libs.androidx.ui.test.junit4
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.9.0"
     debugImplementation libs.androidx.ui.test.manifest
 
     // Optional - Included automatically by material, only add when you need

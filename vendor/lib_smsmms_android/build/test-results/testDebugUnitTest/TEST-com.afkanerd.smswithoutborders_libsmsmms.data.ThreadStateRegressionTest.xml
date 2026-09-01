@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.afkanerd.smswithoutborders_libsmsmms.data.ThreadStateRegressionTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-09-01T18:25:59.855Z" hostname="kali" time="0.002">
+  <properties/>
+  <testcase name="insertingLatestMessagePreservesPinnedBlockedMutedAndArchivedFlags" classname="com.afkanerd.smswithoutborders_libsmsmms.data.ThreadStateRegressionTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

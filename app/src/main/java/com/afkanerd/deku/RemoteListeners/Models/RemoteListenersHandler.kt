@@ -140,6 +140,5 @@ object RemoteListenersHandler {
             remoteListenersListenerWorker
         )
 
-        println(operation.state.value)
     }
 }

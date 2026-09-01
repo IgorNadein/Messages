@@ -376,10 +376,8 @@ fun Context.importRawColumnGuesses(data: String): SmsMmsImportDetails {
                             }
                         }
                         mmsCount += 1
-                        println()
                     }
                 } catch(e: Exception) {
-                    e.printStackTrace()
                 }
             }
         }
@@ -416,8 +414,6 @@ private fun Context.insertMmsPart(uri: Uri, mmsPart: SmsMmsNatives.MmsPart): Uri
                 }
             } catch (e: Exception) {
                 // Log the exception for debugging
-                e.printStackTrace()
-                println()
             } finally {
                 // Ensure streams are always closed to prevent resource leaks
                 inputStream?.close()
@@ -427,7 +423,6 @@ private fun Context.insertMmsPart(uri: Uri, mmsPart: SmsMmsNatives.MmsPart): Uri
         }
         else {
             if(mmsPart.ct == "text/plain") {
-                println()
             }
         }
     }
@@ -524,7 +519,6 @@ fun Context.clearRawColumnGuesses() {
                     contentResolver.delete(
                         "content://mms/$_id/addr".toUri(), null, null)
                 }
-                println("Deleted: $deleted messages")
             } while(cursor.moveToNext())
             cursor.close()
 
@@ -552,4 +546,3 @@ fun Context.clearRawColumnGuesses() {
         }
     }
 }
-

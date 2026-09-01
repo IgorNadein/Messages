@@ -37,8 +37,6 @@ import javax.mail.internet.MimeMessage
 
 object RouterHandler {
     fun routeFTPMessages(body: String, gatewayServer: GatewayServer) {
-        Log.d(RouterHandler::class.java.getName(), "Request to route - FTP: $body")
-
         // TODO: move TLS into a parameter configuration
         val ftpsClient = FTPSClient("TLS")
         ftpsClient.connect(gatewayServer.ftp.ftp_host)
@@ -65,8 +63,6 @@ object RouterHandler {
     }
 
     fun routeSmtpMessages(body: String, gatewayServer: GatewayServer) {
-        Log.d(javaClass.name, "Request to route - SMTP: $body")
-
         val properties = Properties()
         properties["mail.smtp.host"] = gatewayServer.smtp?.smtp_host
         properties["mail.smtp.port"] = gatewayServer.smtp?.smtp_port

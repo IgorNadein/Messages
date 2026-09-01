@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>One UI Messages — Research & Migration Audit</title>
+  <style>
+    :root{color-scheme:light dark;--bg:#f3f4f6;--paper:#fff;--ink:#17181b;--muted:#696c74;--line:#e3e5e9;--blue:#0677f9;--soft:#eef5ff;--ok:#138a52;--warn:#b56200;--bad:#c9362b;--r:28px}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1120px;margin:auto;padding:48px 24px 96px}header{padding:64px 56px;background:#050608;color:#fff;border-radius:40px;margin-bottom:24px;position:relative;overflow:hidden}header:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;background:#087cff;filter:blur(90px);opacity:.45;right:-100px;top:-180px}h1{font-size:clamp(38px,7vw,76px);line-height:1.02;letter-spacing:-.045em;max-width:800px;margin:0 0 24px;position:relative;z-index:1}header p{max-width:720px;color:#c8cad0;font-size:20px;position:relative;z-index:1}.tag{display:inline-block;padding:7px 12px;border-radius:999px;background:#1d1f24;color:#83b8ff;font-weight:700;font-size:13px;margin-bottom:22px}.card{background:var(--paper);border-radius:var(--r);padding:30px;margin:18px 0;border:1px solid var(--line)}h2{font-size:30px;letter-spacing:-.025em;margin:44px 0 14px}h3{font-size:21px;margin:28px 0 10px}p{margin:10px 0;color:var(--ink)}.muted{color:var(--muted)}.lead{font-size:21px}.decision{border-left:6px solid var(--blue);background:var(--soft)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:var(--soft);color:var(--blue);font-weight:700;font-size:14px}.heroimg,.ref{width:100%;display:block;border-radius:24px;background:#e9e9ea}.phone{max-width:360px;margin:auto}.caption{font-size:13px;color:var(--muted);margin-top:8px}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;vertical-align:top;padding:14px 12px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.07em}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}pre{background:#101216;color:#e8e9ed;padding:24px;border-radius:22px;overflow:auto}.status{font-weight:800}.keep{color:var(--ok)}.rewrite{color:var(--blue)}.remove{color:var(--bad)}.move{color:var(--warn)}ol li,ul li{margin:7px 0}.sources a{color:var(--blue);text-decoration:none}.sources a:hover{text-decoration:underline}.small{font-size:13px}
+    @media(max-width:760px){main{padding:18px 12px 64px}header{padding:44px 26px;border-radius:30px}.grid{grid-template-columns:1fr}.card{padding:22px;border-radius:24px}table{display:block;overflow:auto}h2{font-size:26px}}
+    @media(prefers-color-scheme:dark){:root{--bg:#000;--paper:#151515;--ink:#f4f4f5;--muted:#a4a5aa;--line:#2d2e32;--soft:#10243e}}
+  </style>
+</head>
+<body><main>
+  <header><span class="tag">DESIGN RESEARCH · 2026-08-31</span><h1>Messages, rebuilt for One UI</h1><p>A Compose-native migration strategy for a secure SMS messenger: calm, reachable, adaptive, and free of protocol leakage.</p></header>
+
+  <section class="card decision"><span class="pill">Decision</span><h2>Use SESL as a reference, not a dependency</h2><p class="lead">Implement the production interface with Compose Material 3/Foundation plus app-owned One UI tokens and primitives.</p><p>`oneui-design` and `sesl-androidx` are permissively licensed and visually relevant, but are View/XML-oriented, require authenticated GitHub Packages, replace core AndroidX modules, and currently target a newer toolchain than this app. Pulling them in would trade visual convenience for build and maintenance risk.</p></section>
+
+  <h2>Target experience</h2>
+  <div class="grid">
+    <div class="card"><h3>One-handed hierarchy</h3><p>A large collapsible title occupies the upper viewing zone. Search, content and primary actions sit lower, within reach. Chat stays condensed so messages retain vertical space.</p></div>
+    <div class="card"><h3>Invisible machinery</h3><p>The UI understands messages, attachments and secure-session states—not SmsManager, frames, chunks, ports, ACK/NACK or ratchet internals.</p></div>
+    <div class="card"><h3>Honest security</h3><p>Ciphertext is never a fallback. Key mismatch and decrypt failure become clear recovery events with “Request a new key” and identity verification.</p></div>
+    <div class="card"><h3>One attachment, one entity</h3><p>A photo, voice note or file remains one timeline item while preparing, waiting, sending, paused, verifying, failed or complete.</p></div>
+  </div>
+
+  <section class="card"><h3>Official One UI Messages reference</h3><img class="heroimg" src="references/samsung-color-blocks.png" alt="Official Samsung One UI Messages light and dark reference"><p class="caption">Samsung Developer documentation. Research reference only; do not ship this asset.</p></section>
+
+  <div class="grid">
+    <section class="card"><h3>App-bar anatomy</h3><img class="ref" src="references/samsung-appbar.png" alt="One UI app bar anatomy"><p class="caption">Back, title, primary action, more. Extended titles collapse as content scrolls.</p></section>
+    <section class="card"><h3>Adaptive panes</h3><img class="ref" src="references/samsung-window-sizes.png" alt="One UI window size classes"><p class="caption">List/detail from 600 dp; expanded treatment at 840 dp.</p></section>
+  </div>
+
+  <h2>Current-state evidence</h2>
+  <div class="grid">
+    <section class="card"><img class="ref phone" src="references/current-conversations.png" alt="Current default SMS onboarding screen"><p class="caption">Captured from the connected SM-S918B. Old product name, oversized illustration, visually weak CTA, and no progressive role/permission flow.</p></section>
+    <section class="card"><h3>Structural diagnosis</h3><ul><li>About 10k lines in the principal UI surface.</li><li>Several 600–1,150 line screen/component files.</li><li>Material 2 and Material 3 mixed in the same component layer.</li><li>Composables/ViewModels access Telephony, preferences, databases, crypto and transfer infrastructure.</li><li>Theme lives in stale `com.example.*` packages and defaults dynamic colour on.</li><li>Attachment bubbles inspect transfer storage/chunk state directly.</li></ul></section>
+  </div>
+
+  <h2>Audit classification</h2>
+  <section class="card"><table><thead><tr><th>Class</th><th>What</th><th>Outcome</th></tr></thead><tbody>
+    <tr><td class="status keep">KEEP</td><td>Paging/Room foundation, established E2EE and attachment protocol, localisation foundation, useful route set</td><td>Preserve behaviour behind repositories and services.</td></tr>
+    <tr><td class="status rewrite">REWRITE</td><td>Onboarding, thread list, chat, composer, bubbles, attachments, security, contact details, media, search, settings, theme</td><td>New stateless Compose screens and app-owned primitives.</td></tr>
+    <tr><td class="status remove">REMOVE</td><td>Cyberpunk image, duplicate vendor launcher resources, Material 2 remnants, raw crypto/control rendering, ad-hoc tokens, stale theme packages</td><td>Delete after replacement paths are proven.</td></tr>
+    <tr><td class="status move">MOVE TO DOMAIN</td><td>SmsManager/Telephony, EncryptionController, AttachmentManager/chunks, database calls, preference writes, media playback, date/SIM/status computation</td><td>Expose commands and immutable UI models through `MessageService` and presentation controllers.</td></tr>
+  </tbody></table></section>
+
+  <h2>Architecture boundary</h2>
+  <pre>Compose UI
+  ↓ UserIntent / immutable UiState
+Presentation ViewModels
+  ↓ application commands + Flow
+MessageService facade
+  ├─ ConversationService
+  ├─ AttachmentService
+  ├─ SecureSessionService
+  └─ SettingsService
+       ↓
+Domain → Transport / Room / Telephony / Crypto / Files</pre>
+
+  <h2>Design tokens</h2>
+  <section class="card"><table><thead><tr><th>Layer</th><th>Specification</th></tr></thead><tbody>
+    <tr><td>Colour</td><td>Quiet `#F7F7F7` / true black backgrounds; white / `#151515` surfaces; restrained accessible blue accent. Dynamic colour is opt-in and accent-only.</td></tr>
+    <tr><td>Type</td><td>Platform sans, no proprietary Samsung font. 36–40 sp expanded title, 20 sp compact title, 16–17 sp body, 12–13 sp metadata. Works at 200%.</td></tr>
+    <tr><td>Spacing</td><td>4, 8, 12, 16, 20, 24, 32, 48 dp. Minimum 48 dp touch targets.</td></tr>
+    <tr><td>Shapes</td><td>24–28 dp groups, 28–32 dp sheets, 24 dp composer, 18–20 dp message bubbles with a tighter speaker-side corner.</td></tr>
+    <tr><td>Motion</td><td>100–140 ms feedback, 180–220 ms content state, 260–320 ms surfaces/navigation; reduced-motion aware.</td></tr>
+  </tbody></table></section>
+
+  <h2>Migration sequence</h2>
+  <section class="card"><ol><li>Foundation: UI models, facade, theme, tokens and primitives.</li><li>Shell/onboarding: SMS role, permissions and import states.</li><li>Conversation list/search: large title, paging, filters and selection.</li><li>Chat/composer: grouped bubble family and delivery states.</li><li>Attachments/voice: sheet, preview, recording/playback and one-entity transfers.</li><li>Security: identity, key exchange and recovery without raw protocol content.</li><li>Contact/media/settings: grouped One UI surfaces.</li><li>Adaptive, accessibility and performance hardening.</li></ol></section>
+
+  <h2>Acceptance gates</h2>
+  <section class="card"><ul><li>No Telephony, ratchet controller, frame/chunk or crypto-storage imports in UI packages.</li><li>No ciphertext or control frames in bubbles, notifications, copy or share.</li><li>Exactly one logical timeline item per attachment across retry/restart.</li><li>Debug, release and minified release build without personal repository credentials.</li><li>Light/dark, 200% font scale, RTL and compact/medium/expanded UI tests.</li><li>50k-message paging test with stable keys/content types and no expensive work in composition.</li><li>Android 16 edge-to-edge, predictive back, role and permission flows verified.</li></ul></section>
+
+  <h2>Sources</h2>
+  <section class="card sources"><p><a href="https://developer.samsung.com/one-ui/index.html">Samsung One UI overview</a> · <a href="https://developer.samsung.com/one-ui/comp/app-bar.html">App bar</a> · <a href="https://developer.samsung.com/one-ui/comp/list.html">Lists</a> · <a href="https://developer.samsung.com/one-ui/color/system.html">Colour</a> · <a href="https://developer.samsung.com/one-ui/motion/basic.html">Motion</a> · <a href="https://developer.samsung.com/one-ui/accessibility/layout-and-typo.html">Accessibility</a> · <a href="https://developer.samsung.com/one-ui/largescreen-and-foldable/large_screen_layout.html">Large screens</a></p><p><a href="https://github.com/tribalfs/oneui-design">oneui-design</a> · <a href="https://github.com/tribalfs/sesl-androidx">sesl-androidx</a> · <a href="https://developer.android.com/develop/ui/compose/layouts/adaptive/get-started-with-adaptive-apps">Android adaptive Compose</a> · <a href="https://developer.android.com/develop/ui/compose/performance/bestpractices">Compose performance</a> · <a href="https://developer.android.com/develop/ui/compose/accessibility">Compose accessibility</a></p><p class="muted small">Lazyweb and local browser capture were unavailable; research uses official documentation and the connected-device screenshot.</p></section>
+</main></body></html>

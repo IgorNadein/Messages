@@ -26,10 +26,8 @@ class RMQWorkManager(
                 if(!it.connection.isOpen) return Result.failure()
             }
         } catch(e: Exception) {
-            e.printStackTrace()
             when(e) {
                 is TimeoutException, is UnknownHostException -> {
-                    e.printStackTrace()
                     return Result.retry()
                 }
                 is IOException -> {

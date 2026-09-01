@@ -1,0 +1,20 @@
+<resources>
+    <string name="security_title">Seguridad</string>
+    <string name="security_verified">✓ Verificado</string>
+    <string name="security_unverified">Sin verificar — compara el número de seguridad o escanea el código QR</string>
+    <string name="security_legacy_unverified">Sesión antigua sin verificar — inicia una nueva sesión segura</string>
+    <string name="security_key_changed">La clave de seguridad de este contacto ha cambiado. El envío está bloqueado.</string>
+    <string name="security_rekey_required">Se aceptó la nueva identidad. Se requiere un nuevo intercambio seguro de claves.</string>
+    <string name="security_safety_number">Número de seguridad</string>
+    <string name="security_show_qr">Mostrar QR</string>
+    <string name="security_scan_qr">Escanear QR del contacto</string>
+    <string name="security_scan_prompt">Escanea el código QR de identidad del contacto</string>
+    <string name="security_your_qr">Tu código QR de identidad</string>
+    <string name="security_verified_success">Identidad verificada</string>
+    <string name="security_verification_failed">El código QR no coincide con este contacto</string>
+    <string name="security_accept_new_key">Aceptar la clave nueva y renovar la sesión</string>
+    <string name="security_renew_session">Renovar sesión segura</string>
+    <string name="security_renew_session_description">Se descartarán las claves de sesión actuales y se enviará una solicitud firmada de claves nuevas. Se conservará la identidad verificada del contacto.</string>
+    <string name="security_renew_confirm">Renovar claves</string>
+    <string name="security_decryption_failed">No se pudo descifrar el mensaje protegido. Renueva la sesión segura.</string>
+</resources>

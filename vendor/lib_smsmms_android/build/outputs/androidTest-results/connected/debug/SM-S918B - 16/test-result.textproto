@@ -1,0 +1,301 @@
+# proto-message: google.testing.platform.proto.api.core.TestSuiteResult
+# 2026-09-01T18:29:09.938226400Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 5
+  device {
+    id: "R5CX2114B5W"
+    friendly_name: "primary"
+  }
+}
+test_status: PASSED
+test_result {
+  test_case {
+    test_class: "DatabaseMigration5To6InstrumentedTest"
+    test_package: "com.afkanerd.smswithoutborders_libsmsmms.data"
+    test_method: "migrationPreservesExistingThreadsAndAddsNormalizedGroupStorage"
+    start_time {
+      seconds: 1788287348
+      nanos: 758000000
+    }
+    end_time {
+      seconds: 1788287348
+      nanos: 838000000
+    }
+    device {
+      id: "R5CX2114B5W"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/logcat-com.afkanerd.smswithoutborders_libsmsmms.data.DatabaseMigration5To6InstrumentedTest-migrationPreservesExistingThreadsAndAddsNormalizedGroupStorage.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "DatabasePasswordInstrumentedTest"
+    test_package: "com.afkanerd.smswithoutborders_libsmsmms.data"
+    test_method: "generatedPasswordIsNonZeroStableAndClearedOnlyAfterClose"
+    start_time {
+      seconds: 1788287348
+      nanos: 861000000
+    }
+    end_time {
+      seconds: 1788287349
+      nanos: 12000000
+    }
+    device {
+      id: "R5CX2114B5W"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/logcat-com.afkanerd.smswithoutborders_libsmsmms.data.DatabasePasswordInstrumentedTest-generatedPasswordIsNonZeroStableAndClearedOnlyAfterClose.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "GroupConversationDaoInstrumentedTest"
+    test_package: "com.afkanerd.smswithoutborders_libsmsmms.data"
+    test_method: "incomingGroupMmsKeepsThreadMembersSeparateFromEachMessageAuthor"
+    start_time {
+      seconds: 1788287349
+      nanos: 14000000
+    }
+    end_time {
+      seconds: 1788287349
+      nanos: 40000000
+    }
+    device {
+      id: "R5CX2114B5W"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/logcat-com.afkanerd.smswithoutborders_libsmsmms.data.GroupConversationDaoInstrumentedTest-incomingGroupMmsKeepsThreadMembersSeparateFromEachMessageAuthor.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "ThreadActionsDaoInstrumentedTest"
+    test_package: "com.afkanerd.smswithoutborders_libsmsmms.data"
+    test_method: "markAllReadUpdatesThreadAndConversationRowsUsedByComposeBadge"
+    start_time {
+      seconds: 1788287349
+      nanos: 45000000
+    }
+    end_time {
+      seconds: 1788287349
+      nanos: 46000000
+    }
+    device {
+      id: "R5CX2114B5W"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/logcat-com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest-markAllReadUpdatesThreadAndConversationRowsUsedByComposeBadge.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "ThreadActionsDaoInstrumentedTest"
+    test_package: "com.afkanerd.smswithoutborders_libsmsmms.data"
+    test_method: "unreadMessageCountIsExactAndExcludesArchivedThreads"
+    start_time {
+      seconds: 1788287349
+      nanos: 52000000
+    }
+    end_time {
+      seconds: 1788287349
+      nanos: 79000000
+    }
+    device {
+      id: "R5CX2114B5W"
+      friendly_name: "primary"
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/logcat-com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest-unreadMessageCountIsExactAndExcludesArchivedThreads.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/home/lizerk/Dev/\320\241\320\276\320\276\320\261\321\211\320\265\320\275\320\270\321\217/vendor/lib_smsmms_android/build/outputs/androidTest-results/connected/debug/SM-S918B - 16/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

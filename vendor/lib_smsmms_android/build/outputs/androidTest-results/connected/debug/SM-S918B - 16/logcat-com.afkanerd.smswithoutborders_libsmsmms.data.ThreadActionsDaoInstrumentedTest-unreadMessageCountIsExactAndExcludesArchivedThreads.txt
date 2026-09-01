@@ -1,0 +1,5 @@
+09-01 21:29:09.025 18376 18400 I TestRunner: started: unreadMessageCountIsExactAndExcludesArchivedThreads(com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest)
+09-01 21:29:09.030 14224 14224 W Finsky  : [2] STU: Failed to get storage stats for package 'com.samsung.android.authfw.ta' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+09-01 21:29:09.038 14224 14224 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.scheduling' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+09-01 21:29:09.041 14224 14224 W Finsky  : [2] STU: Failed to get storage stats for package 'com.samsung.android.lifeguard' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
+09-01 21:29:09.041 18376 18400 I TestRunner: finished: unreadMessageCountIsExactAndExcludesArchivedThreads(com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest)

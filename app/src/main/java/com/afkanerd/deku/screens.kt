@@ -8,10 +8,6 @@ object HomeScreen
 // Remote Listeners
 @Serializable
 object RemoteListenersScreen
-@Serializable
-object RemoteListenersQueuesScreen
-@Serializable
-object RemoteListenersAddScreen
 
 @Serializable
 object AboutScreen
