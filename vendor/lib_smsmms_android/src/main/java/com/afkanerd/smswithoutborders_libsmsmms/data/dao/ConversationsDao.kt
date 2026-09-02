@@ -150,8 +150,8 @@ interface ConversationsDao {
             "Conversations.mms_thread_id IN (:threadIds) ORDER BY date DESC")
     fun getConversations(threadIds: List<Int>): PagingSource<Int, Conversations>
 
-    @Query("SELECT COUNT('_id') FROM Conversations WHERE thread_id = :threadId OR " +
-            "Conversations.mms_thread_id = :threadId AND read = 0")
+    @Query("SELECT COUNT('_id') FROM Conversations WHERE " +
+            "(thread_id = :threadId OR Conversations.mms_thread_id = :threadId) AND read = 0")
     fun unreadCount(threadId: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

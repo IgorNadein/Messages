@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -50,6 +52,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Info
@@ -137,6 +140,7 @@ import com.afkanerd.deku.messages.domain.MessageDirection
 import com.afkanerd.deku.messages.domain.MessageAuthor
 import com.afkanerd.deku.messages.domain.SecurityEventKind
 import com.afkanerd.deku.messages.domain.SimSubscription
+import com.afkanerd.deku.messages.domain.SecureChannel
 import com.afkanerd.deku.messages.domain.TimelineItem
 import com.afkanerd.deku.messages.presentation.ConversationError
 import com.afkanerd.deku.messages.presentation.ConversationViewModel
@@ -241,7 +245,9 @@ fun ConversationScreen(
             showSecuritySheet = true
         }
     }
-    LaunchedEffect(messages.itemCount, attachments.size) {
+    val newestTimelineItemId = messages.itemSnapshotList.items.firstOrNull()?.stableId
+    LaunchedEffect(newestTimelineItemId, attachments.size) {
+        if(newestTimelineItemId != null) viewModel.markConversationRead()
         if((messages.itemCount > 0 || attachments.isNotEmpty()) &&
             listState.firstVisibleItemIndex <= 1
         ) {
@@ -344,10 +350,10 @@ fun ConversationScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .imePadding()
                 .onSizeChanged { size ->
                     bottomOverlayHeight = with(density) { size.height.toDp() }
                 }
+                .imePadding()
                 .testTag("oneui-conversation-bottom-overlay"),
         ) {
             header?.takeUnless(ConversationHeader::isGroupConversation)?.let {
@@ -415,6 +421,9 @@ fun ConversationScreen(
                 contactName = header.displayName,
                 fingerprint = state.securityFingerprint,
                 secureSendingEnabled = header.secureSendingEnabled,
+                channels = header.securityChannels,
+                selectedAddress = header.address,
+                selectedSubscriptionId = header.subscriptionId,
                 busy = state.isRequestingSecureSession,
                 onAction = { forceRenewal ->
                     viewModel.requestOrRepairSecureSession(forceRenewal)
@@ -433,6 +442,30 @@ fun ConversationScreen(
                 onSecureSendingChange = viewModel::setSecureSendingEnabled,
             )
         }
+    }
+    if(state.showSecuritySendWarning && header != null) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissSecuritySendWarning,
+            title = { Text(stringResource(R.string.oneui_secure_send_warning_title)) },
+            text = { Text(stringResource(R.string.oneui_secure_send_warning_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.dismissSecuritySendWarning()
+                    viewModel.requestOrRepairSecureSession(
+                        forceRenewal = header.securityState ==
+                            ConversationSecurityState.RECOVERY_REQUIRED,
+                    )
+                    showSecuritySheet = true
+                }) {
+                    Text(stringResource(R.string.oneui_establish_secure_channel))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::sendWithoutEncryption) {
+                    Text(stringResource(R.string.oneui_send_once_unencrypted))
+                }
+            },
+        )
     }
     val securityQrPayload = state.securityQrPayload
     if(showSecurityQr && securityQrPayload != null) {
@@ -1686,6 +1719,9 @@ internal fun SecuritySheet(
     contactName: String,
     fingerprint: String?,
     secureSendingEnabled: Boolean,
+    channels: List<SecureChannel> = emptyList(),
+    selectedAddress: String = "",
+    selectedSubscriptionId: Long = -1,
     busy: Boolean,
     onAction: (Boolean) -> Unit,
     onAcceptChangedIdentity: () -> Unit,
@@ -1697,13 +1733,16 @@ internal fun SecuritySheet(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = MessagesTheme.spacing.xl)
             .padding(bottom = 40.dp),
     ) {
         Icon(
-            imageVector = if(state == ConversationSecurityState.SECURE_VERIFIED) {
-                Icons.Default.VerifiedUser
-            } else Icons.Default.Lock,
+            imageVector = when {
+                state == ConversationSecurityState.SECURE_VERIFIED -> Icons.Default.VerifiedUser
+                state.isEstablished() -> Icons.Default.Lock
+                else -> Icons.Default.LockOpen
+            },
             contentDescription = null,
             modifier = Modifier.size(36.dp),
             tint = MaterialTheme.colorScheme.primary,
@@ -1725,13 +1764,68 @@ internal fun SecuritySheet(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyMedium,
         )
-        if(state != ConversationSecurityState.PLAIN) {
+        if(channels.isNotEmpty()) {
+            Spacer(Modifier.height(MessagesTheme.spacing.lg))
+            Text(
+                stringResource(R.string.oneui_secure_channels),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(Modifier.height(MessagesTheme.spacing.xs))
+            channels.groupBy(SecureChannel::remoteAddress).forEach { (address, routes) ->
+                routes.forEach { channel ->
+                    val selected = address == selectedAddress &&
+                        channel.subscriptionId == selectedSubscriptionId
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(MessagesTheme.dimensions.groupRadius))
+                            .background(
+                                if(selected) MaterialTheme.colorScheme.surfaceVariant
+                                else Color.Transparent
+                            )
+                            .padding(horizontal = MessagesTheme.spacing.sm, vertical = 10.dp)
+                            .testTag(
+                                "oneui-secure-channel-${channel.subscriptionId}-${address.hashCode()}"
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
+                    ) {
+                        Icon(
+                            imageVector = if(channel.isEstablished) Icons.Default.Lock
+                                else Icons.Default.LockOpen,
+                            contentDescription = null,
+                            tint = if(channel.isEstablished) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                stringResource(
+                                    R.string.oneui_secure_channel_pair,
+                                    channel.remoteLabel?.takeIf(String::isNotBlank)
+                                        ?.let { "$it · $address" } ?: address,
+                                    channel.subscriptionName,
+                                ),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                securityLabel(channel.state),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        run {
             Spacer(Modifier.height(MessagesTheme.spacing.lg))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(MessagesTheme.dimensions.groupRadius))
-                    .clickable { onSecureSendingChange(!secureSendingEnabled) }
+                    .clickable(
+                        enabled = state.isEstablished(),
+                    ) { onSecureSendingChange(!secureSendingEnabled) }
                     .padding(horizontal = 4.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
@@ -1742,14 +1836,21 @@ internal fun SecuritySheet(
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        stringResource(R.string.oneui_encrypt_future_messages_description),
+                        stringResource(
+                            if(state.isEstablished()) {
+                                R.string.oneui_encrypt_future_messages_description
+                            } else {
+                                R.string.oneui_encrypt_unavailable_description
+                            }
+                        ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 Switch(
-                    checked = secureSendingEnabled,
+                    checked = state.isEstablished() && secureSendingEnabled,
                     onCheckedChange = onSecureSendingChange,
+                    enabled = state.isEstablished(),
                     modifier = Modifier.testTag("oneui-secure-sending-switch"),
                 )
             }
@@ -1815,6 +1916,10 @@ internal fun SecuritySheet(
     }
 }
 
+private fun ConversationSecurityState.isEstablished(): Boolean =
+    this == ConversationSecurityState.SECURE_UNVERIFIED ||
+        this == ConversationSecurityState.SECURE_VERIFIED
+
 internal enum class SecuritySheetPrimaryAction {
     NONE,
     START,
@@ -1829,8 +1934,10 @@ internal fun securitySheetPrimaryAction(
     ConversationSecurityState.PLAIN -> SecuritySheetPrimaryAction.START
     ConversationSecurityState.REQUEST_RECEIVED -> SecuritySheetPrimaryAction.ACCEPT_REQUEST
     ConversationSecurityState.KEY_CHANGED -> SecuritySheetPrimaryAction.ACCEPT_CHANGED_IDENTITY
-    ConversationSecurityState.RECOVERY_REQUIRED -> SecuritySheetPrimaryAction.REPAIR
-    ConversationSecurityState.NEGOTIATING,
+    ConversationSecurityState.RECOVERY_REQUIRED,
+    // A request/response Data SMS can be lost by either carrier. Keeping this action
+    // available prevents a channel from remaining permanently stuck in negotiation.
+    ConversationSecurityState.NEGOTIATING -> SecuritySheetPrimaryAction.REPAIR
     ConversationSecurityState.SECURE_UNVERIFIED,
     ConversationSecurityState.SECURE_VERIFIED -> SecuritySheetPrimaryAction.NONE
 }

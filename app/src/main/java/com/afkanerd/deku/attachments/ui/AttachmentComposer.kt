@@ -8,6 +8,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.background
@@ -141,7 +142,7 @@ fun AttachmentComposer(
             )
         }
     }
-    val photoPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    val photoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let(::preparePhoto)
     }
     val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { saved ->
@@ -178,8 +179,9 @@ fun AttachmentComposer(
         }
     }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
+    if (shouldShowAttachmentPicker(pending != null)) {
+        ModalBottomSheet(onDismissRequest = onDismiss) {
+            Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
             ListItem(
                     headlineContent = { Text(stringResource(R.string.attachment_file)) },
                     leadingContent = { Icon(Icons.Default.Description, null) },
@@ -200,7 +202,15 @@ fun AttachmentComposer(
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { photoPicker.launch("image/*") }, enabled = !busy, modifier = Modifier.weight(1f)) {
+                    Button(
+                        onClick = {
+                            photoPicker.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                        enabled = !busy,
+                        modifier = Modifier.weight(1f),
+                    ) {
                         Icon(Icons.Default.Photo, null); Text(stringResource(R.string.attachment_photo))
                     }
                     Button(onClick = {
@@ -245,7 +255,8 @@ fun AttachmentComposer(
                         },
                     )
                 }
-            if (busy) Text(stringResource(R.string.attachment_status_preparing), Modifier.padding(16.dp))
+                if (busy) Text(stringResource(R.string.attachment_status_preparing), Modifier.padding(16.dp))
+            }
         }
     }
 
@@ -286,6 +297,10 @@ fun AttachmentComposer(
         )
     }
 }
+
+/** A confirmation dialog must replace the picker sheet instead of being composed behind it. */
+internal fun shouldShowAttachmentPicker(hasPendingAttachment: Boolean): Boolean =
+    !hasPendingAttachment
 
 @Composable
 private fun VoiceRecordingPanel(

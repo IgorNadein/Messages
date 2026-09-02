@@ -3,6 +3,7 @@ package com.afkanerd.smswithoutborders_libsmsmms.data
 import android.content.Context
 import android.provider.Telephony
 import androidx.room.Room
+import androidx.paging.PagingSource
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.afkanerd.smswithoutborders_libsmsmms.data.data.models.SmsMmsNatives
@@ -12,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlinx.coroutines.runBlocking
 
 @RunWith(AndroidJUnit4::class)
 class GroupConversationDaoInstrumentedTest {
@@ -42,10 +44,33 @@ class GroupConversationDaoInstrumentedTest {
         assertEquals(SECOND_MEMBER, dao.getConversation(secondId)?.sender_address)
     }
 
+    @Test
+    fun inboxSummaryReadsParticipantsAndMmsUnreadCountWithoutFollowUpWrites() = runBlocking {
+        val conversations = requireNotNull(database.conversationsDao())
+        conversations.insert(groupMms(1, FIRST_MEMBER, listOf(FIRST_MEMBER, SECOND_MEMBER), 0))
+        conversations.insert(groupMms(2, SECOND_MEMBER, listOf(FIRST_MEMBER, SECOND_MEMBER), 1))
+        val pagingSource = requireNotNull(database.threadsDao()).getThreadSummaries(folder = 0)
+
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 40,
+                placeholdersEnabled = false,
+            )
+        ) as PagingSource.LoadResult.Page
+
+        val summary = result.data.single()
+        assertEquals(listOf(FIRST_MEMBER, SECOND_MEMBER).sorted().joinToString(","),
+            summary.participantAddresses)
+        assertEquals(1, summary.unreadCount)
+        assertEquals(false, pagingSource.invalid)
+    }
+
     private fun groupMms(
         messageId: Long,
         sender: String,
         participants: List<String>,
+        read: Int = 1,
     ): Conversations = Conversations(
         sms = SmsMmsNatives.Sms(
             _id = messageId,
@@ -53,7 +78,7 @@ class GroupConversationDaoInstrumentedTest {
             address = participants.joinToString(","),
             date = messageId,
             date_sent = messageId,
-            read = 1,
+            read = read,
             status = Telephony.Sms.STATUS_COMPLETE,
             type = Telephony.Sms.MESSAGE_TYPE_INBOX,
             body = "group-$messageId",

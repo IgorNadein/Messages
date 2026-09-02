@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.afkanerd.smswithoutborders_libsmsmms.transport.SmsPartStatusTrackerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-02T13:17:46.153Z" hostname="kali" time="0.066">
+  <properties/>
+  <testcase name="oneFailedPartFinalizesTheWholeMessageAsFailure" classname="com.afkanerd.smswithoutborders_libsmsmms.transport.SmsPartStatusTrackerTest" time="0.05"/>
+  <testcase name="successfulMultipartMessageFinalizesOnlyAfterEveryPart" classname="com.afkanerd.smswithoutborders_libsmsmms.transport.SmsPartStatusTrackerTest" time="0.016"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

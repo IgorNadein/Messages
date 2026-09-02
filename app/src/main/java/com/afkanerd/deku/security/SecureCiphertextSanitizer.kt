@@ -4,6 +4,7 @@ import android.content.Context
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.EncryptionController
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getDatabase
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
 
 /** Prevents legacy decryption failures from exposing transport ciphertext in the UI. */
 object SecureCiphertextSanitizer {
@@ -11,7 +12,7 @@ object SecureCiphertextSanitizer {
         val dao = context.getDatabase().conversationsDao() ?: return 0
         var sanitized = 0
         val affectedThreads = mutableSetOf<Int>()
-        val affectedAddresses = mutableSetOf<String>()
+        val affectedChannels = mutableSetOf<Pair<String, Long>>()
         dao.getPotentialUndecryptedSecureMessages().forEach { conversation ->
             val transportText = conversation.sms?.body ?: return@forEach
             if(SecureMessageCodec.decodeTextOrNull(transportText) == null) return@forEach
@@ -20,7 +21,10 @@ object SecureCiphertextSanitizer {
             conversation.sms?.body = context.getString(R.string.security_decryption_failed)
             dao.updateConversation(conversation)
             conversation.sms?.thread_id?.let(affectedThreads::add)
-            conversation.sms?.address?.let(affectedAddresses::add)
+            conversation.sms?.address?.let {
+                affectedChannels += context.makeE16PhoneNumber(it) to
+                    (conversation.sms?.sub_id ?: -1)
+            }
             sanitized++
         }
         affectedThreads.forEach { threadId ->
@@ -40,12 +44,18 @@ object SecureCiphertextSanitizer {
             ).forEach { conversation ->
                 val transportText = conversation.secure_transport_text ?: return@forEach
                 if(SecureMessageCodec.decodeTextOrNull(transportText) != null) {
-                    conversation.sms?.address?.let(affectedAddresses::add)
+                    conversation.sms?.address?.let {
+                        affectedChannels += context.makeE16PhoneNumber(it) to
+                            (conversation.sms?.sub_id ?: -1)
+                    }
                 }
             }
         }
-        affectedAddresses.forEach { address ->
-            EncryptionController.markSessionBroken(context, address)
+        affectedChannels.forEach { (address, subscriptionId) ->
+            EncryptionController.markSessionBroken(
+                context,
+                SecureChannelId.storageAddress(address, subscriptionId),
+            )
         }
         migrationPreferences.edit()
             .putBoolean(BROKEN_STATE_MIGRATION, true)

@@ -3485,7 +3485,7 @@ public class ConversationsDao_Impl(
   }
 
   public override fun unreadCount(threadId: Int): Int {
-    val _sql: String = "SELECT COUNT('_id') FROM Conversations WHERE thread_id = ? OR Conversations.mms_thread_id = ? AND read = 0"
+    val _sql: String = "SELECT COUNT('_id') FROM Conversations WHERE (thread_id = ? OR Conversations.mms_thread_id = ?) AND read = 0"
     return performBlocking(__db, true, false) { _connection ->
       val _stmt: SQLiteStatement = _connection.prepare(_sql)
       try {

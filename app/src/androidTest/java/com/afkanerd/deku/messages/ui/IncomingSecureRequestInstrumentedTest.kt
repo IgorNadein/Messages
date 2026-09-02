@@ -1,8 +1,11 @@
 package com.afkanerd.deku.messages.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import com.afkanerd.deku.DefaultSMS.R
@@ -42,6 +45,9 @@ class IncomingSecureRequestInstrumentedTest {
         }
 
         composeRule.onNodeWithText(acceptText).assertIsDisplayed().performClick()
+        composeRule.onNodeWithTag("oneui-secure-sending-switch")
+            .assertIsOff()
+            .assertIsNotEnabled()
         assertEquals(false, forceRenewal)
     }
 }

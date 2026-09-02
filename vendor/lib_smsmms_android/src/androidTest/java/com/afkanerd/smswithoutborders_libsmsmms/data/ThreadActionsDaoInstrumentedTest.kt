@@ -115,4 +115,52 @@ class ThreadActionsDaoInstrumentedTest {
 
         assertEquals(2, threads.unreadMessageCount().first())
     }
+
+    @Test
+    fun markReadUpdatesOnlyTheRelatedConversationThreads() = runBlocking {
+        val conversations = requireNotNull(database.conversationsDao())
+        val threads = requireNotNull(database.threadsDao())
+
+        fun insert(threadId: Int) {
+            val conversationId = conversations.insertConversation(
+                Conversations(
+                    sms = SmsMmsNatives.Sms(
+                        _id = threadId.toLong(),
+                        thread_id = threadId,
+                        address = "+79990000$threadId",
+                        date = threadId.toLong(),
+                        date_sent = threadId.toLong(),
+                        read = 0,
+                        status = Telephony.Sms.STATUS_COMPLETE,
+                        type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+                        body = "message-$threadId",
+                        sub_id = 1,
+                    )
+                )
+            )
+            conversations.insertThread(
+                Threads(
+                    threadId = threadId,
+                    address = "+79990000$threadId",
+                    snippet = "message-$threadId",
+                    date = threadId.toLong(),
+                    type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+                    conversationId = conversationId,
+                    isMms = false,
+                    unread = true,
+                )
+            )
+        }
+
+        insert(721)
+        insert(722)
+        insert(723)
+
+        threads.markAsRead(listOf(721, 722))
+
+        assertFalse(requireNotNull(threads.get(721)).unread)
+        assertFalse(requireNotNull(threads.get(722)).unread)
+        assertEquals(true, requireNotNull(threads.get(723)).unread)
+        assertEquals(1, threads.unreadMessageCount().first())
+    }
 }

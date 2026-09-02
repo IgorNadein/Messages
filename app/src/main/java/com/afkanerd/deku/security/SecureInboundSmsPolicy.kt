@@ -23,26 +23,34 @@ class SecureInboundSmsPolicy : InboundSmsPolicy {
 
         val normalizedAddress = runCatching { context.makeE16PhoneNumber(message.address) }
             .getOrDefault(message.address)
+        val channelAddress = SecureChannelId.storageAddress(
+            normalizedAddress,
+            message.subscriptionId,
+        )
 
         return try {
             val savedMode = SavedEncryptedModes.deserialize(
-                context.getEncryptionModeStatesSync(normalizedAddress)
+                context.getEncryptionModeStatesSync(channelAddress)
             )
             check(savedMode.mode == EncryptionController.SecureRequestMode.REQUEST_ACCEPTED) {
                 "Secure session setup is not complete"
             }
             val plaintext = EncryptionController.decrypt(
                 context,
-                normalizedAddress,
+                channelAddress,
                 message.transportText,
             ) ?: throw SecurityException("Secure decryption returned no plaintext")
+            SecureMessageTransportPreference.markFirstLegacyMessageComplete(
+                context,
+                normalizedAddress,
+            )
             ProcessedInboundSms(
                 displayText = plaintext,
                 secureTransportText = message.transportText,
             )
         } catch(e: Exception) {
             Log.w("SecureMessage", "Incoming secure SMS failed authentication", e)
-            EncryptionController.markSessionBroken(context, normalizedAddress)
+            EncryptionController.markSessionBroken(context, channelAddress)
             ProcessedInboundSms(
                 displayText = context.getString(R.string.security_decryption_failed),
                 secureTransportText = message.transportText,

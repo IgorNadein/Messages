@@ -15,7 +15,8 @@ object ConversationEntityMapper {
         if(entity.sms?.type == Telephony.Sms.MESSAGE_TYPE_DRAFT) return false
         val data = entity.sms_data
         if(data == null) return true
-        return SecureMessageCodec.decodeKeyExchangeOrNull(data) != null
+        return SecureMessageCodec.decodeKeyExchangeOrNull(data) != null ||
+            SecureMessageCodec.decodeMessageOrNull(data) != null
     }
 
     fun map(
@@ -29,16 +30,17 @@ object ConversationEntityMapper {
         val direction = direction(sms.type)
 
         entity.sms_data?.let { data ->
-            val exchange = requireNotNull(SecureMessageCodec.decodeKeyExchangeOrNull(data))
-            val kind = when(exchange.type) {
-                SecureMessageCodec.TYPE_ACCEPT -> SecurityEventKind.SESSION_ESTABLISHED
-                else -> if(direction == MessageDirection.OUTGOING) {
-                    SecurityEventKind.REQUEST_SENT
-                } else {
-                    SecurityEventKind.REQUEST_RECEIVED
+            SecureMessageCodec.decodeKeyExchangeOrNull(data)?.let { exchange ->
+                val kind = when(exchange.type) {
+                    SecureMessageCodec.TYPE_ACCEPT -> SecurityEventKind.SESSION_ESTABLISHED
+                    else -> if(direction == MessageDirection.OUTGOING) {
+                        SecurityEventKind.REQUEST_SENT
+                    } else {
+                        SecurityEventKind.REQUEST_RECEIVED
+                    }
                 }
+                return TimelineItem.SecurityEvent(stableId, sms.date, kind)
             }
-            return TimelineItem.SecurityEvent(stableId, sms.date, kind)
         }
 
         val body = sms.body.orEmpty()

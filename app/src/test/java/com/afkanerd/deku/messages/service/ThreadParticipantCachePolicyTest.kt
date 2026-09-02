@@ -33,27 +33,4 @@ class ThreadParticipantCachePolicyTest {
             ),
         )
     }
-
-    @Test
-    fun normalizedAddressOwnedByAnotherImportedThreadDoesNotCrashOrOverwriteIt() {
-        var updates = 0
-
-        val updated = ThreadParticipantCachePolicy.tryUpdateAddress(
-            threadId = 12,
-            owningThreadId = 9,
-        ) { updates += 1 }
-
-        assertFalse(updated)
-        assertEquals(0, updates)
-    }
-
-    @Test
-    fun addressCacheConstraintFailureIsContained() {
-        val updated = ThreadParticipantCachePolicy.tryUpdateAddress(
-            threadId = 12,
-            owningThreadId = null,
-        ) { error("simulated UNIQUE constraint failure") }
-
-        assertFalse(updated)
-    }
 }

@@ -31,7 +31,11 @@ class RouterWorkManager (context: Context, workerParams: WorkerParameters)
 
         val address = conversation.sms?.address ?: return Result.failure()
         val sessionStatus = runBlocking {
-            SecureSessionStatusResolver.resolve(applicationContext, address)
+            SecureSessionStatusResolver.resolve(
+                applicationContext,
+                address,
+                conversation.sms?.sub_id ?: -1,
+            )
         }
         if(sessionStatus != SecureSessionStatus.PLAIN) {
             // Re-check at execution time: work may have been queued before the

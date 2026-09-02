@@ -3,6 +3,7 @@ package com.afkanerd.deku
 import android.app.Application
 import com.afkanerd.deku.security.SecureOutboundSmsPolicy
 import com.afkanerd.deku.security.SecureInboundSmsPolicy
+import com.afkanerd.deku.security.SecureDataSmsHandler
 import com.afkanerd.deku.attachments.AttachmentManager
 import com.afkanerd.deku.messages.domain.MessageService
 import com.afkanerd.deku.messages.domain.AppSettingsService
@@ -33,7 +34,11 @@ class MessagesApplication : Application() {
         InboundSmsPolicyRegistry.policy = SecureInboundSmsPolicy()
         OutboundSmsPolicyRegistry.policy = SecureOutboundSmsPolicy()
         val attachmentManager = AttachmentManager.get(this)
-        InboundDataSmsHandlerRegistry.handler = attachmentManager
+        val secureDataHandler = SecureDataSmsHandler()
+        InboundDataSmsHandlerRegistry.handler = { context, address, subscriptionId, payload ->
+            secureDataHandler.consume(context, address, subscriptionId, payload) ||
+                attachmentManager.consume(context, address, subscriptionId, payload)
+        }
         CoroutineScope(Dispatchers.IO).launch { attachmentManager.resumePending() }
     }
 }

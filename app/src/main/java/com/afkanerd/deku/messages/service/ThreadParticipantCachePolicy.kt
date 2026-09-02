@@ -13,17 +13,4 @@ internal object ThreadParticipantCachePolicy {
         provider.isNotEmpty() -> provider.toList()
         else -> fallback.toList()
     }
-
-    /**
-     * Old imports can contain two Telephony thread ids which normalize to the same address.
-     * Threads.address is unique, so refreshing that cache entry must never crash the inbox.
-     */
-    fun tryUpdateAddress(
-        threadId: Int,
-        owningThreadId: Int?,
-        update: () -> Unit,
-    ): Boolean {
-        if(owningThreadId != null && owningThreadId != threadId) return false
-        return runCatching(update).isSuccess
-    }
 }

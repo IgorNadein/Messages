@@ -327,8 +327,13 @@ string example_com
 string exchange
 string export_native_sms_database
 string export_sms_mms_database
+string failed_to_send_message
 string find_out_when_an_sms_message_is_delivered
 string folders
+string foreground_service_failed_channel_description
+string foreground_service_failed_channel_id
+string foreground_service_failed_channel_name
+string foreground_service_image_transmission_descriptions
 string forward_message
 string friendly_name
 string from
@@ -413,6 +418,7 @@ string message_details
 string message_failed_channel_id
 string message_failed_channel_name
 string message_failed_notification_id
+string message_failed_notifications_descriptions
 string message_failed_send_notification_description_a_message_failed_to_send_to
 string message_information
 string message_threads_menu_cancel
@@ -463,6 +469,7 @@ string open_menu
 string open_side_menu
 string other_messaging_apps_would_have_access_to_the_system_s_database
 string password
+string pause
 string phone_number_copied_to_clipboard
 string port
 string press_and_hold_to_manage
@@ -471,6 +478,7 @@ string privacy_policy_text_part
 string privacy_policy_url
 string quality
 string queue_name
+string queued_for_sending
 string queues
 string read_our_text_part
 string received
@@ -483,6 +491,7 @@ string reset_and_import
 string reset_complete
 string resize
 string results_found
+string retry
 string return_back
 string route_incoming_messages_of_format
 string router_list_gateways
@@ -510,6 +519,7 @@ string send_mms_photo
 string send_to
 string send_with
 string sending_images
+string sending_stop
 string sending_with
 string sent
 string set_default_sms_app
@@ -567,6 +577,7 @@ string sms_status_sent
 string something_went_wrong_with_sending
 string state
 string status
+string stop
 string subject
 string switch_sim_cards
 string system_default
@@ -592,9 +603,11 @@ string unknown_error_sending_mms
 string username
 string virtual_host
 string waiting_to_send
+string waiting_to_send_of
 string welcome_image
 string when_turned_off_would_use_your_system_s_default_time_format
 string width
+string will_resume_sending_shortly
 string your_phone_would_suggest_smart_replies_in_notifications_if_enabled
 style AppTheme
 style Theme.Swob_server

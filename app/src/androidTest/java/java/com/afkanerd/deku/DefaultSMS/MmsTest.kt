@@ -1,19 +1,12 @@
 package java.com.afkanerd.deku.DefaultSMS
 
-import android.Manifest
-import android.provider.Telephony
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.GrantPermissionRule
 import com.google.android.mms.pdu_alt.PduHeaders
 import com.google.android.mms.pdu_alt.PduParser
-import com.google.android.mms.pdu_alt.PduPersister
-import org.junit.Rule
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 //@SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -28,30 +21,9 @@ class MmsTest {
             77, 77, 83, 0).map { it.toByte() }.toByteArray()
 
         val pdu = PduParser(pduRawBytes).parse()
-        PduHeaders.MESSAGE_TYPE_SEND_REQ
-        println()
 
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val pduPersister = PduPersister.getPduPersister(context)
-        val uri = pduPersister.persist(
-            pdu,
-            Telephony.Mms.Inbox.CONTENT_URI,
-            true,
-            false,
-            null,
-            8
-        )
-
-//        var location: String? = "";
-//        try {
-//            location = MmsHandler.getContentLocation(context, uri)
-//        } catch(e: Exception ) {
-//            location = pduPersister.getContentLocationFromPduHeader(pdu)
-//            e.printStackTrace()
-//        }
-
-//        location = pduPersister.getContentLocationFromPduHeader(pdu)
-        println()
+        assertNotNull(pdu)
+        assertEquals(PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND, pdu.messageType)
     }
 
 }

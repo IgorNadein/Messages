@@ -560,6 +560,13 @@
     <string name="oneui_message_favorite">Избранное сообщение</string>
     <string name="oneui_encrypt_future_messages">Шифровать будущие сообщения</string>
     <string name="oneui_encrypt_future_messages_description">Отключите, чтобы следующие сообщения отправлялись как обычные SMS. Ключи и история сохранятся.</string>
+    <string name="oneui_secure_channels">Защищённые каналы</string>
+    <string name="oneui_secure_channel_pair">%1$s ↔ %2$s</string>
+    <string name="oneui_encrypt_unavailable_description">Сначала установите защищённое соединение для этой SIM и номера контакта.</string>
+    <string name="oneui_secure_send_warning_title">Защищённый канал недоступен</string>
+    <string name="oneui_secure_send_warning_message">Для этой SIM и номера контакта требуется шифрование, но защищённый канал сейчас не готов. Установите его снова или отправьте это сообщение без шифрования.</string>
+    <string name="oneui_establish_secure_channel">Установить защищённое соединение</string>
+    <string name="oneui_send_once_unencrypted">Отправить один раз без шифрования</string>
     <string name="oneui_secure_key_changed">Ключ безопасности изменился</string>
     <string name="oneui_secure_recovery">Защищённый чат требует внимания</string>
     <string name="oneui_start_secure">Начать защищённый чат</string>
@@ -655,4 +662,19 @@
     <string name="oneui_unencrypted_resend_title">Отправить без шифрования?</string>
     <string name="oneui_unencrypted_resend_message">Это сообщение предполагалось отправить защищённо. При отправке через %1$s оно будет передано как обычное незашифрованное сообщение.</string>
     <string name="oneui_send_unencrypted">Всё равно отправить</string>
+    <string name="oneui_secure_message_transport">Транспорт защищённых сообщений</string>
+    <string name="oneui_transport_standard_sms">Обычные SMS</string>
+    <string name="oneui_transport_data_sms">Data SMS</string>
+    <string name="oneui_data_sms_warning_title">Включить Data SMS?</string>
+    <string name="oneui_data_sms_warning_message">Data SMS работает только тогда, когда получатель использует это приложение и включил такой же транспорт. Первое защищённое сообщение в каждой переписке всё равно будет отправлено как обычное SMS. Последующие защищённые сообщения не появятся в других SMS-приложениях и могут быть потеряны, если телефон получателя не сможет принять Data SMS.</string>
+    <string name="oneui_enable_data_sms">Включить</string>
+    <string name="oneui_media_transport">Транспорт медиа</string>
+    <string name="oneui_media_transport_mms">MMS (по умолчанию)</string>
+    <string name="oneui_media_transport_data_sms">Пакеты SMS</string>
+    <string name="oneui_media_transport_cloud">Интернет-хранилище</string>
+    <string name="oneui_media_data_sms_warning_title">Отправлять медиа пакетами SMS?</string>
+    <string name="oneui_media_data_sms_warning_message">Файл будет разбит на множество Data SMS и откроется только в этом приложении. Оператор может тарифицировать каждую SMS. Получение остаётся автоматическим: собеседнику не нужно выбирать такой же способ отправки.</string>
+    <string name="oneui_cloud_media_setup_required">Нужно подключить хранилище или сервер</string>
+    <string name="oneui_cloud_media_not_configured_title">Интернет-хранилище не настроено</string>
+    <string name="oneui_cloud_media_not_configured_message">Сначала подключите собственный сервер, Яндекс Диск или Google Диск.</string>
 </resources>

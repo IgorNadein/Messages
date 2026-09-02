@@ -4,12 +4,26 @@ import com.afkanerd.deku.messages.domain.AppSettingsService
 import com.afkanerd.deku.messages.domain.AppSettingsSnapshot
 import com.afkanerd.deku.messages.domain.BooleanSetting
 import com.afkanerd.deku.messages.domain.LanguageOption
+import com.afkanerd.deku.messages.domain.SecureMessageTransport
 import com.afkanerd.deku.messages.domain.ThemeMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class SettingsViewModelRegressionTest {
+    @Test
+    fun `secure transport defaults to compatible sms and can be explicitly changed`() {
+        val service = FakeSettingsService()
+        val viewModel = SettingsViewModel(service)
+
+        assertEquals(SecureMessageTransport.STANDARD_SMS, viewModel.state.value.secureMessageTransport)
+
+        viewModel.setSecureMessageTransport(SecureMessageTransport.DATA_SMS)
+
+        assertEquals(SecureMessageTransport.DATA_SMS, viewModel.state.value.secureMessageTransport)
+        assertEquals("transport:DATA_SMS", service.calls.single())
+    }
+
     @Test
     fun `theme language and legacy boolean settings propagate through service boundary`() {
         val service = FakeSettingsService()
@@ -71,6 +85,14 @@ private class FakeSettingsService : AppSettingsService {
             BooleanSetting.CONTEXT_REPLIES -> value.copy(contextReplies = enabled)
             BooleanSetting.USE_24_HOUR_TIME -> value.copy(use24HourTime = enabled)
         }
+        return value
+    }
+
+    override fun setSecureMessageTransport(
+        transport: SecureMessageTransport,
+    ): AppSettingsSnapshot {
+        calls += "transport:$transport"
+        value = value.copy(secureMessageTransport = transport)
         return value
     }
 }

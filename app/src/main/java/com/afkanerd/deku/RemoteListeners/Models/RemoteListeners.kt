@@ -57,7 +57,24 @@ class RemoteListeners {
                     }
                     override fun areContentsTheSame(oldItem: RemoteListeners, newItem: RemoteListeners):
                             Boolean {
-                        return oldItem == newItem
+                        return oldItem.connectionStatus == newItem.connectionStatus &&
+                            oldItem.id == newItem.id &&
+                            oldItem.date == newItem.date &&
+                            oldItem.hostUrl == newItem.hostUrl &&
+                            oldItem.username == newItem.username &&
+                            oldItem.password == newItem.password &&
+                            oldItem.port == newItem.port &&
+                            oldItem.friendlyConnectionName == newItem.friendlyConnectionName &&
+                            oldItem.virtualHost == newItem.virtualHost &&
+                            oldItem.connectionTimeout == newItem.connectionTimeout &&
+                            oldItem.prefetch_count == newItem.prefetch_count &&
+                            oldItem.heartbeat == newItem.heartbeat &&
+                            oldItem.protocol == newItem.protocol &&
+                            oldItem.projectName == newItem.projectName &&
+                            oldItem.projectBinding == newItem.projectBinding &&
+                            oldItem.projectBinding2 == newItem.projectBinding2 &&
+                            oldItem.activated == newItem.activated &&
+                            oldItem.state == newItem.state
                     }
         }
 

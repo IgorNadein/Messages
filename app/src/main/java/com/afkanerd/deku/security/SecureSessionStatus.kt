@@ -16,9 +16,14 @@ enum class SecureSessionStatus {
 }
 
 object SecureSessionStatusResolver {
-    suspend fun resolve(context: Context, address: String): SecureSessionStatus {
+    suspend fun resolve(
+        context: Context,
+        address: String,
+        subscriptionId: Long,
+    ): SecureSessionStatus {
+        val channelAddress = SecureChannelId.storageAddress(address, subscriptionId)
         val identity = try {
-            IdentityKeyManager.getContactIdentity(context, address)
+            IdentityKeyManager.getContactIdentity(context, channelAddress)
         } catch (_: Exception) {
             return SecureSessionStatus.SECURE_BROKEN
         }
@@ -28,9 +33,9 @@ object SecureSessionStatusResolver {
         if(identity.status == IdentityVerificationStatus.REKEY_REQUIRED) {
             return SecureSessionStatus.SECURE_PENDING
         }
-        val encodedMode = context.getEncryptionModeStatesSync(address)
+        val encodedMode = context.getEncryptionModeStatesSync(channelAddress)
         val hasRatchetState = try {
-            context.getEncryptedBinaryData(address + RATCHET_SUFFIX) != null
+            context.getEncryptedBinaryData(channelAddress + RATCHET_SUFFIX) != null
         } catch (_: Exception) {
             return SecureSessionStatus.SECURE_BROKEN
         }

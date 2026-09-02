@@ -6,6 +6,7 @@ import android.content.Context
 data class InboundSms(
     val address: String,
     val transportText: String,
+    val subscriptionId: Long = -1,
 )
 
 /**

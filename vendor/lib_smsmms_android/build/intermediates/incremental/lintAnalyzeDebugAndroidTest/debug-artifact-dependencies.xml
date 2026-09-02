@@ -1,6 +1,6 @@
 <dependencies>
   <compile
-      roots=":@@:lib_smsmms_android::debug,androidx.test.ext:junit:1.3.0@aar,androidx.test.espresso:espresso-core:3.7.0@aar,net.zetetic:sqlcipher-android:4.14.1@aar,androidx.room:room-paging-android:2.8.4@aar,androidx.room:room-common-jvm:2.8.4@jar,androidx.room:room-runtime-android:2.8.4@aar,androidx.sqlite:sqlite-android:2.6.2@aar,androidx.sqlite:sqlite-framework-android:2.6.2@aar,com.google.android.material:material:1.13.0@aar,androidx.appcompat:appcompat-resources:1.7.1@aar,androidx.appcompat:appcompat:1.7.1@aar,androidx.viewpager2:viewpager2:1.0.0@aar,androidx.fragment:fragment:1.5.4@aar,androidx.fragment:fragment:1.5.4@aar,androidx.activity:activity:1.8.0@aar,androidx.drawerlayout:drawerlayout:1.1.1@aar,androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar,androidx.dynamicanimation:dynamicanimation:1.1.0@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.transition:transition:1.5.0@aar,androidx.vectordrawable:vectordrawable-animated:1.1.0@aar,androidx.vectordrawable:vectordrawable:1.1.0@aar,androidx.work:work-runtime-ktx:2.11.1@aar,androidx.work:work-runtime:2.11.1@aar,androidx.viewpager:viewpager:1.0.0@aar,androidx.customview:customview:1.1.0@aar,androidx.loader:loader:1.0.0@aar,androidx.core:core:1.17.0@aar,androidx.core:core:1.17.0@aar,androidx.test:core:1.7.0@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata-core:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-common:2.6.2@jar,androidx.lifecycle:lifecycle-runtime:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2@aar,androidx.core:core-ktx:1.17.0@aar,androidx.test:runner:1.7.0@aar,androidx.test.services:storage:1.6.0@aar,androidx.test:monitor:1.8.0@aar,androidx.savedstate:savedstate:1.2.1@aar,androidx.annotation:annotation-experimental:1.5.0@aar,androidx.paging:paging-common-android:3.4.1@aar,org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.10.0@jar,org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.10.0@jar,androidx.datastore:datastore-core-okio-jvm:1.2.0@jar,androidx.datastore:datastore-core-android:1.2.0@aar,androidx.datastore:datastore-android:1.2.0@aar,androidx.datastore:datastore-preferences-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-android:1.2.0@aar,androidx.security:security-crypto:1.1.0@aar,androidx.concurrent:concurrent-futures-ktx:1.2.0@jar,androidx.concurrent:concurrent-futures:1.2.0@jar,androidx.cursoradapter:cursoradapter:1.0.0@aar,androidx.cardview:cardview:1.0.0@aar,androidx.versionedparcelable:versionedparcelable:1.1.1@aar,androidx.arch.core:core-runtime:2.2.0@aar,androidx.arch.core:core-common:2.2.0@jar,androidx.interpolator:interpolator:1.0.0@aar,androidx.collection:collection-jvm:1.5.0@jar,androidx.annotation:annotation-jvm:1.9.1@jar,org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0@jar,org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0@jar,androidx.core:core-viewtree:1.0.0@aar,com.squareup.okio:okio-jvm:3.9.1@jar,org.jetbrains.kotlin:kotlin-stdlib:2.3.0@jar,org.fossify:android-smsmms:c3e678befd@aar,com.googlecode.libphonenumber:libphonenumber:9.0.25@jar,com.google.code.gson:gson:2.13.2@jar,org.jetbrains:annotations:23.0.0@jar,androidx.tracing:tracing:1.2.0@aar,com.google.guava:listenablefuture:1.0@jar,androidx.startup:startup-runtime:1.1.1@aar,org.jspecify:jspecify:1.0.0@jar,junit:junit:4.13.2@jar,org.hamcrest:hamcrest-library:1.3@jar,org.hamcrest:hamcrest-core:1.3@jar,androidx.test.espresso:espresso-idling-resource:3.7.0@aar,com.google.code.findbugs:jsr305:3.0.2@jar,com.google.errorprone:error_prone_annotations:2.41.0@jar,javax.inject:javax.inject:1@jar,androidx.resourceinspection:resourceinspection-annotation:1.0.1@jar,androidx.constraintlayout:constraintlayout:2.1.0@aar,androidx.graphics:graphics-shapes-android:1.0.1@aar">
+      roots=":@@:lib_smsmms_android::debug,androidx.test.ext:junit:1.3.0@aar,androidx.test.espresso:espresso-core:3.7.0@aar,androidx.room:room-testing-android:2.8.4@aar,androidx.room:room-paging-android:2.8.4@aar,androidx.room:room-runtime-android:2.8.4@aar,androidx.room:room-common-jvm:2.8.4@jar,net.zetetic:sqlcipher-android:4.14.1@aar,androidx.sqlite:sqlite-android:2.6.2@aar,androidx.sqlite:sqlite-framework-android:2.6.2@aar,com.google.android.material:material:1.13.0@aar,androidx.appcompat:appcompat-resources:1.7.1@aar,androidx.appcompat:appcompat:1.7.1@aar,androidx.viewpager2:viewpager2:1.0.0@aar,androidx.fragment:fragment:1.5.4@aar,androidx.fragment:fragment:1.5.4@aar,androidx.activity:activity:1.8.0@aar,androidx.drawerlayout:drawerlayout:1.1.1@aar,androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar,androidx.dynamicanimation:dynamicanimation:1.1.0@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.transition:transition:1.5.0@aar,androidx.vectordrawable:vectordrawable-animated:1.1.0@aar,androidx.vectordrawable:vectordrawable:1.1.0@aar,androidx.work:work-runtime-ktx:2.11.1@aar,androidx.work:work-runtime:2.11.1@aar,androidx.viewpager:viewpager:1.0.0@aar,androidx.customview:customview:1.1.0@aar,androidx.loader:loader:1.0.0@aar,androidx.core:core:1.17.0@aar,androidx.core:core:1.17.0@aar,androidx.test:core:1.7.0@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata-core:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-common:2.6.2@jar,androidx.lifecycle:lifecycle-runtime:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2@aar,androidx.core:core-ktx:1.17.0@aar,androidx.test:runner:1.7.0@aar,androidx.test.services:storage:1.6.0@aar,androidx.test:monitor:1.8.0@aar,androidx.savedstate:savedstate:1.2.1@aar,androidx.annotation:annotation-experimental:1.5.0@aar,androidx.paging:paging-common-android:3.4.1@aar,org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.10.0@jar,org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.10.0@jar,androidx.datastore:datastore-core-okio-jvm:1.2.0@jar,androidx.datastore:datastore-core-android:1.2.0@aar,androidx.datastore:datastore-android:1.2.0@aar,androidx.datastore:datastore-preferences-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-android:1.2.0@aar,androidx.security:security-crypto:1.1.0@aar,androidx.concurrent:concurrent-futures-ktx:1.2.0@jar,androidx.concurrent:concurrent-futures:1.2.0@jar,androidx.cursoradapter:cursoradapter:1.0.0@aar,androidx.cardview:cardview:1.0.0@aar,androidx.versionedparcelable:versionedparcelable:1.1.1@aar,androidx.arch.core:core-runtime:2.2.0@aar,androidx.arch.core:core-common:2.2.0@jar,androidx.interpolator:interpolator:1.0.0@aar,androidx.collection:collection-jvm:1.5.0@jar,androidx.annotation:annotation-jvm:1.9.1@jar,org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0@jar,org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0@jar,androidx.core:core-viewtree:1.0.0@aar,com.squareup.okio:okio-jvm:3.9.1@jar,org.jetbrains.kotlin:kotlin-stdlib:2.3.0@jar,org.fossify:android-smsmms:c3e678befd@aar,com.googlecode.libphonenumber:libphonenumber:9.0.25@jar,com.google.code.gson:gson:2.13.2@jar,org.jetbrains:annotations:23.0.0@jar,androidx.tracing:tracing:1.2.0@aar,com.google.guava:listenablefuture:1.0@jar,androidx.startup:startup-runtime:1.1.1@aar,org.jspecify:jspecify:1.0.0@jar,junit:junit:4.13.2@jar,org.hamcrest:hamcrest-library:1.3@jar,org.hamcrest:hamcrest-core:1.3@jar,androidx.test.espresso:espresso-idling-resource:3.7.0@aar,com.google.code.findbugs:jsr305:3.0.2@jar,com.google.errorprone:error_prone_annotations:2.41.0@jar,javax.inject:javax.inject:1@jar,androidx.resourceinspection:resourceinspection-annotation:1.0.1@jar,androidx.constraintlayout:constraintlayout:2.1.0@aar,androidx.graphics:graphics-shapes-android:1.0.1@aar">
     <dependency
         name=":@@:lib_smsmms_android::debug"
         simpleName="Ð¡Ð¾Ð¾Ð±ÑÐµÐ½Ð¸Ñ:lib_smsmms_android"/>
@@ -11,17 +11,20 @@
         name="androidx.test.espresso:espresso-core:3.7.0@aar"
         simpleName="androidx.test.espresso:espresso-core"/>
     <dependency
-        name="net.zetetic:sqlcipher-android:4.14.1@aar"
-        simpleName="net.zetetic:sqlcipher-android"/>
+        name="androidx.room:room-testing-android:2.8.4@aar"
+        simpleName="androidx.room:room-testing-android"/>
     <dependency
         name="androidx.room:room-paging-android:2.8.4@aar"
         simpleName="androidx.room:room-paging-android"/>
     <dependency
+        name="androidx.room:room-runtime-android:2.8.4@aar"
+        simpleName="androidx.room:room-runtime-android"/>
+    <dependency
         name="androidx.room:room-common-jvm:2.8.4@jar"
         simpleName="androidx.room:room-common-jvm"/>
     <dependency
-        name="androidx.room:room-runtime-android:2.8.4@aar"
-        simpleName="androidx.room:room-runtime-android"/>
+        name="net.zetetic:sqlcipher-android:4.14.1@aar"
+        simpleName="net.zetetic:sqlcipher-android"/>
     <dependency
         name="androidx.sqlite:sqlite-android:2.6.2@aar"
         simpleName="androidx.sqlite:sqlite-android"/>
@@ -252,7 +255,7 @@
         simpleName="androidx.graphics:graphics-shapes-android"/>
   </compile>
   <package
-      roots=":@@:lib_smsmms_android::debug,androidx.test.ext:junit:1.3.0@aar,androidx.test.espresso:espresso-core:3.7.0@aar,androidx.test:runner:1.7.0@aar,androidx.test.services:storage:1.6.0@aar,androidx.test:core:1.7.0@aar,androidx.test:monitor:1.8.0@aar,androidx.work:work-runtime-ktx:2.11.1@aar,androidx.work:work-runtime:2.11.1@aar,androidx.concurrent:concurrent-futures-ktx:1.2.0@jar,com.google.android.material:material:1.13.0@aar,androidx.appcompat:appcompat-resources:1.7.1@aar,androidx.constraintlayout:constraintlayout:2.1.0@aar,androidx.appcompat:appcompat:1.7.1@aar,androidx.viewpager2:viewpager2:1.0.0@aar,androidx.fragment:fragment:1.5.4@aar,androidx.fragment:fragment:1.5.4@aar,androidx.graphics:graphics-shapes-android:1.0.1@aar,androidx.activity:activity:1.8.0@aar,androidx.savedstate:savedstate:1.2.1@aar,androidx.loader:loader:1.0.0@aar,androidx.emoji2:emoji2-views-helper:1.3.0@aar,androidx.emoji2:emoji2:1.3.0@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-process:2.6.2@aar,androidx.lifecycle:lifecycle-livedata-core:2.6.2@aar,androidx.lifecycle:lifecycle-service:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-runtime:2.6.2@aar,androidx.lifecycle:lifecycle-common:2.6.2@jar,androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2@aar,androidx.core:core-ktx:1.17.0@aar,androidx.drawerlayout:drawerlayout:1.1.1@aar,androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar,androidx.transition:transition:1.5.0@aar,androidx.dynamicanimation:dynamicanimation:1.1.0@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.vectordrawable:vectordrawable-animated:1.1.0@aar,androidx.vectordrawable:vectordrawable:1.1.0@aar,androidx.viewpager:viewpager:1.0.0@aar,androidx.customview:customview:1.1.0@aar,androidx.core:core:1.17.0@aar,androidx.core:core:1.17.0@aar,androidx.profileinstaller:profileinstaller:1.3.1@aar,androidx.concurrent:concurrent-futures:1.2.0@jar,androidx.room:room-paging-android:2.8.4@aar,androidx.room:room-runtime-android:2.8.4@aar,androidx.room:room-common-jvm:2.8.4@jar,androidx.security:security-crypto:1.1.0@aar,androidx.sqlite:sqlite-framework-android:2.6.2@aar,androidx.sqlite:sqlite-android:2.6.2@aar,androidx.cursoradapter:cursoradapter:1.0.0@aar,androidx.resourceinspection:resourceinspection-annotation:1.0.1@jar,androidx.cardview:cardview:1.0.0@aar,androidx.paging:paging-common-android:3.4.1@aar,androidx.startup:startup-runtime:1.1.1@aar,androidx.tracing:tracing-ktx:1.2.0@aar,androidx.tracing:tracing:1.2.0@aar,androidx.interpolator:interpolator:1.0.0@aar,androidx.versionedparcelable:versionedparcelable:1.1.1@aar,androidx.arch.core:core-runtime:2.2.0@aar,androidx.arch.core:core-common:2.2.0@jar,androidx.collection:collection-jvm:1.5.0@jar,androidx.datastore:datastore-preferences-external-protobuf:1.2.0@jar,androidx.datastore:datastore-core-okio-jvm:1.2.0@jar,androidx.datastore:datastore-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-proto:1.2.0@jar,androidx.datastore:datastore-preferences-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-android:1.2.0@aar,androidx.datastore:datastore-android:1.2.0@aar,junit:junit:4.13.2@jar,org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.10.0@jar,org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.10.0@jar,androidx.core:core-viewtree:1.0.0@aar,androidx.annotation:annotation-jvm:1.9.1@jar,androidx.annotation:annotation-experimental:1.5.0@aar,org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0@jar,org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0@jar,org.fossify:android-smsmms:c3e678befd@aar,com.squareup.okhttp:okhttp-urlconnection:2.5.0@jar,com.squareup.okhttp:okhttp:2.5.0@jar,com.squareup.okio:okio-jvm:3.9.1@jar,org.jetbrains.kotlin:kotlin-stdlib:2.3.0@jar,androidx.test.espresso:espresso-idling-resource:3.7.0@aar,com.google.code.findbugs:jsr305:3.0.2@jar,com.google.crypto.tink:tink-android:1.8.0@jar,com.google.code.gson:gson:2.13.2@jar,com.google.errorprone:error_prone_annotations:2.41.0@jar,com.google.guava:listenablefuture:1.0@jar,javax.inject:javax.inject:1@jar,org.hamcrest:hamcrest-library:1.3@jar,org.hamcrest:hamcrest-core:1.3@jar,net.zetetic:sqlcipher-android:4.14.1@aar,com.googlecode.libphonenumber:libphonenumber:9.0.25@jar,org.jetbrains:annotations:23.0.0@jar,com.klinkerapps:logger:1.0.3@jar,org.jspecify:jspecify:1.0.0@jar,androidx.constraintlayout:constraintlayout-core:1.0.0@jar">
+      roots=":@@:lib_smsmms_android::debug,androidx.test.ext:junit:1.3.0@aar,androidx.test.espresso:espresso-core:3.7.0@aar,androidx.room:room-testing-android:2.8.4@aar,androidx.room:room-migration-jvm:2.8.4@jar,androidx.room:room-paging-android:2.8.4@aar,androidx.work:work-runtime-ktx:2.11.1@aar,androidx.work:work-runtime:2.11.1@aar,androidx.room:room-runtime-android:2.8.4@aar,androidx.room:room-common-jvm:2.8.4@jar,androidx.test:runner:1.7.0@aar,androidx.test.services:storage:1.6.0@aar,androidx.test:core:1.7.0@aar,androidx.test:monitor:1.8.0@aar,androidx.concurrent:concurrent-futures-ktx:1.2.0@jar,com.google.android.material:material:1.13.0@aar,androidx.appcompat:appcompat-resources:1.7.1@aar,androidx.constraintlayout:constraintlayout:2.1.0@aar,androidx.appcompat:appcompat:1.7.1@aar,androidx.viewpager2:viewpager2:1.0.0@aar,androidx.fragment:fragment:1.5.4@aar,androidx.fragment:fragment:1.5.4@aar,androidx.graphics:graphics-shapes-android:1.0.1@aar,androidx.activity:activity:1.8.0@aar,androidx.savedstate:savedstate:1.2.1@aar,androidx.loader:loader:1.0.0@aar,androidx.emoji2:emoji2-views-helper:1.3.0@aar,androidx.emoji2:emoji2:1.3.0@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-viewmodel:2.6.2@aar,androidx.lifecycle:lifecycle-process:2.6.2@aar,androidx.lifecycle:lifecycle-livedata-core:2.6.2@aar,androidx.lifecycle:lifecycle-service:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-livedata:2.6.2@aar,androidx.lifecycle:lifecycle-runtime:2.6.2@aar,androidx.lifecycle:lifecycle-common:2.6.2@jar,androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2@aar,androidx.core:core-ktx:1.17.0@aar,androidx.drawerlayout:drawerlayout:1.1.1@aar,androidx.coordinatorlayout:coordinatorlayout:1.1.0@aar,androidx.transition:transition:1.5.0@aar,androidx.dynamicanimation:dynamicanimation:1.1.0@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.recyclerview:recyclerview:1.2.1@aar,androidx.vectordrawable:vectordrawable-animated:1.1.0@aar,androidx.vectordrawable:vectordrawable:1.1.0@aar,androidx.viewpager:viewpager:1.0.0@aar,androidx.customview:customview:1.1.0@aar,androidx.core:core:1.17.0@aar,androidx.core:core:1.17.0@aar,androidx.profileinstaller:profileinstaller:1.3.1@aar,androidx.concurrent:concurrent-futures:1.2.0@jar,androidx.security:security-crypto:1.1.0@aar,androidx.arch.core:core-runtime:2.2.0@aar,androidx.sqlite:sqlite-framework-android:2.6.2@aar,androidx.sqlite:sqlite-android:2.6.2@aar,androidx.cursoradapter:cursoradapter:1.0.0@aar,androidx.resourceinspection:resourceinspection-annotation:1.0.1@jar,androidx.cardview:cardview:1.0.0@aar,androidx.paging:paging-common-android:3.4.1@aar,androidx.arch.core:core-common:2.2.0@jar,androidx.startup:startup-runtime:1.1.1@aar,androidx.tracing:tracing-ktx:1.2.0@aar,androidx.tracing:tracing:1.2.0@aar,androidx.interpolator:interpolator:1.0.0@aar,androidx.versionedparcelable:versionedparcelable:1.1.1@aar,androidx.collection:collection-jvm:1.5.0@jar,androidx.datastore:datastore-preferences-external-protobuf:1.2.0@jar,androidx.datastore:datastore-core-okio-jvm:1.2.0@jar,androidx.datastore:datastore-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-proto:1.2.0@jar,androidx.datastore:datastore-preferences-core-android:1.2.0@aar,androidx.datastore:datastore-preferences-android:1.2.0@aar,androidx.datastore:datastore-android:1.2.0@aar,junit:junit:4.13.2@jar,org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.10.0@jar,org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.10.0@jar,androidx.core:core-viewtree:1.0.0@aar,androidx.annotation:annotation-jvm:1.9.1@jar,androidx.annotation:annotation-experimental:1.5.0@aar,org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0@jar,org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0@jar,org.fossify:android-smsmms:c3e678befd@aar,com.squareup.okhttp:okhttp-urlconnection:2.5.0@jar,com.squareup.okhttp:okhttp:2.5.0@jar,com.squareup.okio:okio-jvm:3.9.1@jar,org.jetbrains.kotlin:kotlin-stdlib:2.3.0@jar,androidx.test.espresso:espresso-idling-resource:3.7.0@aar,com.google.code.findbugs:jsr305:3.0.2@jar,com.google.crypto.tink:tink-android:1.8.0@jar,com.google.code.gson:gson:2.13.2@jar,com.google.errorprone:error_prone_annotations:2.41.0@jar,com.google.guava:listenablefuture:1.0@jar,javax.inject:javax.inject:1@jar,org.hamcrest:hamcrest-library:1.3@jar,org.hamcrest:hamcrest-core:1.3@jar,net.zetetic:sqlcipher-android:4.14.1@aar,com.googlecode.libphonenumber:libphonenumber:9.0.25@jar,org.jetbrains:annotations:23.0.0@jar,com.klinkerapps:logger:1.0.3@jar,org.jspecify:jspecify:1.0.0@jar,androidx.constraintlayout:constraintlayout-core:1.0.0@jar">
     <dependency
         name=":@@:lib_smsmms_android::debug"
         simpleName="Ð¡Ð¾Ð¾Ð±ÑÐµÐ½Ð¸Ñ:lib_smsmms_android"/>
@@ -262,6 +265,27 @@
     <dependency
         name="androidx.test.espresso:espresso-core:3.7.0@aar"
         simpleName="androidx.test.espresso:espresso-core"/>
+    <dependency
+        name="androidx.room:room-testing-android:2.8.4@aar"
+        simpleName="androidx.room:room-testing-android"/>
+    <dependency
+        name="androidx.room:room-migration-jvm:2.8.4@jar"
+        simpleName="androidx.room:room-migration-jvm"/>
+    <dependency
+        name="androidx.room:room-paging-android:2.8.4@aar"
+        simpleName="androidx.room:room-paging-android"/>
+    <dependency
+        name="androidx.work:work-runtime-ktx:2.11.1@aar"
+        simpleName="androidx.work:work-runtime-ktx"/>
+    <dependency
+        name="androidx.work:work-runtime:2.11.1@aar"
+        simpleName="androidx.work:work-runtime"/>
+    <dependency
+        name="androidx.room:room-runtime-android:2.8.4@aar"
+        simpleName="androidx.room:room-runtime-android"/>
+    <dependency
+        name="androidx.room:room-common-jvm:2.8.4@jar"
+        simpleName="androidx.room:room-common-jvm"/>
     <dependency
         name="androidx.test:runner:1.7.0@aar"
         simpleName="androidx.test:runner"/>
@@ -274,12 +298,6 @@
     <dependency
         name="androidx.test:monitor:1.8.0@aar"
         simpleName="androidx.test:monitor"/>
-    <dependency
-        name="androidx.work:work-runtime-ktx:2.11.1@aar"
-        simpleName="androidx.work:work-runtime-ktx"/>
-    <dependency
-        name="androidx.work:work-runtime:2.11.1@aar"
-        simpleName="androidx.work:work-runtime"/>
     <dependency
         name="androidx.concurrent:concurrent-futures-ktx:1.2.0@jar"
         simpleName="androidx.concurrent:concurrent-futures-ktx"/>
@@ -383,17 +401,11 @@
         name="androidx.concurrent:concurrent-futures:1.2.0@jar"
         simpleName="androidx.concurrent:concurrent-futures"/>
     <dependency
-        name="androidx.room:room-paging-android:2.8.4@aar"
-        simpleName="androidx.room:room-paging-android"/>
-    <dependency
-        name="androidx.room:room-runtime-android:2.8.4@aar"
-        simpleName="androidx.room:room-runtime-android"/>
-    <dependency
-        name="androidx.room:room-common-jvm:2.8.4@jar"
-        simpleName="androidx.room:room-common-jvm"/>
-    <dependency
         name="androidx.security:security-crypto:1.1.0@aar"
         simpleName="androidx.security:security-crypto"/>
+    <dependency
+        name="androidx.arch.core:core-runtime:2.2.0@aar"
+        simpleName="androidx.arch.core:core-runtime"/>
     <dependency
         name="androidx.sqlite:sqlite-framework-android:2.6.2@aar"
         simpleName="androidx.sqlite:sqlite-framework-android"/>
@@ -413,6 +425,9 @@
         name="androidx.paging:paging-common-android:3.4.1@aar"
         simpleName="androidx.paging:paging-common-android"/>
     <dependency
+        name="androidx.arch.core:core-common:2.2.0@jar"
+        simpleName="androidx.arch.core:core-common"/>
+    <dependency
         name="androidx.startup:startup-runtime:1.1.1@aar"
         simpleName="androidx.startup:startup-runtime"/>
     <dependency
@@ -427,12 +442,6 @@
     <dependency
         name="androidx.versionedparcelable:versionedparcelable:1.1.1@aar"
         simpleName="androidx.versionedparcelable:versionedparcelable"/>
-    <dependency
-        name="androidx.arch.core:core-runtime:2.2.0@aar"
-        simpleName="androidx.arch.core:core-runtime"/>
-    <dependency
-        name="androidx.arch.core:core-common:2.2.0@jar"
-        simpleName="androidx.arch.core:core-common"/>
     <dependency
         name="androidx.collection:collection-jvm:1.5.0@jar"
         simpleName="androidx.collection:collection-jvm"/>

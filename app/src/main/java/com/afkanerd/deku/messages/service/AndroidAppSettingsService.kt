@@ -7,7 +7,11 @@ import com.afkanerd.deku.messages.domain.AppSettingsService
 import com.afkanerd.deku.messages.domain.AppSettingsSnapshot
 import com.afkanerd.deku.messages.domain.BooleanSetting
 import com.afkanerd.deku.messages.domain.LanguageOption
+import com.afkanerd.deku.messages.domain.MediaTransport
 import com.afkanerd.deku.messages.domain.ThemeMode
+import com.afkanerd.deku.messages.domain.SecureMessageTransport
+import com.afkanerd.deku.attachments.transport.MediaTransportPreference
+import com.afkanerd.deku.security.SecureMessageTransportPreference
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getCurrentLocale
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.setLocale
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.settingsGetDeleteSystem
@@ -59,6 +63,8 @@ class AndroidAppSettingsService(context: Context) : AppSettingsService {
             keepArchived = appContext.settingsGetKeepMessagesArchived,
             contextReplies = appContext.settingsGetEnableContextReplies,
             use24HourTime = appContext.settingsGetEnable24HourFormat,
+            secureMessageTransport = SecureMessageTransportPreference.selected(appContext),
+            mediaTransport = MediaTransportPreference.selected(appContext),
         )
     }
 
@@ -88,6 +94,18 @@ class AndroidAppSettingsService(context: Context) : AppSettingsService {
             BooleanSetting.CONTEXT_REPLIES -> appContext.settingsSetEnableContextReplies(enabled)
             BooleanSetting.USE_24_HOUR_TIME -> appContext.settingsSetEnable24HourFormat(enabled)
         }
+        return snapshot()
+    }
+
+    override fun setSecureMessageTransport(
+        transport: SecureMessageTransport,
+    ): AppSettingsSnapshot {
+        SecureMessageTransportPreference.setSelected(appContext, transport)
+        return snapshot()
+    }
+
+    override fun setMediaTransport(transport: MediaTransport): AppSettingsSnapshot {
+        MediaTransportPreference.setSelected(appContext, transport)
         return snapshot()
     }
 }

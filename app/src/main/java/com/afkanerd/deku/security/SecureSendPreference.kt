@@ -6,20 +6,23 @@ import java.security.MessageDigest
 
 /** User choice for future messages. Session and identity material remain untouched. */
 object SecureSendPreference {
-    fun isEnabled(context: Context, address: String): Boolean = preferences(context)
-        .getBoolean(key(address), true)
+    fun isEnabled(context: Context, address: String, subscriptionId: Long): Boolean =
+        preferences(context).getBoolean(key(address, subscriptionId), false)
 
-    fun setEnabled(context: Context, address: String, enabled: Boolean) {
-        preferences(context).edit().putBoolean(key(address), enabled).apply()
+    fun setEnabled(context: Context, address: String, subscriptionId: Long, enabled: Boolean) {
+        preferences(context).edit().putBoolean(key(address, subscriptionId), enabled).apply()
     }
 
     private fun preferences(context: Context) = context.applicationContext
         .getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    private fun key(address: String): String = "encrypt_future_" + Base64.encodeToString(
-        MessageDigest.getInstance("SHA-256").digest(address.encodeToByteArray()),
-        Base64.NO_WRAP or Base64.URL_SAFE,
-    )
+    private fun key(address: String, subscriptionId: Long): String =
+        "encrypt_future_" + Base64.encodeToString(
+            MessageDigest.getInstance("SHA-256").digest(
+                SecureChannelId.storageAddress(address, subscriptionId).encodeToByteArray()
+            ),
+            Base64.NO_WRAP or Base64.URL_SAFE,
+        )
 
     private const val PREFERENCES_NAME = "secure_send_preferences"
 }

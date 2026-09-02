@@ -39,7 +39,9 @@ import com.afkanerd.deku.DefaultSMS.BuildConfig
 import com.afkanerd.deku.messages.domain.AppSettingsSnapshot
 import com.afkanerd.deku.messages.domain.BooleanSetting
 import com.afkanerd.deku.messages.domain.LanguageOption
+import com.afkanerd.deku.messages.domain.MediaTransport
 import com.afkanerd.deku.messages.domain.ThemeMode
+import com.afkanerd.deku.messages.domain.SecureMessageTransport
 import com.afkanerd.deku.messages.presentation.SettingsViewModel
 import com.afkanerd.deku.messages.ui.components.OneUiCompactBar
 import com.afkanerd.deku.messages.ui.components.OneUiExpandedTitle
@@ -57,6 +59,8 @@ fun SettingsScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var dialog by remember { mutableStateOf<SettingsDialog?>(null) }
+    var showDataSmsWarning by remember { mutableStateOf(false) }
+    var pendingMediaTransport by remember { mutableStateOf<MediaTransport?>(null) }
 
     Scaffold(
         topBar = {
@@ -107,6 +111,16 @@ fun SettingsScreen(
             item { SettingsSectionTitle(stringResource(R.string.oneui_messages_title)) }
             item {
                 SettingsCard {
+                    SettingsValueRow(
+                        title = stringResource(R.string.oneui_secure_message_transport),
+                        description = state.secureMessageTransport.displayName(),
+                        onClick = { dialog = SettingsDialog.SECURE_TRANSPORT },
+                    )
+                    SettingsValueRow(
+                        title = stringResource(R.string.oneui_media_transport),
+                        description = state.mediaTransport.displayName(),
+                        onClick = { dialog = SettingsDialog.MEDIA_TRANSPORT },
+                    )
                     SettingsToggleRow(
                         title = stringResource(R.string.save_messages_to_system_s_database),
                         description = stringResource(R.string.other_messaging_apps_would_have_access_to_the_system_s_database),
@@ -219,7 +233,94 @@ fun SettingsScreen(
                 viewModel.setLanguage(it.tag)
             },
         )
+        SettingsDialog.SECURE_TRANSPORT -> SecureTransportDialog(
+            selected = state.secureMessageTransport,
+            onDismiss = { dialog = null },
+            onSelected = { transport ->
+                dialog = null
+                if(transport == SecureMessageTransport.DATA_SMS) {
+                    showDataSmsWarning = true
+                } else {
+                    viewModel.setSecureMessageTransport(transport)
+                }
+            },
+        )
+        SettingsDialog.MEDIA_TRANSPORT -> MediaTransportDialog(
+            selected = state.mediaTransport,
+            cloudStorageConfigured = state.cloudStorageConfigured,
+            onDismiss = { dialog = null },
+            onSelected = { transport ->
+                dialog = null
+                if(transport == MediaTransport.MMS) {
+                    viewModel.setMediaTransport(transport)
+                } else {
+                    pendingMediaTransport = transport
+                }
+            },
+        )
         null -> Unit
+    }
+    if(showDataSmsWarning) {
+        AlertDialog(
+            onDismissRequest = { showDataSmsWarning = false },
+            title = { Text(stringResource(R.string.oneui_data_sms_warning_title)) },
+            text = { Text(stringResource(R.string.oneui_data_sms_warning_message)) },
+            dismissButton = {
+                TextButton(onClick = { showDataSmsWarning = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDataSmsWarning = false
+                        viewModel.setSecureMessageTransport(SecureMessageTransport.DATA_SMS)
+                    },
+                ) {
+                    Text(stringResource(R.string.oneui_enable_data_sms))
+                }
+            },
+        )
+    }
+    pendingMediaTransport?.let { transport ->
+        val cloudUnavailable = transport == MediaTransport.CLOUD_STORAGE &&
+            !state.cloudStorageConfigured
+        AlertDialog(
+            onDismissRequest = { pendingMediaTransport = null },
+            title = {
+                Text(
+                    stringResource(
+                        if(cloudUnavailable) R.string.oneui_cloud_media_not_configured_title
+                        else R.string.oneui_media_data_sms_warning_title
+                    )
+                )
+            },
+            text = {
+                Text(
+                    stringResource(
+                        if(cloudUnavailable) R.string.oneui_cloud_media_not_configured_message
+                        else R.string.oneui_media_data_sms_warning_message
+                    )
+                )
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingMediaTransport = null }) {
+                    Text(stringResource(R.string.attachment_cancel))
+                }
+            },
+            confirmButton = {
+                if(!cloudUnavailable) {
+                    TextButton(
+                        onClick = {
+                            pendingMediaTransport = null
+                            viewModel.setMediaTransport(transport)
+                        },
+                    ) {
+                        Text(stringResource(R.string.oneui_enable_data_sms))
+                    }
+                }
+            },
+        )
     }
 }
 
@@ -360,6 +461,71 @@ private fun LanguageDialog(
 }
 
 @Composable
+private fun SecureTransportDialog(
+    selected: SecureMessageTransport,
+    onDismiss: () -> Unit,
+    onSelected: (SecureMessageTransport) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.oneui_secure_message_transport)) },
+        text = {
+            Column {
+                SecureMessageTransport.entries.forEach { transport ->
+                    SelectionRow(
+                        text = transport.displayName(),
+                        selected = transport == selected,
+                        onClick = { onSelected(transport) },
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.attachment_cancel))
+            }
+        },
+    )
+}
+
+@Composable
+private fun MediaTransportDialog(
+    selected: MediaTransport,
+    cloudStorageConfigured: Boolean,
+    onDismiss: () -> Unit,
+    onSelected: (MediaTransport) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.oneui_media_transport)) },
+        text = {
+            Column {
+                MediaTransport.entries.forEach { transport ->
+                    SelectionRow(
+                        text = transport.displayName(),
+                        selected = transport == selected,
+                        onClick = { onSelected(transport) },
+                    )
+                    if(transport == MediaTransport.CLOUD_STORAGE && !cloudStorageConfigured) {
+                        Text(
+                            stringResource(R.string.oneui_cloud_media_setup_required),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = MessagesTheme.spacing.xl),
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.attachment_cancel))
+            }
+        },
+    )
+}
+
+@Composable
 private fun SelectionRow(
     text: String,
     selected: Boolean,
@@ -384,7 +550,22 @@ private fun ThemeMode.displayName(): String = when(this) {
     ThemeMode.DARK -> stringResource(R.string.dark)
 }
 
+@Composable
+private fun SecureMessageTransport.displayName(): String = when(this) {
+    SecureMessageTransport.STANDARD_SMS -> stringResource(R.string.oneui_transport_standard_sms)
+    SecureMessageTransport.DATA_SMS -> stringResource(R.string.oneui_transport_data_sms)
+}
+
+@Composable
+private fun MediaTransport.displayName(): String = when(this) {
+    MediaTransport.MMS -> stringResource(R.string.oneui_media_transport_mms)
+    MediaTransport.DATA_SMS -> stringResource(R.string.oneui_media_transport_data_sms)
+    MediaTransport.CLOUD_STORAGE -> stringResource(R.string.oneui_media_transport_cloud)
+}
+
 private enum class SettingsDialog {
     THEME,
     LANGUAGE,
+    SECURE_TRANSPORT,
+    MEDIA_TRANSPORT,
 }

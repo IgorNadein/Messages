@@ -1,6 +1,5 @@
 package com.afkanerd.deku.attachments.transport
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,6 +15,7 @@ import com.afkanerd.deku.attachments.storage.AttachmentTransferStatus
 import com.afkanerd.deku.attachments.storage.ChunkTracker
 import com.afkanerd.deku.attachments.reliability.AttachmentAckTimeoutWorker
 import com.afkanerd.deku.attachments.AttachmentManager
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.isSuccessfulSmsCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +27,8 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
         val id = intent.getStringExtra(EXTRA_TRANSFER_ID) ?: return
         val type = SmsPacketType.fromWireValue(intent.getIntExtra(EXTRA_PACKET_TYPE, -1)) ?: return
         val index = intent.getIntExtra(EXTRA_INDEX, -1)
+        val callbackResult = resultCode
+        val callbackSuccessful = isSuccessfulSmsCallback(callbackResult)
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -34,12 +36,12 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
                 val transfer = dao.get(id) ?: return@launch
                 val now = System.currentTimeMillis()
                 if (intent.action == ACTION_DELIVERED) {
-                    if (resultCode == Activity.RESULT_OK) {
+                    if (callbackSuccessful) {
                         dao.incrementDelivered(id, now)
                     }
                     return@launch
                 }
-                if (resultCode == Activity.RESULT_OK) {
+                if (callbackSuccessful) {
                     val updated = when (type) {
                         SmsPacketType.TRANSFER_OFFER -> transfer.copy(
                             controlSequence = maxOf(transfer.controlSequence, index + 1),
@@ -82,7 +84,7 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
                             else if (retry >= MAX_RETRIES) AttachmentTransferStatus.FAILED.name
                             else AttachmentTransferStatus.RETRYING.name,
                         retryCount = retry,
-                        lastError = smsError(resultCode),
+                        lastError = smsError(callbackResult),
                         updatedAt = now,
                     ))
                     if (retry < MAX_RETRIES) enqueue(context, id, retryDelay(retry))

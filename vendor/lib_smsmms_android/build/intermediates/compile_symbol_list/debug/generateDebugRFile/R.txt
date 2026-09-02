@@ -4688,8 +4688,13 @@ int string export_sms_mms_database 0x0
 int string exposed_dropdown_menu_content_description 0x0
 int string fab_transformation_scrim_behavior 0x0
 int string fab_transformation_sheet_behavior 0x0
+int string failed_to_send_message 0x0
 int string find_out_when_an_sms_message_is_delivered 0x0
 int string folders 0x0
+int string foreground_service_failed_channel_description 0x0
+int string foreground_service_failed_channel_id 0x0
+int string foreground_service_failed_channel_name 0x0
+int string foreground_service_image_transmission_descriptions 0x0
 int string forward_message 0x0
 int string friendly_name 0x0
 int string from 0x0
@@ -4818,6 +4823,7 @@ int string message_details 0x0
 int string message_failed_channel_id 0x0
 int string message_failed_channel_name 0x0
 int string message_failed_notification_id 0x0
+int string message_failed_notifications_descriptions 0x0
 int string message_failed_send_notification_description_a_message_failed_to_send_to 0x0
 int string message_information 0x0
 int string message_not_delivered 0x0
@@ -4946,6 +4952,7 @@ int string path_password_eye 0x0
 int string path_password_eye_mask_strike_through 0x0
 int string path_password_eye_mask_visible 0x0
 int string path_password_strike_through 0x0
+int string pause 0x0
 int string phone_number_copied_to_clipboard 0x0
 int string port 0x0
 int string press_and_hold_to_manage 0x0
@@ -4954,6 +4961,7 @@ int string privacy_policy_text_part 0x0
 int string privacy_policy_url 0x0
 int string quality 0x0
 int string queue_name 0x0
+int string queued_for_sending 0x0
 int string queues 0x0
 int string read_our_text_part 0x0
 int string received 0x0
@@ -4966,6 +4974,7 @@ int string reset_and_import 0x0
 int string reset_complete 0x0
 int string resize 0x0
 int string results_found 0x0
+int string retry 0x0
 int string return_back 0x0
 int string route_incoming_messages_of_format 0x0
 int string router_list_gateways 0x0
@@ -4997,6 +5006,7 @@ int string send_mms_photo 0x0
 int string send_to 0x0
 int string send_with 0x0
 int string sending_images 0x0
+int string sending_stop 0x0
 int string sending_with 0x0
 int string sent 0x0
 int string service_message_not_found 0x0
@@ -5060,6 +5070,7 @@ int string something_went_wrong_with_sending 0x0
 int string state 0x0
 int string status 0x0
 int string status_bar_notification_info_overflow 0x0
+int string stop 0x0
 int string subject 0x0
 int string switch_sim_cards 0x0
 int string system_default 0x0
@@ -5086,9 +5097,11 @@ int string unknown_sender 0x0
 int string username 0x0
 int string virtual_host 0x0
 int string waiting_to_send 0x0
+int string waiting_to_send_of 0x0
 int string welcome_image 0x0
 int string when_turned_off_would_use_your_system_s_default_time_format 0x0
 int string width 0x0
+int string will_resume_sending_shortly 0x0
 int string write_settings_permission 0x0
 int string your_phone_would_suggest_smart_replies_in_notifications_if_enabled 0x0
 int style AlertDialog_AppCompat 0x0

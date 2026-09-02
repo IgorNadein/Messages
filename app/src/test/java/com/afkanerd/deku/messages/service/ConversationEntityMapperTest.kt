@@ -181,6 +181,24 @@ class ConversationEntityMapperTest {
     }
 
     @Test
+    fun decryptedDataSmsIsRenderedAsSecureTextInsteadOfAControlEvent() {
+        val wire = byteArrayOf(SecureMessageCodec.TYPE_MESSAGE, 40, 48) +
+            ByteArray(40) { 1 } + ByteArray(48) { 2 }
+        val entity = conversation(
+            type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+            body = "plaintext received through Data SMS",
+        ).copy(
+            sms_data = wire,
+            secure_transport_text = Base64.encode(wire),
+        )
+
+        assertTrue(ConversationEntityMapper.shouldExpose(entity))
+        val item = ConversationEntityMapper.map(entity) as TimelineItem.Text
+        assertEquals("plaintext received through Data SMS", item.text)
+        assertTrue(item.isSecure)
+    }
+
+    @Test
     fun storedDecryptionFailureRemainsASecurityEvent() {
         val entity = conversation(
             type = Telephony.Sms.MESSAGE_TYPE_INBOX,

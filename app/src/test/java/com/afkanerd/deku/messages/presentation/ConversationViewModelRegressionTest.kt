@@ -60,6 +60,17 @@ class ConversationViewModelRegressionTest {
     }
 
     @Test
+    fun openingConversationMarksEveryRelatedContactThreadRead() = runTest(dispatcher) {
+        val relatedThreads = listOf(THREAD_ID, THREAD_ID + 1, THREAD_ID + 2)
+        val service = FakeMessageService(headerRelatedThreadIds = relatedThreads)
+
+        ConversationViewModel(service, ADDRESS, THREAD_ID)
+        advanceUntilIdle()
+
+        assertEquals(listOf(relatedThreads), service.markedReadThreadIds)
+    }
+
+    @Test
     fun selectedSimIsUsedAndSuccessfulSendClearsPersistedDraft() = runTest(dispatcher) {
         val service = FakeMessageService()
         val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
@@ -108,8 +119,35 @@ class ConversationViewModelRegressionTest {
         advanceUntilIdle()
 
         assertEquals("do not leak me", viewModel.state.value.draft)
-        assertEquals(ConversationError.SECURITY_NOT_READY, viewModel.state.value.error)
+        assertEquals(true, viewModel.state.value.showSecuritySendWarning)
         assertFalse(service.savedDraft.isNullOrBlank())
+    }
+
+    @Test
+    fun brokenRequiredChannelWarnsAndOnlyExplicitChoiceSendsPlaintext() = runTest(dispatcher) {
+        val service = FakeMessageService(
+            securityState = ConversationSecurityState.RECOVERY_REQUIRED,
+            initialSecureRequested = true,
+            initialSecureEnabled = false,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+        advanceUntilIdle()
+        viewModel.updateDraft("keep this private")
+        advanceUntilIdle()
+
+        viewModel.send()
+        advanceUntilIdle()
+
+        assertEquals(0, service.textSendCalls)
+        assertEquals(true, viewModel.state.value.showSecuritySendWarning)
+        assertEquals("keep this private", viewModel.state.value.draft)
+
+        viewModel.sendWithoutEncryption()
+        advanceUntilIdle()
+
+        assertEquals(1, service.textSendCalls)
+        assertEquals(true, service.lastForcePlainText)
+        assertEquals("", viewModel.state.value.draft)
     }
 
     @Test
@@ -494,6 +532,9 @@ class ConversationViewModelRegressionTest {
         private val identityVerificationSucceeds: Boolean = false,
         var messageStoreReady: Boolean = false,
         val securityState: ConversationSecurityState = ConversationSecurityState.PLAIN,
+        private val initialSecureRequested: Boolean? = null,
+        private val initialSecureEnabled: Boolean? = null,
+        private val headerRelatedThreadIds: List<Int> = listOf(THREAD_ID),
     ) : MessageService {
         var savedDraft: String? = null
         var selectedSubscriptionId: Long? = null
@@ -514,6 +555,8 @@ class ConversationViewModelRegressionTest {
         var lastExportDestination: String? = null
         var importCalls = 0
         var secureSendingEnabled: Boolean? = null
+        var lastForcePlainText = false
+        val markedReadThreadIds = mutableListOf<List<Int>>()
 
         override fun isDefaultSmsApp() = true
         override fun hasContactAccess() = contactAccess
@@ -540,6 +583,10 @@ class ConversationViewModelRegressionTest {
         }
         override suspend fun markAllConversationsRead(): Boolean {
             markAllReadCalled = true
+            return true
+        }
+        override suspend fun markConversationRead(threadIds: List<Int>): Boolean {
+            markedReadThreadIds += threadIds
             return true
         }
         override suspend fun exportMessages(destinationUri: String): Boolean {
@@ -581,12 +628,21 @@ class ConversationViewModelRegressionTest {
                 address = address,
                 displayName = address,
                 avatarUri = null,
-                subscriptionId = FIRST_SIM,
+                subscriptionId = selectedSubscriptionId ?: FIRST_SIM,
                 subscriptions = listOf(
                     SimSubscription(FIRST_SIM, "SIM 1", 0),
                     SimSubscription(SECOND_SIM, "SIM 2", 1),
                 ),
                 securityState = securityState,
+                secureSendingEnabled = secureSendingEnabled ?: initialSecureEnabled ?: (
+                    securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
+                        securityState == ConversationSecurityState.SECURE_VERIFIED
+                    ),
+                secureSendingRequested = secureSendingEnabled ?: initialSecureRequested ?: (
+                    securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
+                        securityState == ConversationSecurityState.SECURE_VERIFIED
+                    ),
+                relatedThreadIds = headerRelatedThreadIds,
             )
         override suspend fun conversationHeader(
             addresses: List<String>,
@@ -622,6 +678,16 @@ class ConversationViewModelRegressionTest {
             textSendCalls++
             lastSentSubscriptionId = subscriptionId
             return sendResult
+        }
+        override suspend fun sendText(
+            address: String,
+            threadId: Int,
+            subscriptionId: Long,
+            text: String,
+            forcePlainText: Boolean,
+        ): SendResult {
+            lastForcePlainText = forcePlainText
+            return sendText(address, threadId, subscriptionId, text)
         }
         override suspend fun sendMms(
             addresses: List<String>,

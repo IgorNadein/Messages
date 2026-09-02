@@ -31,9 +31,11 @@ import com.afkanerd.deku.attachments.transport.BinaryTransport
 import com.afkanerd.deku.attachments.transport.SmsBinaryTransport
 import com.afkanerd.deku.security.SecureSessionStatus
 import com.afkanerd.deku.security.SecureSessionStatusResolver
+import com.afkanerd.deku.security.SecureChannelId
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.EncryptionController
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.IdentityKeyManager
 import com.afkanerd.smswithoutborders_libsmsmms.transport.InboundDataSmsHandler
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
@@ -71,10 +73,14 @@ class AttachmentManager private constructor(
         originalSize: Long? = null,
         metadata: MediaMetadata = MediaMetadata(),
     ): AttachmentTransferEntity {
-        check(SecureSessionStatusResolver.resolve(context, address) == SecureSessionStatus.SECURE_ESTABLISHED) {
+        check(SecureSessionStatusResolver.resolve(
+            context,
+            address,
+            subscriptionId.toLong(),
+        ) == SecureSessionStatus.SECURE_ESTABLISHED) {
             "A verified, established secure session is required for attachments"
         }
-        val identityFingerprint = currentIdentityFingerprint(address)
+        val identityFingerprint = currentIdentityFingerprint(address, subscriptionId)
         check(transfers.countActiveForAddress(address) < TransferLimits.MAX_ACTIVE_TRANSFERS_PER_CONTACT) {
             "Too many active transfers for this contact"
         }
@@ -150,7 +156,11 @@ class AttachmentManager private constructor(
         val key = AttachmentCrypto.generateMasterKey()
         val contextBytes = AttachmentContextCodec.encode(AttachmentContext(manifest, key))
         val ratchetOffer = try {
-            EncryptionController.encryptBytes(context, address, contextBytes)
+            EncryptionController.encryptBytes(
+                context,
+                SecureChannelId.storageAddress(address, subscriptionId.toLong()),
+                contextBytes,
+            )
                 ?: error("Double Ratchet did not produce an attachment offer")
         } finally {
             contextBytes.fill(0)
@@ -192,7 +202,11 @@ class AttachmentManager private constructor(
             return@withLock BinarySendResult.Dispatched
         }
         if (!identityMatches(transfer) ||
-            SecureSessionStatusResolver.resolve(context, transfer.address) != SecureSessionStatus.SECURE_ESTABLISHED) {
+            SecureSessionStatusResolver.resolve(
+                context,
+                transfer.address,
+                transfer.subscriptionId.toLong(),
+            ) != SecureSessionStatus.SECURE_ESTABLISHED) {
             transfers.update(transfer.copy(
                 status = AttachmentTransferStatus.PAUSED.name,
                 lastError = "Secure identity or session changed",
@@ -263,11 +277,12 @@ class AttachmentManager private constructor(
         val decoded = SmsFrameCodec.decode(payload)
         if (decoded !is SmsFrameCodec.DecodeResult.Success) return true
         val frame = decoded.frame
+        val normalizedAddress = context.makeE16PhoneNumber(address)
         lockFor(frame.transferId.toHex()).withLock {
             if (frame.packetType == SmsPacketType.TRANSFER_OFFER) {
-                receiveOffer(address, subscriptionId, frame)
+                receiveOffer(normalizedAddress, subscriptionId, frame)
             } else {
-                receiveAuthenticatedFrame(address, subscriptionId, frame)
+                receiveAuthenticatedFrame(normalizedAddress, subscriptionId, frame)
             }
         }
         return true
@@ -296,7 +311,11 @@ class AttachmentManager private constructor(
             offers.delete(id)
             return
         }
-        if (SecureSessionStatusResolver.resolve(context, address) != SecureSessionStatus.SECURE_ESTABLISHED) {
+        if (SecureSessionStatusResolver.resolve(
+            context,
+            address,
+            subscriptionId.toLong(),
+        ) != SecureSessionStatus.SECURE_ESTABLISHED) {
             offers.delete(id)
             return
         }
@@ -307,7 +326,11 @@ class AttachmentManager private constructor(
             offset += it.payload.size
         }
         val attachmentContext = try {
-            val plaintext = EncryptionController.decryptBytes(context, address, encrypted) ?: return
+            val plaintext = EncryptionController.decryptBytes(
+                context,
+                SecureChannelId.storageAddress(address, subscriptionId.toLong()),
+                encrypted,
+            ) ?: return
             try { AttachmentContextCodec.decode(plaintext) } finally { plaintext.fill(0) }
         } catch (error: Exception) {
             Log.w(TAG, "Rejected unauthenticated attachment offer", error)
@@ -324,7 +347,9 @@ class AttachmentManager private constructor(
             return
         }
         val manifest = attachmentContext.manifest
-        val identityFingerprint = try { currentIdentityFingerprint(address) } catch (_: Exception) {
+        val identityFingerprint = try {
+            currentIdentityFingerprint(address, subscriptionId)
+        } catch (_: Exception) {
             attachmentContext.masterKey.fill(0)
             offers.delete(id)
             return
@@ -357,7 +382,11 @@ class AttachmentManager private constructor(
         val transfer = transfers.get(frame.transferId.toHex()) ?: return
         if (transfer.address != address || transfer.subscriptionId != subscriptionId) return
         if (!identityMatches(transfer) ||
-            SecureSessionStatusResolver.resolve(context, address) != SecureSessionStatus.SECURE_ESTABLISHED) return
+            SecureSessionStatusResolver.resolve(
+                context,
+                address,
+                subscriptionId.toLong(),
+            ) != SecureSessionStatus.SECURE_ESTABLISHED) return
         val status = runCatching { AttachmentTransferStatus.valueOf(transfer.status) }.getOrNull() ?: return
         if (status.terminal && !(status == AttachmentTransferStatus.COMPLETED &&
                 !transfer.outgoing && (frame.packetType == SmsPacketType.NACK ||
@@ -636,8 +665,14 @@ class AttachmentManager private constructor(
 
     private fun lockFor(transferId: String): Mutex = locks.computeIfAbsent(transferId) { Mutex() }
 
-    private suspend fun currentIdentityFingerprint(address: String): ByteArray {
-        val identity = IdentityKeyManager.getContactIdentity(context, address)
+    private suspend fun currentIdentityFingerprint(
+        address: String,
+        subscriptionId: Int,
+    ): ByteArray {
+        val identity = IdentityKeyManager.getContactIdentity(
+            context,
+            SecureChannelId.storageAddress(address, subscriptionId.toLong()),
+        )
         val publicKey = requireNotNull(identity.publicKey) {
             "Attachments require a signed identity; renew this legacy secure session"
         }
@@ -645,7 +680,10 @@ class AttachmentManager private constructor(
     }
 
     private suspend fun identityMatches(transfer: AttachmentTransferEntity): Boolean = try {
-        MessageDigest.isEqual(transfer.identityFingerprint, currentIdentityFingerprint(transfer.address))
+        MessageDigest.isEqual(
+            transfer.identityFingerprint,
+            currentIdentityFingerprint(transfer.address, transfer.subscriptionId),
+        )
     } catch (_: Exception) {
         false
     }

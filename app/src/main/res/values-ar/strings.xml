@@ -390,6 +390,7 @@
     <string name="oneui_options">خيارات</string>
     <string name="oneui_notifications_compact">تنبيهات</string>
     <plurals name="oneui_unread_messages">
+        <item quantity="zero">لا توجد رسائل غير مقروءة</item>
         <item quantity="one">رسالة واحدة غير مقروءة</item>
         <item quantity="two">رسالتان غير مقروءتين</item>
         <item quantity="few">%1$d رسائل غير مقروءة</item>

@@ -85,6 +85,10 @@ public class ThreadsDao_Impl(
     _result
   }
 
+  public override fun markAsRead(threadIds: List<Int>): Int = performBlocking(__db, false, true) { _ ->
+    super@ThreadsDao_Impl.markAsRead(threadIds)
+  }
+
   public override fun markAllAsRead(): Int = performBlocking(__db, false, true) { _ ->
     super@ThreadsDao_Impl.markAllAsRead()
   }
@@ -94,7 +98,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getThreads0(): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 0 AND address IS NOT NULL ORDER BY isPinned DESC, date DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 0 AND address IS NOT NULL ORDER BY isPinned DESC, date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
     return object : LimitOffsetPagingSource<Threads>(_rawQuery, __db, "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Threads> = performSuspending(__db, true, false) { _connection ->
@@ -164,7 +168,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getPinnedOnly(): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 0 AND address IS NOT NULL AND isPinned = 1 ORDER BY date DESC, isPinned DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 0 AND address IS NOT NULL AND isPinned = 1 ORDER BY date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
     return object : LimitOffsetPagingSource<Threads>(_rawQuery, __db, "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Threads> = performSuspending(__db, true, false) { _connection ->
@@ -234,9 +238,9 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getThreadSummaries(): PagingSource<Int, ThreadSummary> {
-    val _sql: String = "SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE unread.thread_id = t.threadId AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.isArchive = 0 AND t.address IS NOT NULL ORDER BY t.isPinned DESC, t.date DESC"
+    val _sql: String = "SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE (unread.thread_id = t.threadId OR unread.mms_thread_id = t.threadId)  AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText, (SELECT GROUP_CONCAT(tp.address, ',') FROM ThreadParticipants tp  WHERE tp.threadId = t.threadId) AS participantAddresses FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.isArchive = 0 AND t.address IS NOT NULL ORDER BY t.isPinned DESC, t.date DESC, t.threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
-    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "Threads") {
+    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "ThreadParticipants", "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<ThreadSummary> = performSuspending(__db, true, false) { _connection ->
         val _stmt: SQLiteStatement = _connection.prepare(limitOffsetQuery.sql)
         limitOffsetQuery.getBindingFunction().invoke(_stmt)
@@ -252,6 +256,7 @@ public class ThreadsDao_Impl(
           val _columnIndexOfUnreadCount: Int = 8
           val _columnIndexOfSmsData: Int = 9
           val _columnIndexOfSecureTransportText: Int = 10
+          val _columnIndexOfParticipantAddresses: Int = 11
           val _result: MutableList<ThreadSummary> = mutableListOf()
           while (_stmt.step()) {
             val _item: ThreadSummary
@@ -293,7 +298,13 @@ public class ThreadsDao_Impl(
             } else {
               _tmpSecureTransportText = _stmt.getText(_columnIndexOfSecureTransportText)
             }
-            _item = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText)
+            val _tmpParticipantAddresses: String?
+            if (_stmt.isNull(_columnIndexOfParticipantAddresses)) {
+              _tmpParticipantAddresses = null
+            } else {
+              _tmpParticipantAddresses = _stmt.getText(_columnIndexOfParticipantAddresses)
+            }
+            _item = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText,_tmpParticipantAddresses)
             _result.add(_item)
           }
           _result
@@ -305,7 +316,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getThreadSummaries(folder: Int): PagingSource<Int, ThreadSummary> {
-    val _sql: String = "SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE unread.thread_id = t.threadId AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.address IS NOT NULL AND ((? = 0 AND t.isArchive = 0) OR (? = 1 AND t.isArchive = 1) OR (? = 2 AND t.type = 3) OR (? = 3 AND t.isMute = 1) OR (? = 4 AND t.isBlocked = 1)) ORDER BY CASE WHEN ? = 0 THEN t.isPinned ELSE 0 END DESC, t.date DESC"
+    val _sql: String = "SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE (unread.thread_id = t.threadId OR unread.mms_thread_id = t.threadId)  AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText, (SELECT GROUP_CONCAT(tp.address, ',') FROM ThreadParticipants tp  WHERE tp.threadId = t.threadId) AS participantAddresses FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.address IS NOT NULL AND ((? = 0 AND t.isArchive = 0) OR (? = 1 AND t.isArchive = 1) OR (? = 2 AND t.type = 3) OR (? = 3 AND t.isMute = 1) OR (? = 4 AND t.isBlocked = 1)) ORDER BY CASE WHEN ? = 0 THEN t.isPinned ELSE 0 END DESC, t.date DESC, t.threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql) { _stmt ->
       var _argIndex: Int = 1
       _stmt.bindLong(_argIndex, folder.toLong())
@@ -320,7 +331,7 @@ public class ThreadsDao_Impl(
       _argIndex = 6
       _stmt.bindLong(_argIndex, folder.toLong())
     }
-    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "Threads") {
+    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "ThreadParticipants", "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<ThreadSummary> = performSuspending(__db, true, false) { _connection ->
         val _stmt: SQLiteStatement = _connection.prepare(limitOffsetQuery.sql)
         limitOffsetQuery.getBindingFunction().invoke(_stmt)
@@ -336,6 +347,7 @@ public class ThreadsDao_Impl(
           val _columnIndexOfUnreadCount: Int = 8
           val _columnIndexOfSmsData: Int = 9
           val _columnIndexOfSecureTransportText: Int = 10
+          val _columnIndexOfParticipantAddresses: Int = 11
           val _result: MutableList<ThreadSummary> = mutableListOf()
           while (_stmt.step()) {
             val _item: ThreadSummary
@@ -377,7 +389,13 @@ public class ThreadsDao_Impl(
             } else {
               _tmpSecureTransportText = _stmt.getText(_columnIndexOfSecureTransportText)
             }
-            _item = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText)
+            val _tmpParticipantAddresses: String?
+            if (_stmt.isNull(_columnIndexOfParticipantAddresses)) {
+              _tmpParticipantAddresses = null
+            } else {
+              _tmpParticipantAddresses = _stmt.getText(_columnIndexOfParticipantAddresses)
+            }
+            _item = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText,_tmpParticipantAddresses)
             _result.add(_item)
           }
           _result
@@ -390,7 +408,7 @@ public class ThreadsDao_Impl(
 
   public override fun getThreadSummaries(folder: Int, threadIds: List<Int>): PagingSource<Int, ThreadSummary> {
     val _stringBuilder: StringBuilder = StringBuilder()
-    _stringBuilder.append("SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE unread.thread_id = t.threadId AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.threadId IN (")
+    _stringBuilder.append("SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, t.isArchive, t.isBlocked, (SELECT COUNT(*) FROM Conversations unread  WHERE (unread.thread_id = t.threadId OR unread.mms_thread_id = t.threadId)  AND unread.read = 0) AS unreadCount, latest.sms_data AS smsData, latest.secure_transport_text AS secureTransportText, (SELECT GROUP_CONCAT(tp.address, ',') FROM ThreadParticipants tp  WHERE tp.threadId = t.threadId) AS participantAddresses FROM Threads t LEFT JOIN Conversations latest ON latest.id = t.conversationId WHERE t.threadId IN (")
     val _inputSize: Int = threadIds.size
     appendPlaceholders(_stringBuilder, _inputSize)
     _stringBuilder.append(") AND t.address IS NOT NULL AND ((")
@@ -405,7 +423,7 @@ public class ThreadsDao_Impl(
     _stringBuilder.append("?")
     _stringBuilder.append(" = 4 AND t.isBlocked = 1)) ORDER BY CASE WHEN ")
     _stringBuilder.append("?")
-    _stringBuilder.append(" = 0 THEN t.isPinned ELSE 0 END DESC, t.date DESC")
+    _stringBuilder.append(" = 0 THEN t.isPinned ELSE 0 END DESC, t.date DESC, t.threadId DESC")
     val _sql: String = _stringBuilder.toString()
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql) { _stmt ->
       var _argIndex: Int = 1
@@ -426,7 +444,7 @@ public class ThreadsDao_Impl(
       _argIndex = 6 + _inputSize
       _stmt.bindLong(_argIndex, folder.toLong())
     }
-    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "Threads") {
+    return object : LimitOffsetPagingSource<ThreadSummary>(_rawQuery, __db, "Conversations", "ThreadParticipants", "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<ThreadSummary> = performSuspending(__db, true, false) { _connection ->
         val _stmt: SQLiteStatement = _connection.prepare(limitOffsetQuery.sql)
         limitOffsetQuery.getBindingFunction().invoke(_stmt)
@@ -442,6 +460,7 @@ public class ThreadsDao_Impl(
           val _columnIndexOfUnreadCount: Int = 8
           val _columnIndexOfSmsData: Int = 9
           val _columnIndexOfSecureTransportText: Int = 10
+          val _columnIndexOfParticipantAddresses: Int = 11
           val _result: MutableList<ThreadSummary> = mutableListOf()
           while (_stmt.step()) {
             val _item_1: ThreadSummary
@@ -483,7 +502,13 @@ public class ThreadsDao_Impl(
             } else {
               _tmpSecureTransportText = _stmt.getText(_columnIndexOfSecureTransportText)
             }
-            _item_1 = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText)
+            val _tmpParticipantAddresses: String?
+            if (_stmt.isNull(_columnIndexOfParticipantAddresses)) {
+              _tmpParticipantAddresses = null
+            } else {
+              _tmpParticipantAddresses = _stmt.getText(_columnIndexOfParticipantAddresses)
+            }
+            _item_1 = ThreadSummary(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpIsPinned,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnreadCount,_tmpSmsData,_tmpSecureTransportText,_tmpParticipantAddresses)
             _result.add(_item_1)
           }
           _result
@@ -515,7 +540,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getArchived(): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 1 ORDER BY date DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE isArchive = 1 ORDER BY date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
     return object : LimitOffsetPagingSource<Threads>(_rawQuery, __db, "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Threads> = performSuspending(__db, true, false) { _connection ->
@@ -585,7 +610,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getType(type: Int): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE type = ? ORDER BY date DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE type = ? ORDER BY date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql) { _stmt ->
       var _argIndex: Int = 1
       _stmt.bindLong(_argIndex, type.toLong())
@@ -658,7 +683,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getIsMute(): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE isMute = 1 ORDER BY date DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE isMute = 1 ORDER BY date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
     return object : LimitOffsetPagingSource<Threads>(_rawQuery, __db, "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Threads> = performSuspending(__db, true, false) { _connection ->
@@ -728,7 +753,7 @@ public class ThreadsDao_Impl(
   }
 
   public override fun getIsBlocked(): PagingSource<Int, Threads> {
-    val _sql: String = "SELECT * FROM Threads WHERE isBlocked = 1 ORDER BY date DESC"
+    val _sql: String = "SELECT * FROM Threads WHERE isBlocked = 1 ORDER BY date DESC, threadId DESC"
     val _rawQuery: RoomRawQuery = RoomRawQuery(_sql)
     return object : LimitOffsetPagingSource<Threads>(_rawQuery, __db, "Threads") {
       protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Threads> = performSuspending(__db, true, false) { _connection ->
@@ -925,6 +950,72 @@ public class ThreadsDao_Impl(
           _result = Threads(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpType,_tmpConversationId,_tmpIsMms,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnread,_tmpIsPinned)
         } else {
           _result = null
+        }
+        _result
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
+  public override fun getAllSnapshot(): List<Threads> {
+    val _sql: String = "SELECT * FROM Threads WHERE address IS NOT NULL"
+    return performBlocking(__db, true, false) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        val _columnIndexOfThreadId: Int = getColumnIndexOrThrow(_stmt, "threadId")
+        val _columnIndexOfAddress: Int = getColumnIndexOrThrow(_stmt, "address")
+        val _columnIndexOfSnippet: Int = getColumnIndexOrThrow(_stmt, "snippet")
+        val _columnIndexOfDate: Int = getColumnIndexOrThrow(_stmt, "date")
+        val _columnIndexOfType: Int = getColumnIndexOrThrow(_stmt, "type")
+        val _columnIndexOfConversationId: Int = getColumnIndexOrThrow(_stmt, "conversationId")
+        val _columnIndexOfIsMms: Int = getColumnIndexOrThrow(_stmt, "isMms")
+        val _columnIndexOfIsMute: Int = getColumnIndexOrThrow(_stmt, "isMute")
+        val _columnIndexOfIsArchive: Int = getColumnIndexOrThrow(_stmt, "isArchive")
+        val _columnIndexOfIsBlocked: Int = getColumnIndexOrThrow(_stmt, "isBlocked")
+        val _columnIndexOfUnread: Int = getColumnIndexOrThrow(_stmt, "unread")
+        val _columnIndexOfIsPinned: Int = getColumnIndexOrThrow(_stmt, "isPinned")
+        val _result: MutableList<Threads> = mutableListOf()
+        while (_stmt.step()) {
+          val _item: Threads
+          val _tmpThreadId: Int
+          _tmpThreadId = _stmt.getLong(_columnIndexOfThreadId).toInt()
+          val _tmpAddress: String
+          _tmpAddress = _stmt.getText(_columnIndexOfAddress)
+          val _tmpSnippet: String
+          _tmpSnippet = _stmt.getText(_columnIndexOfSnippet)
+          val _tmpDate: Long
+          _tmpDate = _stmt.getLong(_columnIndexOfDate)
+          val _tmpType: Int
+          _tmpType = _stmt.getLong(_columnIndexOfType).toInt()
+          val _tmpConversationId: Long
+          _tmpConversationId = _stmt.getLong(_columnIndexOfConversationId)
+          val _tmpIsMms: Boolean
+          val _tmp: Int
+          _tmp = _stmt.getLong(_columnIndexOfIsMms).toInt()
+          _tmpIsMms = _tmp != 0
+          val _tmpIsMute: Boolean
+          val _tmp_1: Int
+          _tmp_1 = _stmt.getLong(_columnIndexOfIsMute).toInt()
+          _tmpIsMute = _tmp_1 != 0
+          val _tmpIsArchive: Boolean
+          val _tmp_2: Int
+          _tmp_2 = _stmt.getLong(_columnIndexOfIsArchive).toInt()
+          _tmpIsArchive = _tmp_2 != 0
+          val _tmpIsBlocked: Boolean
+          val _tmp_3: Int
+          _tmp_3 = _stmt.getLong(_columnIndexOfIsBlocked).toInt()
+          _tmpIsBlocked = _tmp_3 != 0
+          val _tmpUnread: Boolean
+          val _tmp_4: Int
+          _tmp_4 = _stmt.getLong(_columnIndexOfUnread).toInt()
+          _tmpUnread = _tmp_4 != 0
+          val _tmpIsPinned: Boolean
+          val _tmp_5: Int
+          _tmp_5 = _stmt.getLong(_columnIndexOfIsPinned).toInt()
+          _tmpIsPinned = _tmp_5 != 0
+          _item = Threads(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpType,_tmpConversationId,_tmpIsMms,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnread,_tmpIsPinned)
+          _result.add(_item)
         }
         _result
       } finally {
@@ -1240,6 +1331,60 @@ public class ThreadsDao_Impl(
     return performBlocking(__db, false, true) { _connection ->
       val _stmt: SQLiteStatement = _connection.prepare(_sql)
       try {
+        _stmt.step()
+        getTotalChangedRows(_connection)
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
+  public override fun markThreadsAsRead(threadIds: List<Int>): Int {
+    val _stringBuilder: StringBuilder = StringBuilder()
+    _stringBuilder.append("UPDATE Threads SET unread = 0 WHERE threadId IN (")
+    val _inputSize: Int = threadIds.size
+    appendPlaceholders(_stringBuilder, _inputSize)
+    _stringBuilder.append(")")
+    val _sql: String = _stringBuilder.toString()
+    return performBlocking(__db, false, true) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        var _argIndex: Int = 1
+        for (_item: Int in threadIds) {
+          _stmt.bindLong(_argIndex, _item.toLong())
+          _argIndex++
+        }
+        _stmt.step()
+        getTotalChangedRows(_connection)
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
+  public override fun markConversationRowsAsRead(threadIds: List<Int>): Int {
+    val _stringBuilder: StringBuilder = StringBuilder()
+    _stringBuilder.append("UPDATE Conversations SET read = 1 WHERE thread_id IN (")
+    val _inputSize: Int = threadIds.size
+    appendPlaceholders(_stringBuilder, _inputSize)
+    _stringBuilder.append(") OR mms_thread_id IN (")
+    val _inputSize_1: Int = threadIds.size
+    appendPlaceholders(_stringBuilder, _inputSize_1)
+    _stringBuilder.append(")")
+    val _sql: String = _stringBuilder.toString()
+    return performBlocking(__db, false, true) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        var _argIndex: Int = 1
+        for (_item: Int in threadIds) {
+          _stmt.bindLong(_argIndex, _item.toLong())
+          _argIndex++
+        }
+        _argIndex = 1 + _inputSize
+        for (_item_1: Int in threadIds) {
+          _stmt.bindLong(_argIndex, _item_1.toLong())
+          _argIndex++
+        }
         _stmt.step()
         getTotalChangedRows(_connection)
       } finally {

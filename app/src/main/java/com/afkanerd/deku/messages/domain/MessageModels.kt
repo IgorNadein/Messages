@@ -184,13 +184,29 @@ data class ConversationHeader(
     val subscriptions: List<SimSubscription>,
     val securityState: ConversationSecurityState,
     val secureSendingEnabled: Boolean = true,
+    /** A secure send is desired, even if the route currently needs repair. */
+    val secureSendingRequested: Boolean = secureSendingEnabled,
     val isMuted: Boolean = false,
     val participants: List<MessageRecipient> = emptyList(),
     val availableContactNumbers: List<MessageRecipient> = emptyList(),
     val relatedThreadIds: List<Int> = listOf(threadId),
+    val securityChannels: List<SecureChannel> = emptyList(),
 ) {
     val isGroupConversation: Boolean
         get() = participants.size > 1
+}
+
+data class SecureChannel(
+    val remoteAddress: String,
+    val remoteLabel: String?,
+    val subscriptionId: Long,
+    val subscriptionName: String,
+    val state: ConversationSecurityState,
+    val encryptFutureMessages: Boolean,
+) {
+    val isEstablished: Boolean
+        get() = state == ConversationSecurityState.SECURE_UNVERIFIED ||
+            state == ConversationSecurityState.SECURE_VERIFIED
 }
 
 data class SimSubscription(

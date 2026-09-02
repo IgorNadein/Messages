@@ -75,7 +75,11 @@ class GatewayServerViewModel : ViewModel() {
         conversation: Conversations
     ) {
         val address = conversation.sms?.address ?: return
-        if(SecureSessionStatusResolver.resolve(context, address) != SecureSessionStatus.PLAIN) {
+        if(SecureSessionStatusResolver.resolve(
+            context,
+            address,
+            conversation.sms?.sub_id ?: -1,
+        ) != SecureSessionStatus.PLAIN) {
             return
         }
         val constraints = Constraints.Builder()

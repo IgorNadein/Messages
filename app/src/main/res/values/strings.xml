@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="attachment_menu">Send encrypted attachment</string>
     <string name="attachment_file">File</string>
     <string name="attachment_photo">Photo</string>
@@ -599,6 +599,13 @@
     <string name="oneui_message_favorite">Favorite message</string>
     <string name="oneui_encrypt_future_messages">Encrypt future messages</string>
     <string name="oneui_encrypt_future_messages_description">Turn this off to send future messages as regular SMS. Existing keys and message history are kept.</string>
+    <string name="oneui_secure_channels">Secure channels</string>
+    <string name="oneui_secure_channel_pair">%1$s ↔ %2$s</string>
+    <string name="oneui_encrypt_unavailable_description">Establish a secure channel for this number and SIM before enabling encryption.</string>
+    <string name="oneui_secure_send_warning_title">Secure channel unavailable</string>
+    <string name="oneui_secure_send_warning_message">Encryption is expected for this number and SIM, but the secure channel is not ready. Establish it again or send this message without encryption.</string>
+    <string name="oneui_establish_secure_channel">Establish secure channel</string>
+    <string name="oneui_send_once_unencrypted">Send once without encryption</string>
     <string name="oneui_secure_key_changed">Security key changed</string>
     <string name="oneui_secure_recovery">Secure chat needs attention</string>
     <string name="oneui_start_secure">Start secure chat</string>
@@ -696,4 +703,19 @@
     <string name="oneui_unencrypted_resend_title">Send without encryption?</string>
     <string name="oneui_unencrypted_resend_message">This message was intended to be encrypted. When sent with %1$s, it will be sent as an ordinary unencrypted message.</string>
     <string name="oneui_send_unencrypted">Send anyway</string>
+    <string name="oneui_secure_message_transport">Secure message transport</string>
+    <string name="oneui_transport_standard_sms">Standard SMS</string>
+    <string name="oneui_transport_data_sms">Data SMS</string>
+    <string name="oneui_data_sms_warning_title">Enable Data SMS?</string>
+    <string name="oneui_data_sms_warning_message">Data SMS works only when the recipient uses this app with the same transport enabled. The first secure message in each chat will still be sent as a standard SMS. Later secure messages will not appear in other SMS apps and may be lost if the recipient cannot receive Data SMS.</string>
+    <string name="oneui_enable_data_sms">Enable</string>
+    <string name="oneui_media_transport">Media transport</string>
+    <string name="oneui_media_transport_mms">MMS (default)</string>
+    <string name="oneui_media_transport_data_sms">SMS packets</string>
+    <string name="oneui_media_transport_cloud">Internet storage</string>
+    <string name="oneui_media_data_sms_warning_title">Send media as SMS packets?</string>
+    <string name="oneui_media_data_sms_warning_message">Files will be split into many Data SMS messages and can only be received by this app. Carrier SMS charges may apply. Receiving remains automatic and does not require the other person to select the same outgoing transport.</string>
+    <string name="oneui_cloud_media_setup_required">Storage account or server required</string>
+    <string name="oneui_cloud_media_not_configured_title">Internet storage is not configured</string>
+    <string name="oneui_cloud_media_not_configured_message">Connect your own server, Yandex Disk, or Google Drive before choosing this transport.</string>
 </resources>

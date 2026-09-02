@@ -12,12 +12,11 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.onAllNodes
-import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -32,6 +31,7 @@ import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.test.swipe
 import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -60,6 +60,7 @@ import com.afkanerd.deku.messages.domain.MessageService
 import com.afkanerd.deku.messages.domain.PreparedAttachment
 import com.afkanerd.deku.messages.domain.SecureSessionActionResult
 import com.afkanerd.deku.messages.domain.SendResult
+import com.afkanerd.deku.messages.domain.SecureMessageTransport
 import com.afkanerd.deku.messages.domain.SimSubscription
 import com.afkanerd.deku.messages.domain.TimelineItem
 import com.afkanerd.deku.messages.presentation.ConversationViewModel
@@ -67,6 +68,7 @@ import com.afkanerd.deku.messages.presentation.InboxViewModel
 import com.afkanerd.deku.messages.presentation.NewMessageDestination
 import com.afkanerd.deku.messages.presentation.NewMessageViewModel
 import com.afkanerd.deku.messages.service.MessagePagingPolicy
+import com.afkanerd.deku.security.SecureMessageTransportPreference
 import com.afkanerd.deku.messages.ui.ConversationScreen
 import com.afkanerd.deku.messages.ui.InboxScreen
 import com.afkanerd.deku.messages.ui.NewMessageScreen
@@ -74,6 +76,8 @@ import com.afkanerd.deku.messages.ui.theme.MessagesAppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CompletableDeferred
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -84,6 +88,36 @@ import java.io.File
 class VerticalSliceInstrumentedTest {
     @get:Rule
     val composeRule = createComposeRule()
+
+    @Test
+    fun dataSmsTransportIsOptInAndRequiresPerRecipientBootstrap() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        context.getSharedPreferences("secure_message_transport", android.content.Context.MODE_PRIVATE)
+            .edit().clear().commit()
+        val address = "+79990000001"
+
+        assertEquals(
+            SecureMessageTransport.STANDARD_SMS,
+            SecureMessageTransportPreference.selected(context),
+        )
+        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.DATA_SMS)
+        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
+
+        SecureMessageTransportPreference.markFirstLegacyMessageComplete(context, address)
+        assertTrue(SecureMessageTransportPreference.shouldUseData(context, address))
+        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, "+79990000002"))
+
+        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.STANDARD_SMS)
+        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.DATA_SMS)
+        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
+
+        SecureMessageTransportPreference.resetPeer(context, address)
+        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
+        SecureMessageTransportPreference.setSelected(
+            context,
+            SecureMessageTransport.STANDARD_SMS,
+        )
+    }
 
     @Test
     fun inboxRestoresScrollPositionAfterOpeningConversationAndReturning() {
@@ -263,6 +297,25 @@ class VerticalSliceInstrumentedTest {
         }
 
         composeRule.onNodeWithTag("oneui-inbox-unread-summary").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-inbox-unread-badge")
+            .assertIsDisplayed()
+            .assertTextEquals("3")
+        val badgeBounds = composeRule.onNodeWithTag("oneui-inbox-unread-badge")
+            .fetchSemanticsNode().boundsInRoot
+        val conversationIconBounds = composeRule
+            .onNodeWithTag("oneui-inbox-conversations-icon", useUnmergedTree = true)
+            .fetchSemanticsNode().boundsInRoot
+        val density = context.resources.displayMetrics.density
+        val overlapWidth = (minOf(badgeBounds.right, conversationIconBounds.right) -
+            maxOf(badgeBounds.left, conversationIconBounds.left)).coerceAtLeast(0f)
+        val overlapHeight = (minOf(badgeBounds.bottom, conversationIconBounds.bottom) -
+            maxOf(badgeBounds.top, conversationIconBounds.top)).coerceAtLeast(0f)
+        val iconArea = conversationIconBounds.width * conversationIconBounds.height
+        assertTrue("badge=$badgeBounds", badgeBounds.height / density in 15f..19f)
+        assertTrue(
+            "badge=$badgeBounds icon=$conversationIconBounds",
+            overlapWidth * overlapHeight < iconArea * 0.25f,
+        )
         composeRule.onNodeWithText(
             context.resources.getQuantityString(R.plurals.oneui_unread_messages, 3, 3)
         ).assertIsDisplayed()
@@ -840,8 +893,81 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(41)
         composeRule.waitForIdle()
         composeRule.onNodeWithText("$EXISTING_CONTACT 39").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-inbox-list-bottom").assertIsDisplayed()
         composeRule.mainClock.advanceTimeBy(500)
         composeRule.waitForIdle()
+        composeRule.onNodeWithText("$EXISTING_CONTACT 39").assertIsDisplayed()
+    }
+
+    @Test
+    fun pagingRefreshKeepsTheVisibleBottomConversationAnchored() {
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            conversationCount = 80,
+            regeneratingInbox = true,
+        )
+        val viewModel = InboxViewModel(service)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                InboxScreen(
+                    viewModel = viewModel,
+                    onRequestDefaultSmsRole = {},
+                    onRequestContacts = {},
+                    onConversationClick = {},
+                    onSearchClick = {},
+                    onSettingsClick = {},
+                    onNewMessageClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(81)
+        composeRule.onNodeWithText("$EXISTING_CONTACT 79").assertIsDisplayed()
+
+        service.invalidateConversationPaging()
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("$EXISTING_CONTACT 79").assertIsDisplayed()
+    }
+
+    @Test
+    fun appendSpinnerDoesNotReplaceRowsOrTeleportTheList() {
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            conversationCount = 40,
+            delayedAppend = true,
+        )
+        val viewModel = InboxViewModel(service)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                InboxScreen(
+                    viewModel = viewModel,
+                    onRequestDefaultSmsRole = {},
+                    onRequestContacts = {},
+                    onConversationClick = {},
+                    onSearchClick = {},
+                    onSettingsClick = {},
+                    onNewMessageClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(11)
+        composeRule.waitUntil(timeoutMillis = 5_000) { service.appendStarted }
+        composeRule.onNodeWithTag("oneui-inbox-append-loading").assertIsDisplayed()
+        composeRule.onNodeWithText("$EXISTING_CONTACT 9").assertIsDisplayed()
+
+        service.releaseAppend()
+        composeRule.waitUntil(timeoutMillis = 5_000) { service.maxLoadedConversation >= 19 }
+        composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(21)
+        composeRule.waitUntil(timeoutMillis = 5_000) { service.maxLoadedConversation >= 29 }
+        composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(31)
+        composeRule.waitUntil(timeoutMillis = 5_000) { service.maxLoadedConversation >= 39 }
+        composeRule.onNodeWithTag("oneui-inbox-list").performScrollToIndex(41)
         composeRule.onNodeWithText("$EXISTING_CONTACT 39").assertIsDisplayed()
     }
 
@@ -945,6 +1071,50 @@ class VerticalSliceInstrumentedTest {
             "securityStatus=$securityStatus composerBackground=$composerBackground",
             composerBackground.top >= securityStatus.bottom,
         )
+
+        // Regression: IME padding belongs to the measured bottom overlay. If it
+        // is measured inside the padding modifier, only the composer moves and
+        // the newest message remains hidden behind the software keyboard.
+        composeRule.onNodeWithTag("oneui-message-input").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onNodeWithTag("oneui-conversation-composer-background")
+                .fetchSemanticsNode().boundsInRoot.top < composerBackground.top - 100f
+        }
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            val visibleLatest = composeRule.onNodeWithContentDescription(
+                "message-50000",
+                substring = true,
+            ).fetchSemanticsNode().boundsInRoot
+            val visibleSecurity = composeRule.onNodeWithTag("oneui-security-inline-status")
+                .fetchSemanticsNode().boundsInRoot
+            visibleLatest.bottom <= visibleSecurity.top
+        }
+    }
+
+    @Test
+    fun openingConversationMarksEveryThreadForTheContactRead() {
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            multipleContactNumbers = true,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.markedReadThreadIds.contains(listOf(THREAD_ID, THREAD_ID + 1))
+        }
     }
 
     @Test
@@ -1086,9 +1256,8 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithTag("oneui-message-actions").assertIsDisplayed()
         composeRule.onNodeWithTag("oneui-message-action-select-text").assertIsDisplayed()
         composeRule.onNodeWithTag("oneui-message-action-favorite").assertIsDisplayed()
-        val rootBounds = composeRule.onAllNodes(isRoot()).fetchSemanticsNodes()
-            .maxBy { it.boundsInWindow.width }
-            .boundsInWindow
+        val rootBounds = composeRule.onNodeWithTag("oneui-conversation-bottom-overlay")
+            .fetchSemanticsNode().boundsInWindow
         val messageBounds = message.fetchSemanticsNode().boundsInWindow
         val menuBounds = composeRule.onNodeWithTag("oneui-message-actions")
             .fetchSemanticsNode().boundsInWindow
@@ -1132,6 +1301,53 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithTag("oneui-message-delete-confirm").performClick()
         composeRule.waitUntil(timeoutMillis = 5_000) {
             service.deletedMessageStableIds == listOf("synthetic-50000")
+        }
+    }
+
+    @Test
+    fun failedSecureMessageRequiresConfirmationBeforeDifferentSimResend() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            dualSim = true,
+            outgoingDeliveryPreview = true,
+            secureFailedPreview = true,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        val failed = composeRule.onNodeWithTag("oneui-message-bubble-delivery-failed")
+        failed.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-retry").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-message-action-resend-sim-$SECOND_SIM")
+            .performClick()
+        composeRule.onNodeWithText(context.getString(R.string.oneui_unencrypted_resend_title))
+            .assertIsDisplayed()
+        composeRule.runOnIdle { assertTrue(service.resendActions.isEmpty()) }
+        composeRule.onNodeWithTag("oneui-message-plain-resend-confirm").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.resendActions == listOf(Triple("delivery-failed", SECOND_SIM, true))
+        }
+
+        failed.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-retry").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.resendActions == listOf(
+                Triple("delivery-failed", SECOND_SIM, true),
+                Triple("delivery-failed", SELECTED_SIM, false),
+            )
         }
     }
 
@@ -1504,6 +1720,9 @@ class VerticalSliceInstrumentedTest {
         private val includeDecryptionFailure: Boolean = false,
         private val multipleContactNumbers: Boolean = false,
         private val outgoingDeliveryPreview: Boolean = false,
+        private val secureFailedPreview: Boolean = false,
+        private val regeneratingInbox: Boolean = false,
+        private val delayedAppend: Boolean = false,
     ) : MessageService {
         var promptCompleted = false
         var importCalls = 0
@@ -1512,6 +1731,7 @@ class VerticalSliceInstrumentedTest {
         var sentText: String? = null
         var sentAddress: String? = null
         var sentSubscriptionId: Long? = null
+        var selectedSubscriptionId: Long = SELECTED_SIM
         var savedDraftText: String? = null
         var sendCalls = 0
         var mmsSendCalls = 0
@@ -1521,15 +1741,29 @@ class VerticalSliceInstrumentedTest {
         var requestedTimelineThreadIds: List<Int> = emptyList()
         val deletedMessageStableIds = mutableListOf<String>()
         val favoriteMessageActions = mutableListOf<Pair<String, Boolean>>()
+        val resendActions = mutableListOf<Triple<String, Long, Boolean>>()
         val threadActions = mutableListOf<Pair<Int, ConversationThreadAction>>()
+        val markedReadThreadIds = mutableListOf<List<Int>>()
         val createdGroups = mutableListOf<ConversationGroup>()
         val updatedGroups = mutableListOf<ConversationGroup>()
         val deletedGroupIds = mutableListOf<String>()
         val requestedGroupIds = mutableListOf<String?>()
         private val groups = MutableStateFlow<List<ConversationGroup>>(emptyList())
+        private val conversationGeneration = MutableStateFlow(0)
+        private val appendRelease = CompletableDeferred<Unit>()
+        @Volatile var appendStarted = false
+        @Volatile var maxLoadedConversation = -1
 
         fun seedGroups(value: List<ConversationGroup>) {
             groups.value = value
+        }
+
+        fun invalidateConversationPaging() {
+            conversationGeneration.value += 1
+        }
+
+        fun releaseAppend() {
+            appendRelease.complete(Unit)
         }
 
         override fun isDefaultSmsApp() = defaultSms
@@ -1545,22 +1779,62 @@ class VerticalSliceInstrumentedTest {
 
         override fun conversationThreads(
             folder: com.afkanerd.deku.messages.domain.ConversationFolder,
-        ): Flow<PagingData<ConversationThread>> = flowOf(
-            PagingData.from(
-                List(conversationCount) { index ->
-                    ConversationThread(
-                        id = THREAD_ID + index,
-                        address = if(index == 0) ADDRESS else "$ADDRESS-$index",
-                        displayName = if(index == 0) EXISTING_CONTACT else "$EXISTING_CONTACT $index",
-                        avatarUri = null,
-                        snippet = "existing SMS $index",
-                        timestampMillis = 1_725_000_000_000 - index,
-                        unreadCount = 1,
-                        isPinned = false,
-                        isMuted = false,
+        ): Flow<PagingData<ConversationThread>> {
+            if(delayedAppend) return delayedConversationThreads()
+            val page = {
+                PagingData.from(
+                    List(conversationCount, ::conversationThread)
+                )
+            }
+            return if(regeneratingInbox) conversationGeneration.map { page() }
+            else flowOf(page())
+        }
+
+        private fun delayedConversationThreads(): Flow<PagingData<ConversationThread>> = Pager(
+            PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                prefetchDistance = 1,
+                enablePlaceholders = false,
+            )
+        ) {
+            object : PagingSource<Int, ConversationThread>() {
+                override suspend fun load(
+                    params: LoadParams<Int>,
+                ): LoadResult<Int, ConversationThread> {
+                    val start = params.key ?: 0
+                    if(start > 0) {
+                        appendStarted = true
+                        appendRelease.await()
+                    }
+                    val end = minOf(conversationCount, start + params.loadSize)
+                    maxLoadedConversation = maxOf(maxLoadedConversation, end - 1)
+                    return LoadResult.Page(
+                        data = (start until end).map(::conversationThread),
+                        prevKey = null,
+                        nextKey = end.takeIf { it < conversationCount },
                     )
                 }
-            )
+
+                override fun getRefreshKey(
+                    state: PagingState<Int, ConversationThread>,
+                ): Int? = state.anchorPosition?.let { anchor ->
+                    state.closestPageToPosition(anchor)?.prevKey?.plus(state.config.pageSize)
+                        ?: state.closestPageToPosition(anchor)?.nextKey?.minus(state.config.pageSize)
+                }
+            }
+        }.flow
+
+        private fun conversationThread(index: Int) = ConversationThread(
+            id = THREAD_ID + index,
+            address = if(index == 0) ADDRESS else "$ADDRESS-$index",
+            displayName = if(index == 0) EXISTING_CONTACT else "$EXISTING_CONTACT $index",
+            avatarUri = null,
+            snippet = "existing SMS $index",
+            timestampMillis = 1_725_000_000_000 - index,
+            unreadCount = 1,
+            isPinned = false,
+            isMuted = false,
         )
 
         override fun conversationThreads(
@@ -1621,6 +1895,10 @@ class VerticalSliceInstrumentedTest {
         }
 
         override fun unreadMessageCount(): Flow<Int> = flowOf(unreadMessages)
+        override suspend fun markConversationRead(threadIds: List<Int>): Boolean {
+            markedReadThreadIds += threadIds
+            return true
+        }
 
         override suspend fun updateConversationThread(
             threadId: Int,
@@ -1655,7 +1933,9 @@ class VerticalSliceInstrumentedTest {
                                     text = "delivery-${previewState.name.lowercase()}",
                                     direction = MessageDirection.OUTGOING,
                                     deliveryState = previewState,
-                                    isSecure = false,
+                                    isSecure = secureFailedPreview &&
+                                        previewState == DeliveryState.FAILED,
+                                    subscriptionId = SELECTED_SIM,
                                 )
                             } else if(includeDecryptionFailure && id == TOTAL_MESSAGES) {
                                 TimelineItem.SecurityEvent(
@@ -1733,6 +2013,16 @@ class VerticalSliceInstrumentedTest {
             favoriteMessageActions += stableId to favorite
             return true
         }
+        override suspend fun resendMessage(
+            addresses: List<String>,
+            threadId: Int,
+            subscriptionId: Long,
+            item: TimelineItem,
+            forcePlainText: Boolean,
+        ): SendResult {
+            resendActions += Triple(item.stableId, subscriptionId, forcePlainText)
+            return SendResult.Sent(3)
+        }
         override suspend fun performAttachmentAction(
             transferId: String,
             action: AttachmentAction,
@@ -1756,7 +2046,7 @@ class VerticalSliceInstrumentedTest {
                 address = address,
                 displayName = EXISTING_CONTACT,
                 avatarUri = null,
-                subscriptionId = SELECTED_SIM,
+                subscriptionId = selectedSubscriptionId,
                 subscriptions = buildList {
                     add(SimSubscription(SELECTED_SIM, "SIM 1", 0))
                     if(dualSim) add(SimSubscription(SECOND_SIM, "SIM 2", 1))
@@ -1813,7 +2103,9 @@ class VerticalSliceInstrumentedTest {
         ) {
             savedDraftText = text
         }
-        override suspend fun selectSubscription(address: String, subscriptionId: Long) = Unit
+        override suspend fun selectSubscription(address: String, subscriptionId: Long) {
+            selectedSubscriptionId = subscriptionId
+        }
         override suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) {
             secureSendingEnabled = enabled
         }

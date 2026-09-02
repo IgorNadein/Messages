@@ -26,6 +26,8 @@ import com.afkanerd.deku.messages.domain.SendResult
 import com.afkanerd.deku.messages.domain.SimSubscription
 import com.afkanerd.deku.messages.domain.TimelineItem
 import com.afkanerd.deku.messages.domain.ThemeMode
+import com.afkanerd.deku.messages.domain.SecureMessageTransport
+import com.afkanerd.deku.messages.domain.MediaTransport
 import com.afkanerd.deku.messages.service.GroupMessagePolicy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -319,6 +321,7 @@ data class ConversationUiState(
     val securityFingerprint: String? = null,
     val securityQrPayload: String? = null,
     val identityVerificationResult: IdentityVerificationResult? = null,
+    val showSecuritySendWarning: Boolean = false,
     val error: ConversationError? = null,
 )
 
@@ -384,8 +387,12 @@ class ConversationViewModel(
                         header = header,
                         draft = restoredDraft,
                         securityFingerprint = if(header.isGroupConversation) null
-                            else messageService.securityFingerprint(header.address),
+                            else messageService.securityFingerprint(
+                                header.address,
+                                header.subscriptionId,
+                            ),
                     )
+                    runCatching { messageService.markConversationRead(header.relatedThreadIds) }
                 }
                 .onFailure {
                     _state.value = _state.value.copy(error = ConversationError.SEND_FAILED)
@@ -406,9 +413,13 @@ class ConversationViewModel(
                         .ifEmpty { listOf(header.address) }
                     _state.value = _state.value.copy(
                         header = header,
-                        securityFingerprint = messageService.securityFingerprint(header.address),
+                        securityFingerprint = messageService.securityFingerprint(
+                            header.address,
+                            header.subscriptionId,
+                        ),
                         error = null,
                     )
+                    runCatching { messageService.markConversationRead(header.relatedThreadIds) }
                 }
                 .onFailure {
                     _state.value = _state.value.copy(error = ConversationError.SEND_FAILED)
@@ -430,6 +441,13 @@ class ConversationViewModel(
         draftSaveJob = viewModelScope.launch { saveDraftSnapshot() }
     }
 
+    fun markConversationRead() {
+        val threadIds = _state.value.header?.relatedThreadIds ?: return
+        viewModelScope.launch {
+            runCatching { messageService.markConversationRead(threadIds) }
+        }
+    }
+
     fun selectSubscription(subscriptionId: Long) {
         val header = _state.value.header ?: return
         if(header.subscriptionId == subscriptionId) return
@@ -439,6 +457,7 @@ class ConversationViewModel(
         viewModelScope.launch {
             messageService.selectSubscription(header.address, subscriptionId)
             saveDraftSnapshot()
+            refreshHeader()
         }
     }
 
@@ -450,7 +469,12 @@ class ConversationViewModel(
             error = null,
         )
         viewModelScope.launch {
-            messageService.setSecureSendingEnabled(header.address, enabled)
+            messageService.setSecureSendingEnabled(
+                header.address,
+                header.subscriptionId,
+                enabled,
+            )
+            refreshHeader()
         }
     }
 
@@ -459,6 +483,34 @@ class ConversationViewModel(
         val header = snapshot.header ?: return
         val body = snapshot.draft.trim()
         if(body.isEmpty() || snapshot.isSending) return
+        if(!header.isGroupConversation && header.secureSendingRequested &&
+            !header.secureSendingEnabled
+        ) {
+            _state.value = snapshot.copy(showSecuritySendWarning = true, error = null)
+            return
+        }
+
+        sendSnapshot(snapshot, forcePlainText = false)
+    }
+
+    fun sendWithoutEncryption() {
+        val snapshot = _state.value
+        val body = snapshot.draft.trim()
+        if(body.isEmpty() || snapshot.isSending) {
+            _state.value = snapshot.copy(showSecuritySendWarning = false)
+            return
+        }
+        _state.value = snapshot.copy(showSecuritySendWarning = false)
+        sendSnapshot(_state.value, forcePlainText = true)
+    }
+
+    fun dismissSecuritySendWarning() {
+        _state.value = _state.value.copy(showSecuritySendWarning = false)
+    }
+
+    private fun sendSnapshot(snapshot: ConversationUiState, forcePlainText: Boolean) {
+        val header = snapshot.header ?: return
+        val body = snapshot.draft.trim()
 
         viewModelScope.launch {
             _state.value = snapshot.copy(isSending = true, error = null)
@@ -478,6 +530,7 @@ class ConversationViewModel(
                     threadId = header.threadId,
                     subscriptionId = header.subscriptionId,
                     text = body,
+                    forcePlainText = forcePlainText,
                 )
             }
             when(sendResult) {
@@ -496,7 +549,7 @@ class ConversationViewModel(
                 is SendResult.BlockedBySecurity -> {
                     _state.value = _state.value.copy(
                         isSending = false,
-                        error = ConversationError.SECURITY_NOT_READY,
+                        showSecuritySendWarning = true,
                     )
                     refreshHeader()
                 }
@@ -546,7 +599,11 @@ class ConversationViewModel(
     fun verifyContactIdentity(qrPayload: String) {
         val header = _state.value.header ?: return
         viewModelScope.launch {
-            val verified = messageService.verifyContactIdentity(header.address, qrPayload)
+            val verified = messageService.verifyContactIdentity(
+                header.address,
+                header.subscriptionId,
+                qrPayload,
+            )
             _state.value = _state.value.copy(
                 identityVerificationResult = if(verified) {
                     IdentityVerificationResult.VERIFIED
@@ -737,6 +794,14 @@ class SettingsViewModel(
     fun setBoolean(setting: BooleanSetting, enabled: Boolean) {
         _state.value = settingsService.setBoolean(setting, enabled)
     }
+
+    fun setSecureMessageTransport(transport: SecureMessageTransport) {
+        _state.value = settingsService.setSecureMessageTransport(transport)
+    }
+
+    fun setMediaTransport(transport: MediaTransport) {
+        _state.value = settingsService.setMediaTransport(transport)
+    }
 }
 
 class SettingsViewModelFactory(
@@ -783,7 +848,10 @@ class ContactDetailsViewModel(
                 val header = messageService.conversationHeader(address, threadId)
                 Triple(
                     header,
-                    if(header.isGroupConversation) null else messageService.securityFingerprint(address),
+                    if(header.isGroupConversation) null else messageService.securityFingerprint(
+                        header.address,
+                        header.subscriptionId,
+                    ),
                     if(header.isGroupConversation) false else messageService.isContactBlocked(address),
                 )
             }.onSuccess { (header, fingerprint, blocked) ->
@@ -802,7 +870,21 @@ class ContactDetailsViewModel(
     fun selectSubscription(subscriptionId: Long) {
         val header = _state.value.header ?: return
         _state.value = _state.value.copy(header = header.copy(subscriptionId = subscriptionId))
-        viewModelScope.launch { messageService.selectSubscription(header.address, subscriptionId) }
+        viewModelScope.launch {
+            messageService.selectSubscription(header.address, subscriptionId)
+            runCatching { messageService.conversationHeader(header.address, header.threadId) }
+                .onSuccess { refreshed ->
+                    _state.value = _state.value.copy(
+                        header = refreshed,
+                        fingerprint = if(refreshed.isGroupConversation) null else {
+                            messageService.securityFingerprint(
+                                refreshed.address,
+                                refreshed.subscriptionId,
+                            )
+                        },
+                    )
+                }
+        }
     }
 
     fun toggleBlocked() {

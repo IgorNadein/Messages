@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -110,6 +111,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -435,7 +437,11 @@ private fun ConversationList(
                     velocityYPx = available.y,
                     density = density.density,
                 )
-                expandAfterReverseFling = available.y > REVERSE_FLING_EXPAND_VELOCITY_PX
+                expandAfterReverseFling = shouldExpandInboxHeaderAfterReverseFling(
+                    velocityYPx = available.y,
+                    density = density.density,
+                    firstVisibleItemIndex = listState.firstVisibleItemIndex,
+                )
                 return Velocity.Zero
             }
 
@@ -560,6 +566,8 @@ private fun ConversationList(
                         ConversationRow(
                             thread = thread,
                             roundedTop = index == 0,
+                            roundedBottom = state.selectedGroupId == null &&
+                                index == threads.itemCount - 1,
                             selected = thread.id in selectedThreads,
                             onClick = {
                                 if(selectedThreads.isEmpty()) {
@@ -579,24 +587,21 @@ private fun ConversationList(
                         )
                     }
                 }
-                if(threads.loadState.append is LoadState.Loading) {
-                    item(key = "append-loading") {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = MessagesTheme.dimensions.inboxOuterMargin)
-                                .background(MessagesTheme.semanticColors.inboxListSurface)
-                                .padding(24.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(Modifier.size(28.dp))
+                if(state.selectedGroupId != null) {
+                    if(threads.itemCount == 0 &&
+                        threads.loadState.refresh !is LoadState.NotLoading
+                    ) {
+                        item(key = "category-load-state") {
+                            InboxEmptySurface(
+                                loadState = threads.loadState.refresh,
+                                onRetry = threads::retry,
+                            )
                         }
                     }
-                }
-                if(state.selectedGroupId != null) {
                     item(key = "add-conversations-to-category") {
                         AddConversationsToCategoryRow(
-                            roundedTop = threads.itemCount == 0,
+                            roundedTop = threads.itemCount == 0 &&
+                                threads.loadState.refresh is LoadState.NotLoading,
                             onClick = {
                                 conversationGroups
                                     .firstOrNull { it.id == state.selectedGroupId }
@@ -611,10 +616,11 @@ private fun ConversationList(
                     }
                 } else if(threads.itemCount == 0) {
                     item(key = "empty-list-surface") {
-                        InboxEmptySurface(loadState = threads.loadState.refresh)
+                        InboxEmptySurface(
+                            loadState = threads.loadState.refresh,
+                            onRetry = threads::retry,
+                        )
                     }
-                } else {
-                    item(key = "list-surface-bottom") { InboxListSurfaceBottom() }
                 }
             }
 
@@ -649,6 +655,19 @@ private fun ConversationList(
                     .zIndex(0.5f)
                     .testTag("oneui-inbox-bottom-scrim"),
             )
+
+            if(state.selectedGroupId == null && threads.itemCount > 0) {
+                InboxAppendStatus(
+                    appendState = threads.loadState.append,
+                    onRetry = threads::retry,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(
+                            bottom = navigationBarPadding + bottomNavigationHeight + 16.dp,
+                        )
+                        .zIndex(1.5f),
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -756,6 +775,7 @@ private fun ConversationList(
                         )
                     }
                     InboxBottomNavigation(
+                        unreadMessageCount = unreadMessageCount,
                         onConversationsClick = {
                             viewModel.selectFolder(ConversationFolder.INBOX)
                         },
@@ -976,10 +996,17 @@ private enum class CategoryManagementStep { NONE, OVERVIEW, MANAGE }
 
 private const val MAX_UNPADDED_INBOX_ROWS = 4
 private const val FORWARD_FLING_HIDE_VELOCITY_DP = 1_200f
-private const val REVERSE_FLING_EXPAND_VELOCITY_PX = 1_200f
+private const val REVERSE_FLING_EXPAND_VELOCITY_DP = 1_200f
 
 internal fun shouldHideInboxChromeForFling(velocityYPx: Float, density: Float): Boolean =
     velocityYPx < -(FORWARD_FLING_HIDE_VELOCITY_DP * density)
+
+internal fun shouldExpandInboxHeaderAfterReverseFling(
+    velocityYPx: Float,
+    density: Float,
+    firstVisibleItemIndex: Int,
+): Boolean = firstVisibleItemIndex == 0 &&
+    velocityYPx > REVERSE_FLING_EXPAND_VELOCITY_DP * density
 
 @Composable
 private fun CategoryMemberSelectionDialog(
@@ -1746,7 +1773,10 @@ private fun AddConversationsToCategoryRow(
 }
 
 @Composable
-private fun InboxEmptySurface(loadState: LoadState) {
+private fun InboxEmptySurface(
+    loadState: LoadState,
+    onRetry: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -1759,10 +1789,16 @@ private fun InboxEmptySurface(loadState: LoadState) {
     ) {
         when(loadState) {
             is LoadState.Loading -> CircularProgressIndicator()
-            is LoadState.Error -> OneUiEmptyState(
-                title = stringResource(R.string.oneui_import_failed),
-                description = stringResource(R.string.oneui_retry),
-            )
+            is LoadState.Error -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                OneUiEmptyState(
+                    title = stringResource(R.string.oneui_import_failed),
+                    description = loadState.error.localizedMessage
+                        ?: stringResource(R.string.oneui_operation_failed),
+                )
+                TextButton(onClick = onRetry) {
+                    Text(stringResource(R.string.oneui_retry))
+                }
+            }
             is LoadState.NotLoading -> OneUiEmptyState(
                 title = stringResource(R.string.oneui_no_conversations),
                 description = stringResource(R.string.oneui_no_conversations_description),
@@ -1772,30 +1808,63 @@ private fun InboxEmptySurface(loadState: LoadState) {
 }
 
 @Composable
-private fun InboxListSurfaceBottom() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MessagesTheme.dimensions.inboxOuterMargin)
-            .height(112.dp)
-            .background(
-                color = MessagesTheme.semanticColors.inboxListSurface,
-                shape = RoundedCornerShape(
-                    bottomStart = MessagesTheme.dimensions.inboxSurfaceRadius,
-                    bottomEnd = MessagesTheme.dimensions.inboxSurfaceRadius,
-                ),
-            ),
-    )
+private fun InboxAppendStatus(
+    appendState: LoadState,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when(appendState) {
+        is LoadState.Loading -> Surface(
+            modifier = modifier.size(48.dp),
+            shape = androidx.compose.foundation.shape.CircleShape,
+            color = MessagesTheme.semanticColors.inboxControlSurface.copy(alpha = 0.9f),
+            tonalElevation = 0.dp,
+            shadowElevation = 4.dp,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(26.dp)
+                        .testTag("oneui-inbox-append-loading"),
+                )
+            }
+        }
+        is LoadState.Error -> Surface(
+            modifier = modifier,
+            shape = RoundedCornerShape(24.dp),
+            color = MessagesTheme.semanticColors.inboxControlSurface.copy(alpha = 0.9f),
+            tonalElevation = 0.dp,
+            shadowElevation = 4.dp,
+        ) {
+            TextButton(
+                onClick = onRetry,
+                modifier = Modifier.testTag("oneui-inbox-append-retry"),
+            ) {
+                Text(stringResource(R.string.oneui_retry))
+            }
+        }
+        is LoadState.NotLoading -> Unit
+    }
 }
 
 @Composable
 private fun InboxBottomNavigation(
+    unreadMessageCount: Int,
     onConversationsClick: () -> Unit,
     onContactsClick: () -> Unit,
     width: androidx.compose.ui.unit.Dp,
     height: androidx.compose.ui.unit.Dp,
     modifier: Modifier = Modifier,
 ) {
+    val unreadBadgeDescription = if(unreadMessageCount > 0) {
+        pluralStringResource(
+            R.plurals.oneui_unread_messages,
+            unreadMessageCount,
+            unreadMessageCount,
+        )
+    } else {
+        ""
+    }
     Surface(
         modifier = modifier
             .width(width)
@@ -1811,7 +1880,49 @@ private fun InboxBottomNavigation(
                 testTag = "oneui-inbox-conversations",
                 label = stringResource(R.string.oneui_conversations_navigation),
                 icon = {
-                    Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null)
+                    Box(
+                        modifier = Modifier.size(32.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            Icons.Outlined.ChatBubbleOutline,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .testTag("oneui-inbox-conversations-icon"),
+                        )
+                        if(unreadMessageCount > 0) {
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = 8.dp, y = (-5).dp)
+                                    .height(17.dp)
+                                    .widthIn(min = 17.dp)
+                                    .testTag("oneui-inbox-unread-badge")
+                                    .semantics(mergeDescendants = true) {
+                                        contentDescription = unreadBadgeDescription
+                                    },
+                                shape = androidx.compose.foundation.shape.CircleShape,
+                                color = MessagesTheme.semanticColors.unreadBadge,
+                                contentColor = MessagesTheme.semanticColors.onUnreadBadge,
+                                tonalElevation = 0.dp,
+                                shadowElevation = 0.dp,
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(horizontal = 4.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = if(unreadMessageCount > 99) "99+"
+                                            else unreadMessageCount.toString(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 },
                 onClick = onConversationsClick,
                 modifier = Modifier.weight(1f),
@@ -1878,14 +1989,17 @@ private fun InboxNavigationItem(
 private fun ConversationRow(
     thread: ConversationThread,
     roundedTop: Boolean,
+    roundedBottom: Boolean,
     selected: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ) {
-    val surfaceShape = if(roundedTop) RoundedCornerShape(
-        topStart = MessagesTheme.dimensions.inboxSurfaceRadius,
-        topEnd = MessagesTheme.dimensions.inboxSurfaceRadius,
-    ) else RoundedCornerShape(0.dp)
+    val surfaceShape = RoundedCornerShape(
+        topStart = if(roundedTop) MessagesTheme.dimensions.inboxSurfaceRadius else 0.dp,
+        topEnd = if(roundedTop) MessagesTheme.dimensions.inboxSurfaceRadius else 0.dp,
+        bottomStart = if(roundedBottom) MessagesTheme.dimensions.inboxSurfaceRadius else 0.dp,
+        bottomEnd = if(roundedBottom) MessagesTheme.dimensions.inboxSurfaceRadius else 0.dp,
+    )
     val rowColor by animateColorAsState(
         targetValue = if(selected) MessagesTheme.semanticColors.inboxSelectionSurface
             else MessagesTheme.semanticColors.inboxListSurface,
@@ -1900,7 +2014,8 @@ private fun ConversationRow(
                 color = MessagesTheme.semanticColors.inboxListSurface,
                 shape = surfaceShape,
             )
-            .then(if(roundedTop) Modifier.testTag("oneui-inbox-list-surface") else Modifier),
+            .then(if(roundedTop) Modifier.testTag("oneui-inbox-list-surface") else Modifier)
+            .then(if(roundedBottom) Modifier.testTag("oneui-inbox-list-bottom") else Modifier),
     ) {
         Box(
             modifier = Modifier
@@ -2024,10 +2139,12 @@ private fun ConversationRow(
                 }
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 76.dp, end = 24.dp),
-            color = MaterialTheme.colorScheme.outlineVariant,
-        )
+        if(!roundedBottom) {
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 76.dp, end = 24.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+        }
     }
 }
 

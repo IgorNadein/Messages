@@ -1,9 +1,9 @@
 <libraries>
   <library
       name=":@@:lib_smsmms_android::debug"
-      jars="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b3f5a741d8a94bff012aa669e8602718/transformed/out/jars/classes.jar:/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b3f5a741d8a94bff012aa669e8602718/transformed/out/jars/libs/R.jar"
+      jars="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b7619d024e1613323dc9096abb87ea4e/transformed/out/jars/classes.jar:/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b7619d024e1613323dc9096abb87ea4e/transformed/out/jars/libs/R.jar"
       resolved="Ð¡Ð¾Ð¾Ð±ÑÐµÐ½Ð¸Ñ:lib_smsmms_android:unspecified"
-      folder="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b3f5a741d8a94bff012aa669e8602718/transformed/out"
+      folder="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b7619d024e1613323dc9096abb87ea4e/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

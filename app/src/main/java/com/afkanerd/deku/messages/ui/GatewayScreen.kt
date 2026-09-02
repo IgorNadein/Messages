@@ -52,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.messages.domain.GatewayDraft
 import com.afkanerd.deku.messages.domain.GatewayPayloadFormat
@@ -62,6 +63,7 @@ import com.afkanerd.deku.messages.presentation.GatewayViewModel
 import com.afkanerd.deku.messages.ui.components.OneUiCompactBar
 import com.afkanerd.deku.messages.ui.components.OneUiEmptyState
 import com.afkanerd.deku.messages.ui.components.OneUiExpandedTitle
+import com.afkanerd.deku.messages.ui.components.ONE_UI_POPUP_MENU_ALPHA
 import com.afkanerd.deku.messages.ui.components.PasswordVisibilityButton
 import com.afkanerd.deku.messages.ui.theme.MessagesTheme
 
@@ -112,6 +114,11 @@ fun GatewayScreen(
                             DropdownMenu(
                                 expanded = addMenuExpanded,
                                 onDismissRequest = { addMenuExpanded = false },
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(
+                                    alpha = ONE_UI_POPUP_MENU_ALPHA,
+                                ),
+                                tonalElevation = 0.dp,
+                                shadowElevation = 8.dp,
                             ) {
                                 DropdownMenuItem(
                                     text = { Text(stringResource(R.string.add_new_gateway_server_http)) },

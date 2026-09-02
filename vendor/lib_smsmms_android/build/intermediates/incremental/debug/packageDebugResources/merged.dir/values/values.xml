@@ -328,8 +328,13 @@
     <string name="exchange">Exchange</string>
     <string name="export_native_sms_database">Export native SMS database</string>
     <string name="export_sms_mms_database">Export SMS/MMS database</string>
+    <string name="failed_to_send_message">Failed to send message</string>
     <string name="find_out_when_an_sms_message_is_delivered">Find out when an SMS message is delivered</string>
     <string name="folders">Folders</string>
+    <string name="foreground_service_failed_channel_description">Tap to reconnect gateway clients</string>
+    <string name="foreground_service_failed_channel_id" translatable="false">@string/foreground_service_failed_channel_name</string>
+    <string name="foreground_service_failed_channel_name">Gateway clients auto-reconnect</string>
+    <string name="foreground_service_image_transmission_descriptions">Image transmission over SMS</string>
     <string name="forward_message">forward message</string>
     <string name="friendly_name">"Friendly name: "</string>
     <string name="from">From: %1$s</string>
@@ -414,6 +419,7 @@
     <string name="message_failed_channel_id" translatable="false">@string/message_failed_channel_name</string>
     <string name="message_failed_channel_name" translatable="false">Message Failed</string>
     <string name="message_failed_notification_id" translatable="false">100000001</string>
+    <string name="message_failed_notifications_descriptions">Receive notifications when messages fail to send</string>
     <string name="message_failed_send_notification_description_a_message_failed_to_send_to">"A message failed to send to "</string>
     <string name="message_information">message information</string>
     <string name="message_threads_menu_cancel">cancel</string>
@@ -464,6 +470,7 @@
     <string name="open_side_menu">Open side menu</string>
     <string name="other_messaging_apps_would_have_access_to_the_system_s_database">Other messaging apps would have access to the system\'s database</string>
     <string name="password">Password</string>
+    <string name="pause">Pause</string>
     <string name="phone_number_copied_to_clipboard">Copied \'%1$s\' to clipboard</string>
     <string name="port">"Port: "</string>
     <string name="press_and_hold_to_manage">• Press and hold to manage</string>
@@ -472,6 +479,7 @@
     <string name="privacy_policy_url" translatable="false">https://smswithoutborders.com/privacy-policy</string>
     <string name="quality">Quality</string>
     <string name="queue_name">Queue name: </string>
+    <string name="queued_for_sending">Queued for sending…</string>
     <string name="queues">%1$s Queues</string>
     <string name="read_our_text_part">Read our</string>
     <string name="received">Received: %1$s</string>
@@ -484,6 +492,7 @@
     <string name="reset_complete">Reset complete!</string>
     <string name="resize">Resize</string>
     <string name="results_found">results found</string>
+    <string name="retry">Retry</string>
     <string name="return_back">Return back</string>
     <string name="route_incoming_messages_of_format">Route incoming messages of format</string>
     <string name="router_list_gateways">View Gateway servers</string>
@@ -511,6 +520,7 @@
     <string name="send_to">"Send to "</string>
     <string name="send_with">Send with</string>
     <string name="sending_images">Sending images…</string>
+    <string name="sending_stop">Sending stopped…</string>
     <string name="sending_with">Sending with</string>
     <string name="sent">Sent: %1$s</string>
     <string name="set_default_sms_app">Set default SMS app</string>
@@ -568,6 +578,7 @@
     <string name="something_went_wrong_with_sending">Something went wrong with sending!</string>
     <string name="state">"state: "</string>
     <string name="status">"status: "</string>
+    <string name="stop">Stop</string>
     <string name="subject">Subject: %1$s</string>
     <string name="switch_sim_cards">Switch SIM cards</string>
     <string name="system_default">System default</string>
@@ -593,9 +604,11 @@
     <string name="username">Username</string>
     <string name="virtual_host">"Virtual host: "</string>
     <string name="waiting_to_send">waiting to send…</string>
+    <string name="waiting_to_send_of">Waiting to send %1$d of %2$d</string>
     <string name="welcome_image">Welcome image</string>
     <string name="when_turned_off_would_use_your_system_s_default_time_format">When turned off would use your system\'s default time format</string>
     <string name="width">Width</string>
+    <string name="will_resume_sending_shortly">Sending will resume shortly…</string>
     <string name="your_phone_would_suggest_smart_replies_in_notifications_if_enabled">Your phone would suggest smart replies in notifications if enabled</string>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
     <style name="Theme.Swob_server" parent="Theme.MaterialComponents.DayNight.DarkActionBar">

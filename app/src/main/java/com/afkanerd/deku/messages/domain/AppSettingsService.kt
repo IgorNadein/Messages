@@ -6,6 +6,18 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class SecureMessageTransport {
+    STANDARD_SMS,
+    DATA_SMS,
+}
+
+/** User-selected transport for newly sent media. Receiving is transport-agnostic. */
+enum class MediaTransport {
+    MMS,
+    DATA_SMS,
+    CLOUD_STORAGE,
+}
+
 enum class BooleanSetting {
     STORE_IN_SYSTEM_DATABASE,
     DELETE_FROM_SYSTEM_DATABASE,
@@ -33,6 +45,9 @@ data class AppSettingsSnapshot(
     val keepArchived: Boolean,
     val contextReplies: Boolean,
     val use24HourTime: Boolean,
+    val secureMessageTransport: SecureMessageTransport = SecureMessageTransport.STANDARD_SMS,
+    val mediaTransport: MediaTransport = MediaTransport.MMS,
+    val cloudStorageConfigured: Boolean = false,
 )
 
 interface AppSettingsService {
@@ -43,4 +58,8 @@ interface AppSettingsService {
     fun setLanguage(tag: String): AppSettingsSnapshot
 
     fun setBoolean(setting: BooleanSetting, enabled: Boolean): AppSettingsSnapshot
+
+    fun setSecureMessageTransport(transport: SecureMessageTransport): AppSettingsSnapshot = snapshot()
+
+    fun setMediaTransport(transport: MediaTransport): AppSettingsSnapshot = snapshot()
 }

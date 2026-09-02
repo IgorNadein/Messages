@@ -40,16 +40,19 @@ public class DatabaseImpl_Impl : DatabaseImpl() {
   }
 
   protected override fun createOpenDelegate(): RoomOpenDelegate {
-    val _openDelegate: RoomOpenDelegate = object : RoomOpenDelegate(6, "9f7988dc238646fd764e9056a6c6067f", "f2402ca3c2bfaaed7352f2d90d84e5bb") {
+    val _openDelegate: RoomOpenDelegate = object : RoomOpenDelegate(7, "507577703d4b22582a65268dd93f06c4", "43cdcdd65af63dee005deb11e4590017") {
       public override fun createAllTables(connection: SQLiteConnection) {
         connection.execSQL("CREATE TABLE IF NOT EXISTS `Conversations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sms_data` BLOB, `secure_transport_text` TEXT, `sender_address` TEXT, `mms_text` TEXT, `mms_content_uri` TEXT, `mms_mimetype` TEXT, `mms_filename` TEXT, `mms_filepath` TEXT, `_id` INTEGER, `thread_id` INTEGER, `address` TEXT, `person` TEXT, `date` INTEGER, `date_sent` INTEGER, `protocol` TEXT, `read` INTEGER, `status` INTEGER, `type` INTEGER, `reply_path_present` TEXT, `subject` TEXT, `body` TEXT, `service_center` TEXT, `locked` INTEGER, `sub_id` INTEGER, `error_code` INTEGER, `creator` TEXT, `seen` INTEGER, `mms__id` INTEGER, `mms_thread_id` INTEGER, `mms_date` INTEGER, `mms_date_sent` INTEGER, `mms_msg_box` INTEGER, `mms_read` INTEGER, `mms_m_id` TEXT, `mms_sub` TEXT, `mms_sub_cs` INTEGER, `mms_ct_t` TEXT, `mms_ct_l` TEXT, `mms_exp` TEXT, `mms_m_cls` TEXT, `mms_m_type` INTEGER, `mms_v` INTEGER, `mms_m_size` INTEGER, `mms_pri` INTEGER, `mms_rr` INTEGER, `mms_rpt_a` TEXT, `mms_resp_st` TEXT, `mms_st` TEXT, `mms_tr_id` TEXT, `mms_retr_st` TEXT, `mms_retr_txt` TEXT, `mms_retr_txt_cs` TEXT, `mms_read_status` TEXT, `mms_ct_cls` TEXT, `mms_resp_txt` TEXT, `mms_d_tm` TEXT, `mms_d_rpt` INTEGER, `mms_locked` INTEGER, `mms_sub_id` INTEGER, `mms_seen` INTEGER, `mms_creator` TEXT, `mms_text_only` INTEGER)")
         connection.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Conversations__id` ON `Conversations` (`_id`)")
+        connection.execSQL("CREATE INDEX IF NOT EXISTS `index_Conversations_thread_id_read` ON `Conversations` (`thread_id`, `read`)")
+        connection.execSQL("CREATE INDEX IF NOT EXISTS `index_Conversations_mms_thread_id_read` ON `Conversations` (`mms_thread_id`, `read`)")
         connection.execSQL("CREATE TABLE IF NOT EXISTS `Threads` (`threadId` INTEGER NOT NULL, `address` TEXT NOT NULL, `snippet` TEXT NOT NULL, `date` INTEGER NOT NULL, `type` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `isMms` INTEGER NOT NULL, `isMute` INTEGER NOT NULL, `isArchive` INTEGER NOT NULL, `isBlocked` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `isPinned` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`threadId`))")
         connection.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Threads_address` ON `Threads` (`address`)")
+        connection.execSQL("CREATE INDEX IF NOT EXISTS `index_Threads_isArchive_isPinned_date_threadId` ON `Threads` (`isArchive`, `isPinned`, `date`, `threadId`)")
         connection.execSQL("CREATE TABLE IF NOT EXISTS `ThreadParticipants` (`threadId` INTEGER NOT NULL, `address` TEXT NOT NULL, PRIMARY KEY(`threadId`, `address`))")
         connection.execSQL("CREATE INDEX IF NOT EXISTS `index_ThreadParticipants_address` ON `ThreadParticipants` (`address`)")
         connection.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")
-        connection.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9f7988dc238646fd764e9056a6c6067f')")
+        connection.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '507577703d4b22582a65268dd93f06c4')")
       }
 
       public override fun dropAllTables(connection: SQLiteConnection) {
@@ -140,6 +143,8 @@ public class DatabaseImpl_Impl : DatabaseImpl() {
         val _foreignKeysConversations: MutableSet<TableInfo.ForeignKey> = mutableSetOf()
         val _indicesConversations: MutableSet<TableInfo.Index> = mutableSetOf()
         _indicesConversations.add(TableInfo.Index("index_Conversations__id", true, listOf("_id"), listOf("ASC")))
+        _indicesConversations.add(TableInfo.Index("index_Conversations_thread_id_read", false, listOf("thread_id", "read"), listOf("ASC", "ASC")))
+        _indicesConversations.add(TableInfo.Index("index_Conversations_mms_thread_id_read", false, listOf("mms_thread_id", "read"), listOf("ASC", "ASC")))
         val _infoConversations: TableInfo = TableInfo("Conversations", _columnsConversations, _foreignKeysConversations, _indicesConversations)
         val _existingConversations: TableInfo = read(connection, "Conversations")
         if (!_infoConversations.equals(_existingConversations)) {
@@ -167,6 +172,7 @@ public class DatabaseImpl_Impl : DatabaseImpl() {
         val _foreignKeysThreads: MutableSet<TableInfo.ForeignKey> = mutableSetOf()
         val _indicesThreads: MutableSet<TableInfo.Index> = mutableSetOf()
         _indicesThreads.add(TableInfo.Index("index_Threads_address", true, listOf("address"), listOf("ASC")))
+        _indicesThreads.add(TableInfo.Index("index_Threads_isArchive_isPinned_date_threadId", false, listOf("isArchive", "isPinned", "date", "threadId"), listOf("ASC", "ASC", "ASC", "ASC")))
         val _infoThreads: TableInfo = TableInfo("Threads", _columnsThreads, _foreignKeysThreads, _indicesThreads)
         val _existingThreads: TableInfo = read(connection, "Threads")
         if (!_infoThreads.equals(_existingThreads)) {
@@ -229,6 +235,7 @@ public class DatabaseImpl_Impl : DatabaseImpl() {
     _autoMigrations.add(DatabaseImpl_AutoMigration_3_4_Impl())
     _autoMigrations.add(DatabaseImpl_AutoMigration_4_5_Impl())
     _autoMigrations.add(DatabaseImpl_AutoMigration_5_6_Impl())
+    _autoMigrations.add(DatabaseImpl_AutoMigration_6_7_Impl())
     return _autoMigrations
   }
 

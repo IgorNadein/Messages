@@ -1,7 +1,7 @@
 EXECUTING: /home/lizerk/Android/Sdk/build-tools/35.0.0/aapt dump badging /home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build/outputs/apk/androidTest/debug/lib_smsmms_android-debug-androidTest.apk
 CURRENT_WORKING_DIRECTORY: /home/lizerk/Dev/Сообщения
-START_TIME: 2026-09-01 21:29:09.549
-START_TIME-NANOS: 2026-09-01 21:29:09.549169555
+START_TIME: 2026-09-02 14:51:41.721
+START_TIME-NANOS: 2026-09-02 14:51:41.721264191
 ENVIRONMENT:
 
 *****************************************
@@ -132,7 +132,7 @@ locales: '--_--' 'af' 'am' 'ar' 'as' 'az' 'be' 'bg' 'bn' 'bs' 'ca' 'cs' 'da' 'de
 densities: '160' '240' '320' '480' '640' '65534'
 native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'
 ===================
-END_TIME: 2026-09-01 21:29:09.564
-END_TIME-NANOS: 2026-09-01 21:29:09.564265819
-DURATION: 15ms
+END_TIME: 2026-09-02 14:51:41.730
+END_TIME-NANOS: 2026-09-02 14:51:41.730977086
+DURATION: 9ms
 EXIT CODE: 0

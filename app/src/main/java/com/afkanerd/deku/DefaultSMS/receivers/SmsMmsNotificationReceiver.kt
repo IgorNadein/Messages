@@ -13,6 +13,9 @@ import com.afkanerd.deku.messages.domain.NotificationReplyRequest
 import com.afkanerd.deku.messages.domain.SendResult
 import com.afkanerd.deku.messages.service.NotificationReplyHandler
 import com.afkanerd.deku.security.SecureMessageCodec
+import com.afkanerd.deku.security.SecureMessageTransportPreference
+import com.afkanerd.deku.security.SecureChannelId
+import com.afkanerd.deku.security.SecureSendPreference
 import com.afkanerd.deku.DefaultSMS.R as AppR
 import com.afkanerd.lib_smsmms_android.R
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.EncryptionController
@@ -22,6 +25,7 @@ import com.afkanerd.smswithoutborders.libsignal_doubleratchet.removeEncryptionRa
 import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.NotificationTxType
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getDatabase
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.notify
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsMmsActionsImpl
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsTextReceivedReceiver
@@ -52,7 +56,12 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
                                     if(conversation.sms_data != null) {
                                         EncryptionController.markSessionBroken(
                                             context,
-                                            conversation.sms?.address!!,
+                                            SecureChannelId.storageAddress(
+                                                context.makeE16PhoneNumber(
+                                                    conversation.sms?.address!!
+                                                ),
+                                                conversation.sms?.sub_id ?: -1,
+                                            ),
                                         )
                                     }
                                 }
@@ -61,9 +70,21 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
                                         intent.getStringExtra(SECURE_TRANSPORT_TEXT_EXTRA)?.let {
                                             EncryptionController.markOutboundSent(
                                                 context,
-                                                conversation.sms?.address!!,
+                                                SecureChannelId.storageAddress(
+                                                    context.makeE16PhoneNumber(
+                                                        conversation.sms?.address!!
+                                                    ),
+                                                    conversation.sms?.sub_id ?: -1,
+                                                ),
                                                 it,
                                             )
+                                            if(conversation.sms_data == null) {
+                                                SecureMessageTransportPreference
+                                                    .markFirstLegacyMessageComplete(
+                                                        context,
+                                                        conversation.sms?.address!!,
+                                                    )
+                                            }
                                         }
                                     } else {
                                         if(type == NotificationTxType.DATA.name) {
@@ -158,12 +179,25 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
         try {
             SecureMessageCodec.decodeKeyExchangeOrNull(data)
                 ?: throw SecurityException("Malformed secure key-exchange payload")
+            val address = context.makeE16PhoneNumber(conversation.sms?.address!!)
+            val subscriptionId = conversation.sms?.sub_id ?: -1
+            val channelAddress = SecureChannelId.storageAddress(address, subscriptionId)
+            SecureMessageTransportPreference.resetPeer(
+                context,
+                address,
+            )
             EncryptionController.receiveRequest(
                 context,
-                conversation.sms?.address!!,
+                channelAddress,
                 data
             )
+            SecureSendPreference.setEnabled(context, address, subscriptionId, true)
         } catch(e: Exception) {
+            Log.e(
+                "SecureKeyExchange",
+                "Incoming secure key exchange could not be processed",
+                e,
+            )
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
             }
@@ -186,9 +220,14 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
             displayText = context.getString(AppR.string.security_decryption_failed),
             failedTransportText = transportText,
         )
+        val address = context.makeE16PhoneNumber(conversation.sms?.address!!)
+        val channelAddress = SecureChannelId.storageAddress(
+            address,
+            conversation.sms?.sub_id ?: -1,
+        )
         return try {
             val data = context.getEncryptionModeStatesSync(
-                conversation.sms?.address!!
+                channelAddress
             ) ?: throw IllegalStateException("Secure mode state is missing")
             val saveData = SavedEncryptedModes.deserialize(data)
             check(saveData.mode == EncryptionController.SecureRequestMode.REQUEST_ACCEPTED) {
@@ -196,15 +235,13 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
             }
             val plaintext = EncryptionController.decrypt(
                 context,
-                conversation.sms?.address!!,
+                channelAddress,
                 transportText,
             ) ?: throw SecurityException("Secure decryption returned no plaintext")
             ProcessedSecureMessage(plaintext)
         } catch(e: Exception) {
             Log.w("SecureMessage", "Incoming secure message could not be decrypted", e)
-            conversation.sms?.address?.let {
-                EncryptionController.markSessionBroken(context, it)
-            }
+            EncryptionController.markSessionBroken(context, channelAddress)
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     context,

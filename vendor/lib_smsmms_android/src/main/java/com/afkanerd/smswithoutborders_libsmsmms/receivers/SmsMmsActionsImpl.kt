@@ -34,6 +34,7 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
             "com.afkanerd.deku.NOTIFICATION_REPLY_ACTION_INTENT_ACTION_REPLAY"
 
         const val NOTIFICATION_MUTE_ACTION_INTENT_ACTION = "NOTIFICATION_MUTE_ACTION_INTENT_ACTION"
+        private const val CALLBACK_LOG_TAG = "SmsNotificationAction"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -60,6 +61,7 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
                             }
                         )
                     } else {
+                        val pending = goAsync()
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 SmsManager(ContextSmsSender()).sendSms(
@@ -78,6 +80,9 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
                                     }
                                 }
                             } catch(e: Exception) {
+                                Log.e(CALLBACK_LOG_TAG, "Notification reply could not be sent", e)
+                            } finally {
+                                pending.finish()
                             }
                         }
                     }
@@ -86,6 +91,7 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
             NOTIFICATION_MARK_AS_READ_ACTION_INTENT_ACTION -> {
                 val id = intent.getLongExtra("id", -1)
                 val threadId = intent.getIntExtra("thread_id", -1)
+                val pending = goAsync()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         context.getDatabase().conversationsDao()?.getConversation(id)
@@ -94,22 +100,30 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
                                 context.getDatabase().conversationsDao()?.update(it)
                             }
                     } catch (e: Exception) {
+                        Log.e(CALLBACK_LOG_TAG, "Notification message could not be marked read", e)
+                    } finally {
+                        pending.finish()
                     }
                 }
                 context.cancelNotification(threadId)
             }
             NOTIFICATION_MUTE_ACTION_INTENT_ACTION -> {
                 val threadId = intent.getIntExtra("thread_id", -1)
+                val pending = goAsync()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         context.getDatabase().threadsDao()?.setMute(true, threadId)
                     } catch (e: Exception) {
+                        Log.e(CALLBACK_LOG_TAG, "Notification thread could not be muted", e)
+                    } finally {
+                        pending.finish()
                     }
                 }
                 context.cancelNotification(threadId)
             }
         }
     }
+
 }
 
 internal fun resolveNotificationReplySubscription(

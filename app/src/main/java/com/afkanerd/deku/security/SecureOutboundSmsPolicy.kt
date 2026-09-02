@@ -1,6 +1,7 @@
 package com.afkanerd.deku.security
 
 import android.content.Context
+import android.util.Base64
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.EncryptionController
 import com.afkanerd.smswithoutborders_libsmsmms.security.OutboundSms
 import com.afkanerd.smswithoutborders_libsmsmms.security.OutboundSmsDecision
@@ -12,30 +13,48 @@ class SecureOutboundSmsPolicy : OutboundSmsPolicy {
         context: Context,
         message: OutboundSms,
     ): OutboundSmsDecision {
-        if(message.forcePlainText) {
-            return OutboundSmsDecision.Allow(
-                message.copy(transportText = message.displayText, retryTransportText = null)
-            )
-        }
-        if(!SecureSendPreference.isEnabled(context, message.address)) {
+        if(!SecureSendPreference.isEnabled(context, message.address, message.subscriptionId)) {
             return OutboundSmsDecision.Allow(message)
         }
-        val status = SecureSessionStatusResolver.resolve(context, message.address)
+        val channelAddress = SecureChannelId.storageAddress(
+            message.address,
+            message.subscriptionId,
+        )
+        val status = SecureSessionStatusResolver.resolve(
+            context,
+            message.address,
+            message.subscriptionId,
+        )
         val trustedControlMessage = message.transportData?.let {
             EncryptionController.isLocallySignedKeyExchange(context, it)
         } ?: false
 
-        return SecureOutboundDecisionEngine.decide(
+        val decision = SecureOutboundDecisionEngine.decide(
             status,
             message,
             trustedControlMessage,
+            forcePlainText = message.forcePlainText,
         ) {
             EncryptionController.encrypt(
                 context = context,
-                address = message.address,
+                address = channelAddress,
                 text = message.displayText,
                 retryTransportText = message.retryTransportText,
             )
         }
+        if(decision !is OutboundSmsDecision.Allow ||
+            status != SecureSessionStatus.SECURE_ESTABLISHED ||
+            message.forcePlainText ||
+            message.transportData != null ||
+            !SecureMessageTransportPreference.shouldUseData(context, message.address)
+        ) return decision
+
+        val rawEnvelope = runCatching {
+            Base64.decode(decision.message.transportText, Base64.NO_WRAP)
+        }.getOrNull() ?: return decision
+        if(SecureMessageCodec.decodeMessageOrNull(rawEnvelope) == null) return decision
+        return OutboundSmsDecision.Allow(
+            decision.message.copy(transportData = rawEnvelope)
+        )
     }
 }

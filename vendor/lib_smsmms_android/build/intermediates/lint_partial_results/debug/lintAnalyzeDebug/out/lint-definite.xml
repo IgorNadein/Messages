@@ -2,6 +2,44 @@
 <incidents format="6" by="lint 8.12.2" type="incidents">
 
     <incident
+        id="ApplySharedPref"
+        severity="warning"
+        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background">
+        <fix-replace
+            description="Replace commit() with apply()"
+            oldPattern="(commit)\s*\("
+            replacement="apply"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+            line="113"
+            column="18"
+            startOffset="4534"
+            endLine="113"
+            endColumn="26"
+            endOffset="4542"/>
+    </incident>
+
+    <incident
+        id="ApplySharedPref"
+        severity="warning"
+        message="Consider using `apply()` instead; `commit` writes its data to persistent storage immediately, whereas `apply` will handle it in the background">
+        <fix-replace
+            description="Replace commit() with apply()"
+            oldPattern="(commit)\s*\("
+            replacement="apply"
+            priority="0"/>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+            line="163"
+            column="16"
+            startOffset="6592"
+            endLine="163"
+            endColumn="24"
+            endOffset="6600"/>
+    </incident>
+
+    <incident
         id="OldTargetApi"
         severity="warning"
         message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details.">
@@ -102,12 +140,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="68"
+            line="72"
             column="20"
-            startOffset="1549"
-            endLine="68"
+            startOffset="1640"
+            endLine="72"
             endColumn="51"
-            endOffset="1580"/>
+            endOffset="1671"/>
     </incident>
 
     <incident
@@ -122,12 +160,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="69"
+            line="73"
             column="20"
-            startOffset="1600"
-            endLine="69"
+            startOffset="1691"
+            endLine="73"
             endColumn="56"
-            endOffset="1636"/>
+            endOffset="1727"/>
     </incident>
 
     <incident
@@ -142,12 +180,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="70"
+            line="74"
             column="20"
-            startOffset="1656"
-            endLine="70"
+            startOffset="1747"
+            endLine="74"
             endColumn="65"
-            endOffset="1701"/>
+            endOffset="1792"/>
     </incident>
 
     <incident
@@ -162,12 +200,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="73"
+            line="77"
             column="20"
-            startOffset="1832"
-            endLine="73"
+            startOffset="1923"
+            endLine="77"
             endColumn="57"
-            endOffset="1869"/>
+            endOffset="1960"/>
     </incident>
 
     <incident
@@ -182,12 +220,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="111"
+            line="116"
             column="20"
-            startOffset="3388"
-            endLine="111"
+            startOffset="3544"
+            endLine="116"
             endColumn="68"
-            endOffset="3436"/>
+            endOffset="3592"/>
     </incident>
 
     <incident
@@ -202,12 +240,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="112"
+            line="117"
             column="20"
-            startOffset="3456"
-            endLine="112"
+            startOffset="3612"
+            endLine="117"
             endColumn="73"
-            endOffset="3509"/>
+            endOffset="3665"/>
     </incident>
 
     <incident
@@ -222,12 +260,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="113"
+            line="118"
             column="20"
-            startOffset="3529"
-            endLine="113"
+            startOffset="3685"
+            endLine="118"
             endColumn="59"
-            endOffset="3568"/>
+            endOffset="3724"/>
     </incident>
 
     <incident
@@ -242,12 +280,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="114"
+            line="119"
             column="20"
-            startOffset="3588"
-            endLine="114"
+            startOffset="3744"
+            endLine="119"
             endColumn="68"
-            endOffset="3636"/>
+            endOffset="3792"/>
     </incident>
 
     <incident
@@ -262,12 +300,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="117"
+            line="122"
             column="9"
-            startOffset="3697"
-            endLine="117"
+            startOffset="3853"
+            endLine="122"
             endColumn="39"
-            endOffset="3727"/>
+            endOffset="3883"/>
     </incident>
 
     <incident
@@ -282,12 +320,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="120"
+            line="125"
             column="20"
-            startOffset="3867"
-            endLine="120"
+            startOffset="4023"
+            endLine="125"
             endColumn="68"
-            endOffset="3915"/>
+            endOffset="4071"/>
     </incident>
 
     <incident
@@ -302,12 +340,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="123"
+            line="128"
             column="20"
-            startOffset="3990"
-            endLine="123"
+            startOffset="4146"
+            endLine="128"
             endColumn="73"
-            endOffset="4043"/>
+            endOffset="4199"/>
     </incident>
 
     <incident
@@ -342,12 +380,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="79"
+            line="84"
             column="20"
-            startOffset="2190"
-            endLine="79"
+            startOffset="2346"
+            endLine="84"
             endColumn="77"
-            endOffset="2247"/>
+            endOffset="2403"/>
     </incident>
 
     <incident
@@ -362,12 +400,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="82"
+            line="87"
             column="20"
-            startOffset="2327"
-            endLine="82"
+            startOffset="2483"
+            endLine="87"
             endColumn="73"
-            endOffset="2380"/>
+            endOffset="2536"/>
     </incident>
 
     <incident
@@ -382,12 +420,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="109"
+            line="114"
             column="20"
-            startOffset="3332"
-            endLine="109"
+            startOffset="3488"
+            endLine="114"
             endColumn="54"
-            endOffset="3366"/>
+            endOffset="3522"/>
     </incident>
 
     <incident
@@ -402,12 +440,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="116"
+            line="121"
             column="9"
-            startOffset="3646"
-            endLine="116"
+            startOffset="3802"
+            endLine="121"
             endColumn="51"
-            endOffset="3688"/>
+            endOffset="3844"/>
     </incident>
 
     <incident
@@ -421,17 +459,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-                startOffset="4232"
-                endOffset="4308"/>
+                startOffset="5274"
+                endOffset="5350"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-            line="60"
+            line="73"
             column="123"
-            startOffset="4290"
-            endLine="60"
+            startOffset="5332"
+            endLine="73"
             endColumn="131"
-            endOffset="4298"/>
+            endOffset="5340"/>
     </incident>
 
     <incident
@@ -445,1121 +483,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-                startOffset="31568"
-                endOffset="31576"/>
+                startOffset="32610"
+                endOffset="32618"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-            line="470"
+            line="483"
             column="28"
-            startOffset="31568"
-            endLine="470"
+            startOffset="32610"
+            endLine="483"
             endColumn="36"
-            endOffset="31576"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="226"
-                endOffset="353"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="5"
-            column="13"
-            startOffset="234"
-            endLine="5"
-            endColumn="58"
-            endOffset="279"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="322"
-                endOffset="441"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="6"
-            column="13"
-            startOffset="330"
-            endLine="6"
-            endColumn="65"
-            endOffset="382"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="391"
-                endOffset="505"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="6"
-            column="13"
-            startOffset="399"
-            endLine="6"
-            endColumn="58"
-            endOffset="444"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_name&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="408"
-                endOffset="522"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="7"
-            column="13"
-            startOffset="416"
-            endLine="7"
-            endColumn="58"
-            endOffset="461"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="599"
-                endOffset="713"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="8"
-            column="13"
-            startOffset="607"
-            endLine="8"
-            endColumn="65"
-            endOffset="659"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="832"
-                endOffset="939"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="11"
-            column="13"
-            startOffset="840"
-            endLine="11"
-            endColumn="65"
-            endOffset="892"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_description&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="867"
-                endOffset="984"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="12"
-            column="13"
-            startOffset="875"
-            endLine="12"
-            endColumn="65"
-            endOffset="927"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="944"
-                endOffset="1067"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="12"
-            column="13"
-            startOffset="952"
-            endLine="12"
-            endColumn="61"
-            endOffset="1000"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="989"
-                endOffset="1113"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="13"
-            column="13"
-            startOffset="997"
-            endLine="13"
-            endColumn="61"
-            endOffset="1045"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="1119"
-                endOffset="1217"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="15"
-            column="13"
-            startOffset="1127"
-            endLine="15"
-            endColumn="70"
-            endOffset="1184"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="1074"
-                endOffset="1183"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="15"
-            column="13"
-            startOffset="1082"
-            endLine="15"
-            endColumn="70"
-            endOffset="1139"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_failed_channel_id&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="1624"
-                endOffset="1752"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="22"
-            column="13"
-            startOffset="1632"
-            endLine="22"
-            endColumn="56"
-            endOffset="1675"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="22194"
-                endOffset="22323"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="263"
-            column="13"
-            startOffset="22202"
-            endLine="263"
-            endColumn="61"
-            endOffset="22250"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;message_failed_notifications_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="21534"
-                endOffset="21647"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="307"
-            column="13"
-            startOffset="21542"
-            endLine="307"
-            endColumn="61"
-            endOffset="21590"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="30429"
-                endOffset="30534"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="368"
-            column="13"
-            startOffset="30437"
-            endLine="368"
-            endColumn="70"
-            endOffset="30494"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31442"
-                endOffset="31476"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="384"
-            column="13"
-            startOffset="31450"
-            endLine="384"
-            endColumn="24"
-            endOffset="31461"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;pause&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31481"
-                endOffset="31516"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="385"
-            column="13"
-            startOffset="31489"
-            endLine="385"
-            endColumn="25"
-            endOffset="31501"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;sending_stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31521"
-                endOffset="31584"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="386"
-            column="13"
-            startOffset="31529"
-            endLine="386"
-            endColumn="32"
-            endOffset="31548"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31589"
-                endOffset="31668"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="387"
-            column="13"
-            startOffset="31597"
-            endLine="387"
-            endColumn="38"
-            endOffset="31622"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31673"
-                endOffset="31748"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="388"
-            column="13"
-            startOffset="31681"
-            endLine="388"
-            endColumn="42"
-            endOffset="31710"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;retry&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31753"
-                endOffset="31792"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="389"
-            column="13"
-            startOffset="31761"
-            endLine="389"
-            endColumn="25"
-            endOffset="31773"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31797"
-                endOffset="31860"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="390"
-            column="13"
-            startOffset="31805"
-            endLine="390"
-            endColumn="38"
-            endOffset="31830"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-                startOffset="31865"
-                endOffset="31944"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-fr/strings.xml"
-            line="391"
-            column="13"
-            startOffset="31873"
-            endLine="391"
-            endColumn="47"
-            endOffset="31907"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="32824"
-                endOffset="32860"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="409"
-            column="13"
-            startOffset="32832"
-            endLine="409"
-            endColumn="24"
-            endOffset="32843"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;pause&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="32865"
-                endOffset="32900"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="410"
-            column="13"
-            startOffset="32873"
-            endLine="410"
-            endColumn="25"
-            endOffset="32885"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;sending_stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="32905"
-                endOffset="32969"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="411"
-            column="13"
-            startOffset="32913"
-            endLine="411"
-            endColumn="32"
-            endOffset="32932"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;foreground_service_image_transmission_descriptions&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="29465"
-                endOffset="29570"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="412"
-            column="13"
-            startOffset="29473"
-            endLine="412"
-            endColumn="70"
-            endOffset="29530"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="32974"
-                endOffset="33054"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="412"
-            column="13"
-            startOffset="32982"
-            endLine="412"
-            endColumn="38"
-            endOffset="33007"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="33059"
-                endOffset="33144"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="413"
-            column="13"
-            startOffset="33067"
-            endLine="413"
-            endColumn="42"
-            endOffset="33096"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;retry&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="33149"
-                endOffset="33190"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="414"
-            column="13"
-            startOffset="33157"
-            endLine="414"
-            endColumn="25"
-            endOffset="33169"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="33195"
-                endOffset="33270"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="415"
-            column="13"
-            startOffset="33203"
-            endLine="415"
-            endColumn="38"
-            endOffset="33228"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-                startOffset="33275"
-                endOffset="33375"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-de/strings.xml"
-            line="416"
-            column="13"
-            startOffset="33283"
-            endLine="416"
-            endColumn="47"
-            endOffset="33317"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30475"
-                endOffset="30519"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="428"
-            column="13"
-            startOffset="30483"
-            endLine="428"
-            endColumn="24"
-            endOffset="30494"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;pause&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30524"
-                endOffset="30559"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="429"
-            column="13"
-            startOffset="30532"
-            endLine="429"
-            endColumn="25"
-            endOffset="30544"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;sending_stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30564"
-                endOffset="30622"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="430"
-            column="13"
-            startOffset="30572"
-            endLine="430"
-            endColumn="32"
-            endOffset="30591"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30627"
-                endOffset="30700"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="431"
-            column="13"
-            startOffset="30635"
-            endLine="431"
-            endColumn="38"
-            endOffset="30660"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30705"
-                endOffset="30783"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="432"
-            column="13"
-            startOffset="30713"
-            endLine="432"
-            endColumn="42"
-            endOffset="30742"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;retry&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30788"
-                endOffset="30835"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="433"
-            column="13"
-            startOffset="30796"
-            endLine="433"
-            endColumn="25"
-            endOffset="30808"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30840"
-                endOffset="30905"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="434"
-            column="13"
-            startOffset="30848"
-            endLine="434"
-            endColumn="38"
-            endOffset="30873"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-                startOffset="30910"
-                endOffset="30990"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-ru/strings.xml"
-            line="435"
-            column="13"
-            startOffset="30918"
-            endLine="435"
-            endColumn="47"
-            endOffset="30952"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33164"
-                endOffset="33208"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="471"
-            column="13"
-            startOffset="33172"
-            endLine="471"
-            endColumn="24"
-            endOffset="33183"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;pause&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33213"
-                endOffset="33248"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="472"
-            column="13"
-            startOffset="33221"
-            endLine="472"
-            endColumn="25"
-            endOffset="33233"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;sending_stop&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33253"
-                endOffset="33311"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="473"
-            column="13"
-            startOffset="33261"
-            endLine="473"
-            endColumn="32"
-            endOffset="33280"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;waiting_to_send_of&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33316"
-                endOffset="33394"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="474"
-            column="13"
-            startOffset="33324"
-            endLine="474"
-            endColumn="38"
-            endOffset="33349"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;failed_to_send_message&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33399"
-                endOffset="33477"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="475"
-            column="13"
-            startOffset="33407"
-            endLine="475"
-            endColumn="42"
-            endOffset="33436"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;retry&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33482"
-                endOffset="33530"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="476"
-            column="13"
-            startOffset="33490"
-            endLine="476"
-            endColumn="25"
-            endOffset="33502"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;queued_for_sending&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33535"
-                endOffset="33600"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="477"
-            column="13"
-            startOffset="33543"
-            endLine="477"
-            endColumn="38"
-            endOffset="33568"/>
-    </incident>
-
-    <incident
-        id="ExtraTranslation"
-        severity="fatal"
-        message="&quot;will_resume_sending_shortly&quot; is translated here but not found in default locale">
-        <fix-replace
-            description="Remove translation"
-            replacement=""
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-                startOffset="33605"
-                endOffset="33684"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values-pl/strings.xml"
-            line="478"
-            column="13"
-            startOffset="33613"
-            endLine="478"
-            endColumn="47"
-            endOffset="33647"/>
+            endOffset="32618"/>
     </incident>
 
     <incident
@@ -2649,12 +1583,12 @@
         message="Formatting %d followed by words (&quot;sent&quot;): This should probably be a plural rather than a string">
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-            line="468"
+            line="481"
             column="5"
-            startOffset="31422"
-            endLine="468"
+            startOffset="32464"
+            endLine="481"
             endColumn="55"
-            endOffset="31472"/>
+            endOffset="32514"/>
     </incident>
 
     <incident
@@ -3050,12 +1984,12 @@
         message="The standard Android way to capitalize cancel is &quot;Cancel&quot; (tip: use `@android:string/cancel` instead)">
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*resDir*0}/values/strings.xml"
-            line="165"
+            line="178"
             column="48"
-            startOffset="11031"
-            endLine="165"
+            startOffset="12073"
+            endLine="178"
             endColumn="54"
-            endOffset="11037"/>
+            endOffset="12079"/>
     </incident>
 
     <incident
@@ -3090,30 +2024,594 @@
     <incident
         id="UseKtx"
         severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4304"
+                    endOffset="4309"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with (commit = true) {"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement="(commit = true) {"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4309"
+                    endOffset="4310"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;.&quot;"
+                robot="true"
+                independent="true"
+                oldString="."
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4327"
+                    endOffset="4328"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with }"
+                robot="true"
+                independent="true"
+                oldString=".commit()"
+                replacement="}"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4533"
+                    endOffset="4542"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4311"
+                    endOffset="4311"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4361"
+                    endOffset="4361"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4413"
+                    endOffset="4413"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="4457"
+                    endOffset="4457"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+            line="108"
+            column="13"
+            startOffset="4298"
+            endLine="108"
+            endColumn="25"
+            endOffset="4310"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Delete &quot;val editor = &quot;"
+                robot="true"
+                independent="true"
+                oldString="val editor = "
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6365"
+                    endOffset="6378"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6384"
+                    endOffset="6389"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with (commit = true) {"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement="(commit = true) {"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6389"
+                    endOffset="6390"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;editor.&quot;"
+                robot="true"
+                independent="true"
+                oldString="editor."
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6548"
+                    endOffset="6555"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with }"
+                robot="true"
+                independent="true"
+                oldString="editor.commit()"
+                replacement="}"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6585"
+                    endOffset="6600"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6424"
+                    endOffset="6424"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+                    startOffset="6480"
+                    endOffset="6480"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt"
+            line="160"
+            column="22"
+            startOffset="6378"
+            endLine="160"
+            endColumn="34"
+            endOffset="6390"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="878"
+                    endOffset="883"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with  {"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement=" {"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="883"
+                    endOffset="884"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;.&quot;"
+                robot="true"
+                independent="true"
+                oldString="."
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="901"
+                    endOffset="902"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with }"
+                robot="true"
+                independent="true"
+                oldString=".apply()"
+                replacement="}"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1055"
+                    endOffset="1063"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="885"
+                    endOffset="885"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="933"
+                    endOffset="933"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1000"
+                    endOffset="1000"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+            line="26"
+            column="13"
+            startOffset="872"
+            endLine="26"
+            endColumn="25"
+            endOffset="884"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1336"
+                    endOffset="1341"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with  {"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement=" {"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1341"
+                    endOffset="1342"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;.&quot;"
+                robot="true"
+                independent="true"
+                oldString="."
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1355"
+                    endOffset="1356"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with }"
+                robot="true"
+                independent="true"
+                oldString=".apply()"
+                replacement="}"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1514"
+                    endOffset="1522"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1343"
+                    endOffset="1343"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1395"
+                    endOffset="1395"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with     "
+                robot="true"
+                independent="true"
+                oldString=""
+                replacement="    "
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1439"
+                    endOffset="1439"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+            line="39"
+            column="9"
+            startOffset="1330"
+            endLine="39"
+            endColumn="21"
+            endOffset="1342"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?">
+        <fix-composite
+            description="Replace with the edit extension function"
+            family="Replace with the edit extension function"
+            robot="true"
+            independent="true">
+            <fix-replace
+                description="Replace with edit"
+                robot="true"
+                independent="true"
+                oldString="edit("
+                replacement="edit"
+                reformat="value"
+                imports="androidx.core.content.edit"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1942"
+                    endOffset="1947"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with  {"
+                robot="true"
+                independent="true"
+                oldString=")"
+                replacement=" {"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1947"
+                    endOffset="1948"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;.also {&quot;"
+                robot="true"
+                independent="true"
+                oldString=".also {"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="1948"
+                    endOffset="1955"/>
+            </fix-replace>
+            <fix-replace
+                description="Delete &quot;.apply()&quot;"
+                robot="true"
+                independent="true"
+                oldString=".apply()"
+                replacement=""
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+                    startOffset="2163"
+                    endOffset="2171"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt"
+            line="55"
+            column="9"
+            startOffset="1936"
+            endLine="55"
+            endColumn="21"
+            endOffset="1948"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `Bitmap.scale` instead?">
+        <fix-replace
+            description="Replace with the scale extension function"
+            family="Replace with the scale extension function"
+            robot="true"
+            independent="true"
+            oldString="Bitmap.createScaledBitmap(&#xA;                bitmap,&#xA;                maxOf(MIN_IMAGE_DIMENSION, (bitmap.width * 0.78f).toInt()),&#xA;                maxOf(MIN_IMAGE_DIMENSION, (bitmap.height * 0.78f).toInt()),&#xA;                true,&#xA;            )"
+            replacement="bitmap.scale(maxOf(MIN_IMAGE_DIMENSION, (bitmap.width * 0.78f).toInt()), maxOf(MIN_IMAGE_DIMENSION, (bitmap.height * 0.78f).toInt()), )"
+            reformat="value"
+            imports="androidx.core.graphics.scale"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt"
+                startOffset="4710"
+                endOffset="4949"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt"
+            line="126"
+            column="27"
+            startOffset="4710"
+            endLine="131"
+            endColumn="14"
+            endOffset="4949"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `Bitmap.scale` instead?">
+        <fix-replace
+            description="Replace with the scale extension function"
+            family="Replace with the scale extension function"
+            robot="true"
+            independent="true"
+            oldString="Bitmap.createScaledBitmap(&#xA;        this,&#xA;        maxOf(1, (width * scale).toInt()),&#xA;        maxOf(1, (height * scale).toInt()),&#xA;        true,&#xA;    )"
+            replacement="this.scale(maxOf(1, (width * scale).toInt()), maxOf(1, (height * scale).toInt()), )"
+            reformat="value"
+            imports="androidx.core.graphics.scale"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt"
+                startOffset="5492"
+                endOffset="5639"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt"
+            line="148"
+            column="12"
+            startOffset="5492"
+            endLine="153"
+            endColumn="6"
+            endOffset="5639"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
         message="Use the KTX extension function `String.toUri` instead?">
         <fix-replace
             description="Replace with the toUri extension function"
             family="Replace with the toUri extension function"
             robot="true"
             independent="true"
-            oldString="Uri.parse(uriString)"
-            replacement="uriString.toUri()"
+            oldString="Uri.parse(&quot;content://mms/$messageId/addr&quot;)"
+            replacement="&quot;content://mms/$messageId/addr&quot;.toUri()"
             reformat="value"
             imports="androidx.core.net.toUri"
             priority="0">
             <range
-                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/data/data/models/MmsParser.kt"
-                startOffset="9808"
-                endOffset="9828"/>
+                file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsParticipants.kt"
+                startOffset="2942"
+                endOffset="2984"/>
         </fix-replace>
         <location
-            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/data/data/models/MmsParser.kt"
-            line="291"
-            column="19"
-            startOffset="9808"
-            endLine="291"
-            endColumn="39"
-            endOffset="9828"/>
+            file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsParticipants.kt"
+            line="75"
+            column="15"
+            startOffset="2942"
+            endLine="75"
+            endColumn="57"
+            endOffset="2984"/>
     </incident>
 
     <incident
@@ -3136,8 +2634,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="13342"
-                    endOffset="13347"/>
+                    startOffset="13929"
+                    endOffset="13934"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;)&quot;"
@@ -3148,8 +2646,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="13347"
-                    endOffset="13348"/>
+                    startOffset="13934"
+                    endOffset="13935"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;with(&quot;"
@@ -3160,8 +2658,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="13319"
-                    endOffset="13324"/>
+                    startOffset="13906"
+                    endOffset="13911"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;apply()&quot;"
@@ -3172,18 +2670,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="14062"
-                    endOffset="14069"/>
+                    startOffset="14707"
+                    endOffset="14714"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-            line="359"
+            line="373"
             column="10"
-            startOffset="13324"
-            endLine="359"
+            startOffset="13911"
+            endLine="373"
             endColumn="34"
-            endOffset="13348"/>
+            endOffset="13935"/>
     </incident>
 
     <incident
@@ -3206,8 +2704,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="14871"
-                    endOffset="14876"/>
+                    startOffset="16169"
+                    endOffset="16174"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;)&quot;"
@@ -3218,8 +2716,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="14876"
-                    endOffset="14877"/>
+                    startOffset="16174"
+                    endOffset="16175"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;with(&quot;"
@@ -3230,8 +2728,8 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="14848"
-                    endOffset="14853"/>
+                    startOffset="16146"
+                    endOffset="16151"/>
             </fix-replace>
             <fix-replace
                 description="Delete &quot;apply()&quot;"
@@ -3242,18 +2740,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-                    startOffset="14925"
-                    endOffset="14932"/>
+                    startOffset="16223"
+                    endOffset="16230"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-            line="403"
+            line="434"
             column="10"
-            startOffset="14853"
-            endLine="403"
+            startOffset="16151"
+            endLine="434"
             endColumn="34"
-            endOffset="14877"/>
+            endOffset="16175"/>
     </incident>
 
     <incident
@@ -3267,12 +2765,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="73"
+            line="77"
             column="20"
-            startOffset="1832"
-            endLine="73"
+            startOffset="1923"
+            endLine="77"
             endColumn="57"
-            endOffset="1869"/>
+            endOffset="1960"/>
     </incident>
 
     <incident
@@ -3286,12 +2784,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="117"
+            line="122"
             column="9"
-            startOffset="3697"
-            endLine="117"
+            startOffset="3853"
+            endLine="122"
             endColumn="39"
-            endOffset="3727"/>
+            endOffset="3883"/>
     </incident>
 
     <incident
@@ -3306,17 +2804,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1549"
-                endOffset="1580"/>
+                startOffset="1640"
+                endOffset="1671"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="68"
+            line="72"
             column="20"
-            startOffset="1549"
-            endLine="68"
+            startOffset="1640"
+            endLine="72"
             endColumn="51"
-            endOffset="1580"/>
+            endOffset="1671"/>
     </incident>
 
     <incident
@@ -3331,17 +2829,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1600"
-                endOffset="1636"/>
+                startOffset="1691"
+                endOffset="1727"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="69"
+            line="73"
             column="20"
-            startOffset="1600"
-            endLine="69"
+            startOffset="1691"
+            endLine="73"
             endColumn="56"
-            endOffset="1636"/>
+            endOffset="1727"/>
     </incident>
 
     <incident
@@ -3356,17 +2854,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1656"
-                endOffset="1701"/>
+                startOffset="1747"
+                endOffset="1792"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="70"
+            line="74"
             column="20"
-            startOffset="1656"
-            endLine="70"
+            startOffset="1747"
+            endLine="74"
             endColumn="65"
-            endOffset="1701"/>
+            endOffset="1792"/>
     </incident>
 
     <incident
@@ -3374,49 +2872,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-room-room-common-jvm4"
+            description="Replace with new library catalog declaration for androidx-room-common-jvm"
             robot="true">
             <fix-replace
-                description="Replace with androidxRoomRoomCommonJvm2 = &quot;2.8.4&quot;..."
+                description="Replace with roomCommonJvmVersion = &quot;2.8.4&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxRoomRoomCommonJvm2 = &quot;2.8.4&quot;&#xA;"
+                replacement="roomCommonJvmVersion = &quot;2.8.4&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="1083"
+                    endOffset="1083"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-room-room-common-jvm4 = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;androidxRoomRoomCommonJvm2&quot; }..."
+                description="Replace with androidx-room-common-jvm = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;roomCommonJvmVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-room-room-common-jvm4 = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;androidxRoomRoomCommonJvm2&quot; }&#xA;"
+                replacement="androidx-room-common-jvm = { module = &quot;androidx.room:room-common-jvm&quot;, version.ref = &quot;roomCommonJvmVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="5075"
-                    endOffset="5075"/>
+                    startOffset="4885"
+                    endOffset="4885"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.room.room.common.jvm4"
+                description="Replace with libs.androidx.room.common.jvm"
                 robot="true"
-                replacement="libs.androidx.room.room.common.jvm4"
+                replacement="libs.androidx.room.common.jvm"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1721"
-                    endOffset="1758"/>
+                    startOffset="1812"
+                    endOffset="1849"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="71"
+            line="75"
             column="20"
-            startOffset="1721"
-            endLine="71"
+            startOffset="1812"
+            endLine="75"
             endColumn="57"
-            endOffset="1758"/>
+            endOffset="1849"/>
     </incident>
 
     <incident
@@ -3425,43 +2923,43 @@
         message="Use version catalog instead (androidx.room:room-runtime is already available as `androidx-room-runtime`, but using version 2.8.1 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for androidx-room-room-runtime-v284-x4"
+                description="Replace with new library catalog declaration for androidx-room-runtime-v284"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with androidxRoomRoomRuntime2 = &quot;2.8.4&quot;..."
+                    description="Replace with roomRuntimeVersion = &quot;2.8.4&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidxRoomRoomRuntime2 = &quot;2.8.4&quot;&#xA;"
+                    replacement="roomRuntimeVersion = &quot;2.8.4&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="123"
-                        endOffset="123"/>
+                        startOffset="1083"
+                        endOffset="1083"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with androidx-room-room-runtime-v284-x4 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;androidxRoomRoomRuntime2&quot; }..."
+                    description="Replace with androidx-room-runtime-v284 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;roomRuntimeVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidx-room-room-runtime-v284-x4 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;androidxRoomRoomRuntime2&quot; }&#xA;"
+                    replacement="androidx-room-runtime-v284 = { module = &quot;androidx.room:room-runtime&quot;, version.ref = &quot;roomRuntimeVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="5075"
-                        endOffset="5075"/>
+                        startOffset="5170"
+                        endOffset="5170"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.androidx.room.room.runtime.v284.x4"
+                    description="Replace with libs.androidx.room.runtime.v284"
                     robot="true"
                     independent="true"
-                    replacement="libs.androidx.room.room.runtime.v284.x4"
+                    replacement="libs.androidx.room.runtime.v284"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="1778"
-                        endOffset="1812"/>
+                        startOffset="1869"
+                        endOffset="1903"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3470,18 +2968,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1778"
-                    endOffset="1812"/>
+                    startOffset="1869"
+                    endOffset="1903"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="72"
+            line="76"
             column="20"
-            startOffset="1778"
-            endLine="72"
+            startOffset="1869"
+            endLine="76"
             endColumn="54"
-            endOffset="1812"/>
+            endOffset="1903"/>
     </incident>
 
     <incident
@@ -3489,49 +2987,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-paging-paging-common4"
+            description="Replace with new library catalog declaration for androidx-paging-common"
             robot="true">
             <fix-replace
-                description="Replace with androidxPagingPagingCommon2 = &quot;3.4.1&quot;..."
+                description="Replace with pagingCommonVersion = &quot;3.4.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxPagingPagingCommon2 = &quot;3.4.1&quot;&#xA;"
+                replacement="pagingCommonVersion = &quot;3.4.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="998"
+                    endOffset="998"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-paging-paging-common4 = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;androidxPagingPagingCommon2&quot; }..."
+                description="Replace with androidx-paging-common = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;pagingCommonVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-paging-paging-common4 = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;androidxPagingPagingCommon2&quot; }&#xA;"
+                replacement="androidx-paging-common = { module = &quot;androidx.paging:paging-common&quot;, version.ref = &quot;pagingCommonVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="4688"
-                    endOffset="4688"/>
+                    startOffset="4488"
+                    endOffset="4488"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.paging.paging.common4"
+                description="Replace with libs.androidx.paging.common"
                 robot="true"
-                replacement="libs.androidx.paging.paging.common4"
+                replacement="libs.androidx.paging.common"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1832"
-                    endOffset="1869"/>
+                    startOffset="1923"
+                    endOffset="1960"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="73"
+            line="77"
             column="20"
-            startOffset="1832"
-            endLine="73"
+            startOffset="1923"
+            endLine="77"
             endColumn="57"
-            endOffset="1869"/>
+            endOffset="1960"/>
     </incident>
 
     <incident
@@ -3546,17 +3044,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1893"
-                endOffset="1913"/>
+                startOffset="1984"
+                endOffset="2004"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="74"
+            line="78"
             column="24"
-            startOffset="1893"
-            endLine="74"
+            startOffset="1984"
+            endLine="78"
             endColumn="44"
-            endOffset="1913"/>
+            endOffset="2004"/>
     </incident>
 
     <incident
@@ -3564,49 +3062,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for org-robolectric-robolectric6"
+            description="Replace with new library catalog declaration for robolectric"
             robot="true">
             <fix-replace
-                description="Replace with orgRobolectricRobolectric4 = &quot;4.16.1&quot;..."
+                description="Replace with robolectricVersion = &quot;4.16.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="orgRobolectricRobolectric4 = &quot;4.16.1&quot;&#xA;"
+                replacement="robolectricVersion = &quot;4.16.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="998"
-                    endOffset="998"/>
+                    startOffset="1083"
+                    endOffset="1083"/>
             </fix-replace>
             <fix-replace
-                description="Replace with org-robolectric-robolectric6 = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;orgRobolectricRobolectric4&quot; }..."
+                description="Replace with robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="org-robolectric-robolectric6 = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;orgRobolectricRobolectric4&quot; }&#xA;"
+                replacement="robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="8601"
-                    endOffset="8601"/>
+                    startOffset="8674"
+                    endOffset="8674"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.org.robolectric.robolectric6"
+                description="Replace with libs.robolectric"
                 robot="true"
-                replacement="libs.org.robolectric.robolectric6"
+                replacement="libs.robolectric"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1937"
-                    endOffset="1973"/>
+                    startOffset="2028"
+                    endOffset="2064"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="75"
+            line="79"
             column="24"
-            startOffset="1937"
-            endLine="75"
+            startOffset="2028"
+            endLine="79"
             endColumn="60"
-            endOffset="1973"/>
+            endOffset="2064"/>
     </incident>
 
     <incident
@@ -3621,17 +3119,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2004"
-                endOffset="2035"/>
+                startOffset="2095"
+                endOffset="2126"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="76"
+            line="80"
             column="31"
-            startOffset="2004"
-            endLine="76"
+            startOffset="2095"
+            endLine="80"
             endColumn="62"
-            endOffset="2035"/>
+            endOffset="2126"/>
     </incident>
 
     <incident
@@ -3646,17 +3144,82 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2066"
-                endOffset="2110"/>
+                startOffset="2157"
+                endOffset="2201"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="77"
+            line="81"
             column="31"
-            startOffset="2066"
-            endLine="77"
+            startOffset="2157"
+            endLine="81"
             endColumn="75"
-            endOffset="2110"/>
+            endOffset="2201"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.room:room-testing is already available as `androidx-room-testing`, but using version 2.8.1 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-room-testing-v284"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with roomTestingVersion = &quot;2.8.4&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="roomTestingVersion = &quot;2.8.4&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="1105"
+                        endOffset="1105"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-room-testing-v284 = { module = &quot;androidx.room:room-testing&quot;, version.ref = &quot;roomTestingVersion&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-room-testing-v284 = { module = &quot;androidx.room:room-testing&quot;, version.ref = &quot;roomTestingVersion&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="5265"
+                        endOffset="5265"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.room.testing.v284"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.room.testing.v284"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="2232"
+                        endOffset="2266"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-room-testing` (version 2.8.1)"
+                replacement="libs.androidx.room.testing"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="2232"
+                    endOffset="2266"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="82"
+            column="31"
+            startOffset="2232"
+            endLine="82"
+            endColumn="65"
+            endOffset="2266"/>
     </incident>
 
     <incident
@@ -3665,43 +3228,43 @@
         message="Use version catalog instead (androidx.room:room-compiler is already available as `androidx-room-compiler`, but using version 2.8.1 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for androidx-room-room-compiler-v284-x4"
+                description="Replace with new library catalog declaration for androidx-room-compiler-v284"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with androidxRoomRoomCompiler2 = &quot;2.8.4&quot;..."
+                    description="Replace with roomCompilerVersion = &quot;2.8.4&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidxRoomRoomCompiler2 = &quot;2.8.4&quot;&#xA;"
+                    replacement="roomCompilerVersion = &quot;2.8.4&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="123"
-                        endOffset="123"/>
+                        startOffset="1083"
+                        endOffset="1083"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with androidx-room-room-compiler-v284-x4 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;androidxRoomRoomCompiler2&quot; }..."
+                    description="Replace with androidx-room-compiler-v284 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;roomCompilerVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidx-room-room-compiler-v284-x4 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;androidxRoomRoomCompiler2&quot; }&#xA;"
+                    replacement="androidx-room-compiler-v284 = { module = &quot;androidx.room:room-compiler&quot;, version.ref = &quot;roomCompilerVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="5075"
-                        endOffset="5075"/>
+                        startOffset="4982"
+                        endOffset="4982"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.androidx.room.room.compiler.v284.x4"
+                    description="Replace with libs.androidx.room.compiler.v284"
                     robot="true"
                     independent="true"
-                    replacement="libs.androidx.room.room.compiler.v284.x4"
+                    replacement="libs.androidx.room.compiler.v284"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2135"
-                        endOffset="2170"/>
+                        startOffset="2291"
+                        endOffset="2326"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3710,18 +3273,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2135"
-                    endOffset="2170"/>
+                    startOffset="2291"
+                    endOffset="2326"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="78"
+            line="83"
             column="25"
-            startOffset="2135"
-            endLine="78"
+            startOffset="2291"
+            endLine="83"
             endColumn="60"
-            endOffset="2170"/>
+            endOffset="2326"/>
     </incident>
 
     <incident
@@ -3730,43 +3293,43 @@
         message="Use version catalog instead (org.jetbrains.kotlinx:kotlinx-serialization-json is already available as `kotlinx-serialization-json`, but using version 1.9.0 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6"
+                description="Replace with new library catalog declaration for kotlinx-serialization-json-v1100"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with orgJetbrainsKotlinxKotlinxSerializationJson5 = &quot;1.10.0&quot;..."
+                    description="Replace with kotlinxSerializationJsonVersion = &quot;1.10.0&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="orgJetbrainsKotlinxKotlinxSerializationJson5 = &quot;1.10.0&quot;&#xA;"
+                    replacement="kotlinxSerializationJsonVersion = &quot;1.10.0&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="998"
-                        endOffset="998"/>
+                        startOffset="671"
+                        endOffset="671"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;orgJetbrainsKotlinxKotlinxSerializationJson5&quot; }..."
+                    description="Replace with kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;kotlinxSerializationJsonVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="org-jetbrains-kotlinx-kotlinx-serialization-json-v1100-x6 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;orgJetbrainsKotlinxKotlinxSerializationJson5&quot; }&#xA;"
+                    replacement="kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;kotlinxSerializationJsonVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="8601"
-                        endOffset="8601"/>
+                        startOffset="8147"
+                        endOffset="8147"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.org.jetbrains.kotlinx.kotlinx.serialization.json.v1100.x6"
+                    description="Replace with libs.kotlinx.serialization.json.v1100"
                     robot="true"
                     independent="true"
-                    replacement="libs.org.jetbrains.kotlinx.kotlinx.serialization.json.v1100.x6"
+                    replacement="libs.kotlinx.serialization.json.v1100"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2190"
-                        endOffset="2247"/>
+                        startOffset="2346"
+                        endOffset="2403"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3775,18 +3338,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2190"
-                    endOffset="2247"/>
+                    startOffset="2346"
+                    endOffset="2403"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="79"
+            line="84"
             column="20"
-            startOffset="2190"
-            endLine="79"
+            startOffset="2346"
+            endLine="84"
             endColumn="77"
-            endOffset="2247"/>
+            endOffset="2403"/>
     </incident>
 
     <incident
@@ -3801,17 +3364,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2268"
-                endOffset="2307"/>
+                startOffset="2424"
+                endOffset="2463"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="81"
+            line="86"
             column="20"
-            startOffset="2268"
-            endLine="81"
+            startOffset="2424"
+            endLine="86"
             endColumn="59"
-            endOffset="2307"/>
+            endOffset="2463"/>
     </incident>
 
     <incident
@@ -3820,43 +3383,43 @@
         message="Use version catalog instead (com.googlecode.libphonenumber:libphonenumber is already available as `libphonenumber`, but using version 9.0.15 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for com-googlecode-libphonenumber-libphonenumber-v9025-x4"
+                description="Replace with new library catalog declaration for libphonenumber-v9025"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with comGooglecodeLibphonenumberLibphonenumber3 = &quot;9.0.25&quot;..."
+                    description="Replace with libphonenumberVersion = &quot;9.0.25&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="comGooglecodeLibphonenumberLibphonenumber3 = &quot;9.0.25&quot;&#xA;"
+                    replacement="libphonenumberVersion = &quot;9.0.25&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="268"
-                        endOffset="268"/>
+                        startOffset="738"
+                        endOffset="738"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with com-googlecode-libphonenumber-libphonenumber-v9025-x4 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;comGooglecodeLibphonenumberLibphonenumber3&quot; }..."
+                    description="Replace with libphonenumber-v9025 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;libphonenumberVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="com-googlecode-libphonenumber-libphonenumber-v9025-x4 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;comGooglecodeLibphonenumberLibphonenumber3&quot; }&#xA;"
+                    replacement="libphonenumber-v9025 = { module = &quot;com.googlecode.libphonenumber:libphonenumber&quot;, version.ref = &quot;libphonenumberVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="7207"
-                        endOffset="7207"/>
+                        startOffset="8256"
+                        endOffset="8256"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.com.googlecode.libphonenumber.libphonenumber.v9025.x4"
+                    description="Replace with libs.libphonenumber.v9025"
                     robot="true"
                     independent="true"
-                    replacement="libs.com.googlecode.libphonenumber.libphonenumber.v9025.x4"
+                    replacement="libs.libphonenumber.v9025"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2327"
-                        endOffset="2380"/>
+                        startOffset="2483"
+                        endOffset="2536"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3865,18 +3428,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2327"
-                    endOffset="2380"/>
+                    startOffset="2483"
+                    endOffset="2536"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="82"
+            line="87"
             column="20"
-            startOffset="2327"
-            endLine="82"
+            startOffset="2483"
+            endLine="87"
             endColumn="73"
-            endOffset="2380"/>
+            endOffset="2536"/>
     </incident>
 
     <incident
@@ -3891,17 +3454,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="3332"
-                endOffset="3366"/>
+                startOffset="3488"
+                endOffset="3522"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="109"
+            line="114"
             column="20"
-            startOffset="3332"
-            endLine="109"
+            startOffset="3488"
+            endLine="114"
             endColumn="54"
-            endOffset="3366"/>
+            endOffset="3522"/>
     </incident>
 
     <incident
@@ -3910,43 +3473,43 @@
         message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x16"
+                description="Replace with new library catalog declaration for androidx-datastore-preferences-v120"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with androidxDatastoreDatastorePreferences15 = &quot;1.2.0&quot;..."
+                    description="Replace with datastorePreferencesVersion = &quot;1.2.0&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidxDatastoreDatastorePreferences15 = &quot;1.2.0&quot;&#xA;"
+                    replacement="datastorePreferencesVersion = &quot;1.2.0&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="123"
-                        endOffset="123"/>
+                        startOffset="436"
+                        endOffset="436"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with androidx-datastore-datastore-preferences-v120-x16 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences15&quot; }..."
+                    description="Replace with androidx-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;datastorePreferencesVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidx-datastore-datastore-preferences-v120-x16 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences15&quot; }&#xA;"
+                    replacement="androidx-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;datastorePreferencesVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="2382"
-                        endOffset="2382"/>
+                        startOffset="2802"
+                        endOffset="2802"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x16"
+                    description="Replace with libs.androidx.datastore.preferences.v120"
                     robot="true"
                     independent="true"
-                    replacement="libs.androidx.datastore.datastore.preferences.v120.x16"
+                    replacement="libs.androidx.datastore.preferences.v120"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="3388"
-                        endOffset="3436"/>
+                        startOffset="3544"
+                        endOffset="3592"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3955,18 +3518,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3388"
-                    endOffset="3436"/>
+                    startOffset="3544"
+                    endOffset="3592"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="111"
+            line="116"
             column="20"
-            startOffset="3388"
-            endLine="111"
+            startOffset="3544"
+            endLine="116"
             endColumn="68"
-            endOffset="3436"/>
+            endOffset="3592"/>
     </incident>
 
     <incident
@@ -3974,24 +3537,24 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-core11"
+            description="Replace with new library catalog declaration for androidx-datastore-preferences-core"
             robot="true">
             <fix-replace
-                description="Replace with androidxDatastoreDatastorePreferencesCore9 = &quot;1.2.0&quot;..."
+                description="Replace with datastorePreferencesCoreVersion = &quot;1.2.0&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxDatastoreDatastorePreferencesCore9 = &quot;1.2.0&quot;&#xA;"
+                replacement="datastorePreferencesCoreVersion = &quot;1.2.0&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="398"
+                    endOffset="398"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-datastore-datastore-preferences-core11 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore9&quot; }..."
+                description="Replace with androidx-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCoreVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-datastore-datastore-preferences-core11 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore9&quot; }&#xA;"
+                replacement="androidx-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCoreVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -3999,24 +3562,24 @@
                     endOffset="2382"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.datastore.datastore.preferences.core11"
+                description="Replace with libs.androidx.datastore.preferences.core"
                 robot="true"
-                replacement="libs.androidx.datastore.datastore.preferences.core11"
+                replacement="libs.androidx.datastore.preferences.core"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3456"
-                    endOffset="3509"/>
+                    startOffset="3612"
+                    endOffset="3665"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="112"
+            line="117"
             column="20"
-            startOffset="3456"
-            endLine="112"
+            startOffset="3612"
+            endLine="117"
             endColumn="73"
-            endOffset="3509"/>
+            endOffset="3665"/>
     </incident>
 
     <incident
@@ -4024,49 +3587,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-work-work-runtime-ktx4"
+            description="Replace with new library catalog declaration for androidx-work-runtime-ktx"
             robot="true">
             <fix-replace
-                description="Replace with androidxWorkWorkRuntimeKtx2 = &quot;2.11.1&quot;..."
+                description="Replace with workRuntimeKtxVersion = &quot;2.11.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxWorkWorkRuntimeKtx2 = &quot;2.11.1&quot;&#xA;"
+                replacement="workRuntimeKtxVersion = &quot;2.11.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="1390"
+                    endOffset="1390"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-work-work-runtime-ktx4 = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;androidxWorkWorkRuntimeKtx2&quot; }..."
+                description="Replace with androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-work-work-runtime-ktx4 = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;androidxWorkWorkRuntimeKtx2&quot; }&#xA;"
+                replacement="androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="6729"
-                    endOffset="6729"/>
+                    startOffset="6539"
+                    endOffset="6539"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.work.work.runtime.ktx4"
+                description="Replace with libs.androidx.work.runtime.ktx"
                 robot="true"
-                replacement="libs.androidx.work.work.runtime.ktx4"
+                replacement="libs.androidx.work.runtime.ktx"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3529"
-                    endOffset="3568"/>
+                    startOffset="3685"
+                    endOffset="3724"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="113"
+            line="118"
             column="20"
-            startOffset="3529"
-            endLine="113"
+            startOffset="3685"
+            endLine="118"
             endColumn="59"
-            endOffset="3568"/>
+            endOffset="3724"/>
     </incident>
 
     <incident
@@ -4075,15 +3638,15 @@
         message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x17"
+                description="Replace with new library catalog declaration for datastore-preferences-v120"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with androidxDatastoreDatastorePreferences16 = &quot;1.2.0&quot;..."
+                    description="Replace with androidxDatastorePreferences = &quot;1.2.0&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidxDatastoreDatastorePreferences16 = &quot;1.2.0&quot;&#xA;"
+                    replacement="androidxDatastorePreferences = &quot;1.2.0&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -4091,27 +3654,27 @@
                         endOffset="123"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with androidx-datastore-datastore-preferences-v120-x17 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences16&quot; }..."
+                    description="Replace with datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastorePreferences&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidx-datastore-datastore-preferences-v120-x17 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences16&quot; }&#xA;"
+                    replacement="datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastorePreferences&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="2382"
-                        endOffset="2382"/>
+                        startOffset="7377"
+                        endOffset="7377"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x17"
+                    description="Replace with libs.datastore.preferences.v120"
                     robot="true"
                     independent="true"
-                    replacement="libs.androidx.datastore.datastore.preferences.v120.x17"
+                    replacement="libs.datastore.preferences.v120"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="3588"
-                        endOffset="3636"/>
+                        startOffset="3744"
+                        endOffset="3792"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -4120,18 +3683,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3588"
-                    endOffset="3636"/>
+                    startOffset="3744"
+                    endOffset="3792"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="114"
+            line="119"
             column="20"
-            startOffset="3588"
-            endLine="114"
+            startOffset="3744"
+            endLine="119"
             endColumn="68"
-            endOffset="3636"/>
+            endOffset="3792"/>
     </incident>
 
     <incident
@@ -4139,49 +3702,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for net-zetetic-sqlcipher-android26"
+            description="Replace with new library catalog declaration for sqlcipher-android"
             robot="true">
             <fix-replace
-                description="Replace with netZeteticSqlcipherAndroid25 = &quot;4.14.1&quot;..."
+                description="Replace with sqlcipherAndroidVersion = &quot;4.14.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="netZeteticSqlcipherAndroid25 = &quot;4.14.1&quot;&#xA;"
+                replacement="sqlcipherAndroidVersion = &quot;4.14.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="998"
-                    endOffset="998"/>
+                    startOffset="1173"
+                    endOffset="1173"/>
             </fix-replace>
             <fix-replace
-                description="Replace with net-zetetic-sqlcipher-android26 = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;netZeteticSqlcipherAndroid25&quot; }..."
+                description="Replace with sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="net-zetetic-sqlcipher-android26 = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;netZeteticSqlcipherAndroid25&quot; }&#xA;"
+                replacement="sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="8601"
-                    endOffset="8601"/>
+                    startOffset="8764"
+                    endOffset="8764"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.net.zetetic.sqlcipher.android26"
+                description="Replace with libs.sqlcipher.android"
                 robot="true"
-                replacement="libs.net.zetetic.sqlcipher.android26"
+                replacement="libs.sqlcipher.android"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3646"
-                    endOffset="3688"/>
+                    startOffset="3802"
+                    endOffset="3844"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="116"
+            line="121"
             column="9"
-            startOffset="3646"
-            endLine="116"
+            startOffset="3802"
+            endLine="121"
             endColumn="51"
-            endOffset="3688"/>
+            endOffset="3844"/>
     </incident>
 
     <incident
@@ -4189,24 +3752,24 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-sqlite-sqlite27"
+            description="Replace with new library catalog declaration for androidx-sqlite"
             robot="true">
             <fix-replace
-                description="Replace with androidxSqliteSqlite25 = &quot;2.6.2&quot;..."
+                description="Replace with sqliteVersion = &quot;2.6.2&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxSqliteSqlite25 = &quot;2.6.2&quot;&#xA;"
+                replacement="sqliteVersion = &quot;2.6.2&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="1173"
+                    endOffset="1173"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-sqlite-sqlite27 = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;androidxSqliteSqlite25&quot; }..."
+                description="Replace with androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-sqlite-sqlite27 = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;androidxSqliteSqlite25&quot; }&#xA;"
+                replacement="androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -4214,24 +3777,24 @@
                     endOffset="5623"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.sqlite.sqlite27"
+                description="Replace with libs.androidx.sqlite"
                 robot="true"
-                replacement="libs.androidx.sqlite.sqlite27"
+                replacement="libs.androidx.sqlite"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3697"
-                    endOffset="3727"/>
+                    startOffset="3853"
+                    endOffset="3883"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="117"
+            line="122"
             column="9"
-            startOffset="3697"
-            endLine="117"
+            startOffset="3853"
+            endLine="122"
             endColumn="39"
-            endOffset="3727"/>
+            endOffset="3883"/>
     </incident>
 
     <incident
@@ -4246,17 +3809,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="3747"
-                endOffset="3788"/>
+                startOffset="3903"
+                endOffset="3944"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="118"
+            line="123"
             column="20"
-            startOffset="3747"
-            endLine="118"
+            startOffset="3903"
+            endLine="123"
             endColumn="61"
-            endOffset="3788"/>
+            endOffset="3944"/>
     </incident>
 
     <incident
@@ -4265,15 +3828,15 @@
         message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x18"
+                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with androidxDatastoreDatastorePreferences17 = &quot;1.2.0&quot;..."
+                    description="Replace with androidxDatastorePreferencesVersion = &quot;1.2.0&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidxDatastoreDatastorePreferences17 = &quot;1.2.0&quot;&#xA;"
+                    replacement="androidxDatastorePreferencesVersion = &quot;1.2.0&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -4281,11 +3844,11 @@
                         endOffset="123"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with androidx-datastore-datastore-preferences-v120-x18 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences17&quot; }..."
+                    description="Replace with androidx-datastore-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastorePreferencesVersion&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="androidx-datastore-datastore-preferences-v120-x18 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences17&quot; }&#xA;"
+                    replacement="androidx-datastore-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastorePreferencesVersion&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -4293,15 +3856,15 @@
                         endOffset="2382"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x18"
+                    description="Replace with libs.androidx.datastore.datastore.preferences.v120"
                     robot="true"
                     independent="true"
-                    replacement="libs.androidx.datastore.datastore.preferences.v120.x18"
+                    replacement="libs.androidx.datastore.datastore.preferences.v120"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="3867"
-                        endOffset="3915"/>
+                        startOffset="4023"
+                        endOffset="4071"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -4310,18 +3873,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3867"
-                    endOffset="3915"/>
+                    startOffset="4023"
+                    endOffset="4071"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="120"
+            line="125"
             column="20"
-            startOffset="3867"
-            endLine="120"
+            startOffset="4023"
+            endLine="125"
             endColumn="68"
-            endOffset="3915"/>
+            endOffset="4071"/>
     </incident>
 
     <incident
@@ -4329,49 +3892,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-core12"
+            description="Replace with new library catalog declaration for datastore-preferences-core"
             robot="true">
             <fix-replace
-                description="Replace with androidxDatastoreDatastorePreferencesCore10 = &quot;1.2.0&quot;..."
+                description="Replace with datastorePreferencesCore = &quot;1.2.0&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidxDatastoreDatastorePreferencesCore10 = &quot;1.2.0&quot;&#xA;"
+                replacement="datastorePreferencesCore = &quot;1.2.0&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="123"
-                    endOffset="123"/>
+                    startOffset="398"
+                    endOffset="398"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-datastore-datastore-preferences-core12 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore10&quot; }..."
+                description="Replace with datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-datastore-datastore-preferences-core12 = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastoreDatastorePreferencesCore10&quot; }&#xA;"
+                replacement="datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="2382"
-                    endOffset="2382"/>
+                    startOffset="7377"
+                    endOffset="7377"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.datastore.datastore.preferences.core12"
+                description="Replace with libs.datastore.preferences.core"
                 robot="true"
-                replacement="libs.androidx.datastore.datastore.preferences.core12"
+                replacement="libs.datastore.preferences.core"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3990"
-                    endOffset="4043"/>
+                    startOffset="4146"
+                    endOffset="4199"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="123"
+            line="128"
             column="20"
-            startOffset="3990"
-            endLine="123"
+            startOffset="4146"
+            endLine="128"
             endColumn="73"
-            endOffset="4043"/>
+            endOffset="4199"/>
     </incident>
 
 </incidents>

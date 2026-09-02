@@ -49,6 +49,8 @@ interface MessageService {
 
     suspend fun markAllConversationsRead(): Boolean = false
 
+    suspend fun markConversationRead(threadIds: List<Int>): Boolean = false
+
     suspend fun exportMessages(destinationUri: String): Boolean = false
 
     fun gatewayConfigurations(): Flow<List<GatewaySummary>> =
@@ -172,6 +174,12 @@ interface MessageService {
 
     suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) = Unit
 
+    suspend fun setSecureSendingEnabled(
+        address: String,
+        subscriptionId: Long,
+        enabled: Boolean,
+    ) = setSecureSendingEnabled(address, enabled)
+
     suspend fun isContactBlocked(address: String): Boolean = false
 
     suspend fun setContactBlocked(address: String, blocked: Boolean): Boolean = false
@@ -182,6 +190,14 @@ interface MessageService {
         subscriptionId: Long,
         text: String,
     ): SendResult
+
+    suspend fun sendText(
+        address: String,
+        threadId: Int,
+        subscriptionId: Long,
+        text: String,
+        forcePlainText: Boolean,
+    ): SendResult = sendText(address, threadId, subscriptionId, text)
 
     suspend fun sendMms(
         addresses: List<String>,
@@ -206,9 +222,18 @@ interface MessageService {
 
     suspend fun securityFingerprint(address: String): String?
 
+    suspend fun securityFingerprint(address: String, subscriptionId: Long): String? =
+        securityFingerprint(address)
+
     suspend fun localSecurityQrPayload(): String? = null
 
     suspend fun verifyContactIdentity(address: String, qrPayload: String): Boolean = false
+
+    suspend fun verifyContactIdentity(
+        address: String,
+        subscriptionId: Long,
+        qrPayload: String,
+    ): Boolean = verifyContactIdentity(address, qrPayload)
 
     suspend fun acceptChangedIdentityAndRepair(
         address: String,

@@ -13,4 +13,5 @@ data class ThreadSummary(
     val unreadCount: Int,
     val smsData: ByteArray?,
     val secureTransportText: String?,
+    val participantAddresses: String? = null,
 )

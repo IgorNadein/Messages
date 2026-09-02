@@ -9,16 +9,22 @@ object SecureOutboundDecisionEngine {
         status: SecureSessionStatus,
         message: OutboundSms,
         trustedControlMessage: Boolean = false,
+        forcePlainText: Boolean = false,
         encrypt: suspend () -> String?,
     ): OutboundSmsDecision {
+        if(forcePlainText) {
+            return OutboundSmsDecision.Allow(
+                message.copy(transportText = message.displayText, retryTransportText = null)
+            )
+        }
         if(trustedControlMessage) {
             return OutboundSmsDecision.Allow(message)
         }
 
         return when(status) {
-            SecureSessionStatus.PLAIN -> OutboundSmsDecision.Allow(message)
+            SecureSessionStatus.PLAIN -> block("Secure session is not established")
             SecureSessionStatus.SECURE_PENDING,
-            SecureSessionStatus.SECURE_BROKEN -> OutboundSmsDecision.Allow(message)
+            SecureSessionStatus.SECURE_BROKEN -> block("Secure session is not ready")
             SecureSessionStatus.SECURE_ESTABLISHED -> {
                 if(message.transportData != null) {
                     return OutboundSmsDecision.Allow(message)

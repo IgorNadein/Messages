@@ -34,6 +34,7 @@ import com.afkanerd.smswithoutborders_libsmsmms.security.SECURE_RETRY_TRANSPORT_
 import com.afkanerd.smswithoutborders_libsmsmms.security.FORCE_PLAIN_TEXT_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.MmsSentReceiverImpl
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsTextReceivedReceiver
+import com.afkanerd.smswithoutborders_libsmsmms.transport.DataSmsFragmentCodec
 import com.google.gson.GsonBuilder
 import com.klinker.android.send_message.Message
 import com.klinker.android.send_message.Transaction
@@ -54,9 +55,9 @@ fun Context.updateMms(conversation: Conversations) {
 }
 
 @Throws
-fun Context.updateSms(uri: Uri, conversation: Conversations) {
+fun Context.updateSms(uri: Uri?, conversation: Conversations) {
     try {
-        if(settingsGetStoreTelephonyDb)
+        if(settingsGetStoreTelephonyDb && uri != null)
             updateSmsToLocalDb(uri,conversation)
         getDatabase().conversationsDao()?.update(conversation)
     } catch(e: Exception) {
@@ -144,9 +145,10 @@ fun Context.insertMms(conversation: Conversations) {
 fun Context.insertSms(
     conversation: Conversations,
     telephonyBody: String? = conversation.sms?.body,
+    storeInTelephony: Boolean = true,
 ): Uri? {
     var uri: Uri? = null
-    if(settingsGetStoreTelephonyDb) {
+    if(storeInTelephony && settingsGetStoreTelephonyDb) {
         try {
             uri = insertSmsTelephony(
                 telephonyBody,
@@ -216,6 +218,7 @@ suspend fun Context.sendSms(
         applicationContext,
         OutboundSms(
             address = address,
+            subscriptionId = subscriptionId,
             displayText = text,
             transportData = data,
             retryTransportText = bundle.getString(SECURE_RETRY_TRANSPORT_TEXT_EXTRA),
@@ -242,36 +245,31 @@ suspend fun Context.sendSms(
             read = 1,
             status = Telephony.Sms.STATUS_PENDING,
             type = Telephony.Sms.MESSAGE_TYPE_QUEUED,
-            body = if(outbound.transportData == null) outbound.displayText else {
-                Base64.encodeToString(outbound.transportData, Base64.NO_WRAP)
-            },
+            body = outbound.displayText,
             sub_id = subscriptionId,
         ),
             sms_data = outbound.transportData,
             secure_transport_text = outbound.transportText.takeIf {
-                outbound.transportData == null && it != outbound.displayText
+                it != outbound.displayText
             },
         )
 
-        insertSms(conversation)?.let { uri ->
-            if(outbound.transportData == null &&
-                outbound.transportText != outbound.displayText
-            ) {
-                bundle.putString(SECURE_TRANSPORT_TEXT_EXTRA, outbound.transportText)
-            }
-            val pendingIntents = getSmsPendingIntents(uri, conversation, bundle)
-
-            sendSms(
-                address = address,
-                conversation = conversation,
-                transportText = outbound.transportText,
-                transportData = outbound.transportData,
-                uri = uri,
-                sentPendingIntent = pendingIntents.first,
-                deliveredPendingIntent = if(settingsGetGetDeliveryReports)
-                    pendingIntents.second else null,
-            )
+        val uri = insertSms(
+            conversation,
+            storeInTelephony = outbound.transportData == null,
+        )
+        if(outbound.transportText != outbound.displayText) {
+            bundle.putString(SECURE_TRANSPORT_TEXT_EXTRA, outbound.transportText)
         }
+        sendSms(
+            address = address,
+            conversation = conversation,
+            transportText = outbound.transportText,
+            transportData = outbound.transportData,
+            uri = uri,
+            statusBundle = bundle,
+            requestDeliveryReport = settingsGetGetDeliveryReports,
+        )
 
     } catch (e: Exception) {
         throw e
@@ -286,9 +284,9 @@ private fun Context.sendSms(
     conversation: Conversations,
     transportText: String,
     transportData: ByteArray?,
-    uri: Uri,
-    sentPendingIntent: PendingIntent?,
-    deliveredPendingIntent: PendingIntent?,
+    uri: Uri?,
+    statusBundle: Bundle,
+    requestDeliveryReport: Boolean,
 ) {
     val smsManager = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
         getSystemService(SmsManager::class.java)
@@ -296,14 +294,54 @@ private fun Context.sendSms(
     else SmsManager.getSmsManagerForSubscriptionId(conversation.sms?.sub_id!!.toInt())
 
     try {
-        dispatchSmsToAndroid(
-            smsManager,
-            address,
-            transportText,
-            transportData,
-            sentPendingIntent,
-            deliveredPendingIntent,
-        )
+        if(transportData == null) {
+            val parts = smsManager.divideMessage(transportText)
+            val callbacks = parts.indices.map { index ->
+                getSmsPendingIntents(
+                    uri = uri,
+                    conversation = conversation,
+                    bundle = statusBundle,
+                    dataPartIndex = index,
+                    dataPartCount = parts.size,
+                )
+            }
+            if(parts.size < 2) {
+                smsManager.sendTextMessage(
+                    address,
+                    null,
+                    transportText,
+                    callbacks.single().first,
+                    callbacks.single().second.takeIf { requestDeliveryReport },
+                )
+            } else {
+                smsManager.sendMultipartTextMessage(
+                    address,
+                    null,
+                    parts,
+                    ArrayList(callbacks.map { it.first }),
+                    ArrayList(callbacks.map { it.second.takeIf { requestDeliveryReport } }),
+                )
+            }
+        } else {
+            val frames = DataSmsFragmentCodec.fragment(transportData)
+            frames.forEachIndexed { index, frame ->
+                val partPendingIntents = getSmsPendingIntents(
+                    uri = uri,
+                    conversation = conversation,
+                    bundle = statusBundle,
+                    dataPartIndex = index,
+                    dataPartCount = frames.size,
+                )
+                dispatchSmsToAndroid(
+                    smsManager,
+                    address,
+                    transportText,
+                    frame,
+                    partPendingIntents.first,
+                    partPendingIntents.second.takeIf { requestDeliveryReport },
+                )
+            }
+        }
 
     } catch(e: Exception) {
         conversation.sms?.status = Telephony.Sms.STATUS_FAILED
@@ -369,11 +407,14 @@ private const val DATA_TRANSMISSION_PORT: Short = 8200
 private fun Context.getSmsPendingIntents(
     uri: Uri?,
     conversation: Conversations,
-    bundle: Bundle
+    bundle: Bundle,
+    dataPartIndex: Int = 0,
+    dataPartCount: Int = 1,
 ): Pair<PendingIntent, PendingIntent> {
+    val requestCode = conversation.id.toInt() * 67 + dataPartIndex
     val sentPendingIntent = PendingIntent.getBroadcast(
         this,
-        conversation.id.toInt(),
+        requestCode,
         Intent().apply {
             setPackage(packageName)
             action = if(conversation.sms_data == null)
@@ -385,6 +426,8 @@ private fun Context.getSmsPendingIntents(
             this.putExtra("thread_id", conversation.sms?.thread_id)
             this.putExtra("sub_id", conversation.sms?.sub_id)
             this.putExtra("uri", uri?.toString())
+            this.putExtra(DATA_PART_INDEX_EXTRA, dataPartIndex)
+            this.putExtra(DATA_PART_COUNT_EXTRA, dataPartCount)
             this.putExtras(bundle)
         },
         PendingIntent.FLAG_IMMUTABLE
@@ -392,7 +435,7 @@ private fun Context.getSmsPendingIntents(
 
     val deliveredPendingIntent = PendingIntent.getBroadcast(
         this,
-        conversation.id.toInt(),
+        requestCode,
         Intent().apply {
             setPackage(packageName)
             action = if(conversation.sms_data == null)
@@ -404,12 +447,17 @@ private fun Context.getSmsPendingIntents(
             this.putExtra("thread_id", conversation.sms?.thread_id)
             this.putExtra("sub_id", conversation.sms?.sub_id)
             this.putExtra("uri", uri?.toString())
+            this.putExtra(DATA_PART_INDEX_EXTRA, dataPartIndex)
+            this.putExtra(DATA_PART_COUNT_EXTRA, dataPartCount)
         },
         PendingIntent.FLAG_IMMUTABLE
     )
 
     return Pair(sentPendingIntent, deliveredPendingIntent)
 }
+
+internal const val DATA_PART_INDEX_EXTRA = "data_part_index"
+internal const val DATA_PART_COUNT_EXTRA = "data_part_count"
 
 @Throws
 suspend fun Context.sendMms(
@@ -452,6 +500,7 @@ suspend fun Context.sendMms(
             applicationContext,
             OutboundSms(
                 address = recipient,
+                subscriptionId = subscriptionId,
                 displayText = text,
                 // A non-null marker makes MMS transport impossible to mistake for
                 // an encryptable text SMS in a secure session.
@@ -580,7 +629,11 @@ suspend fun Context.registerIncomingSms(
     val transportBody = bodyBuffer.toString()
     val processedBody = if(data) null else InboundSmsPolicyRegistry.evaluate(
         applicationContext,
-        InboundSms(address = address!!, transportText = transportBody),
+        InboundSms(
+            address = address!!,
+            subscriptionId = subscriptionId.toLong(),
+            transportText = transportBody,
+        ),
     )
 
     val conversation = Conversations(
@@ -601,9 +654,58 @@ suspend fun Context.registerIncomingSms(
 
     // Keep the wire packet in Android's Telephony provider while exposing only
     // the policy-approved body through the app's encrypted Room database.
-    insertSms(conversation, telephonyBody = transportBody)
+    insertSms(
+        conversation,
+        telephonyBody = transportBody,
+        storeInTelephony = !data,
+    )
     return conversation
 }
+
+/**
+ * Persists the logical Data-SMS payload after transport fragments have been reassembled.
+ * Using [registerIncomingSms] here would persist only the final radio fragment from the
+ * current broadcast and corrupt multipart secure key exchanges.
+ */
+suspend fun Context.registerIncomingDataSms(
+    address: String,
+    subscriptionId: Int,
+    payload: ByteArray,
+    dateSent: Long = System.currentTimeMillis(),
+): Conversations {
+    val conversation = newIncomingDataSmsConversation(
+        address = address,
+        subscriptionId = subscriptionId,
+        payload = payload,
+        date = System.currentTimeMillis(),
+        dateSent = dateSent,
+        threadId = getThreadId(address),
+    )
+    insertSms(conversation, telephonyBody = null, storeInTelephony = false)
+    return conversation
+}
+
+internal fun newIncomingDataSmsConversation(
+    address: String,
+    subscriptionId: Int,
+    payload: ByteArray,
+    date: Long,
+    dateSent: Long,
+    threadId: Int,
+): Conversations = Conversations(
+    sms = SmsMmsNatives.Sms(
+        body = "",
+        sub_id = subscriptionId.toLong(),
+        date = date,
+        date_sent = dateSent,
+        address = address,
+        type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+        status = Telephony.Sms.STATUS_NONE,
+        thread_id = threadId,
+        read = 0,
+    ),
+    sms_data = payload.copyOf(),
+)
 
 @Throws
 fun Context.loadRawThreads() : List<Pair<String, Boolean>>{

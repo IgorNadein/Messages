@@ -14,9 +14,9 @@ class SecuritySheetPolicyTest {
     }
 
     @Test
-    fun outgoingRequestCannotBeAcceptedLocally() {
+    fun outgoingRequestCanBeRenewedWhenCarrierResponseIsLost() {
         assertEquals(
-            SecuritySheetPrimaryAction.NONE,
+            SecuritySheetPrimaryAction.REPAIR,
             securitySheetPrimaryAction(ConversationSecurityState.NEGOTIATING),
         )
     }

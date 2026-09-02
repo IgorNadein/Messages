@@ -8,12 +8,12 @@
         <fix-data missing="android.permission.POST_NOTIFICATIONS"/>
         <location
             file="${:lib_smsmms_android*debug*MAIN*sourceProvider*0*javaDir*0}/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt"
-            line="131"
+            line="139"
             column="9"
-            startOffset="5330"
-            endLine="131"
+            startOffset="5725"
+            endLine="139"
             endColumn="66"
-            endOffset="5387"/>
+            endOffset="5782"/>
     </incident>
 
     <incident

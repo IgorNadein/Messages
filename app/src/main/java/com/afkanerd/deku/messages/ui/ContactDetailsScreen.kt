@@ -49,12 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.messages.domain.ConversationHeader
 import com.afkanerd.deku.messages.domain.ConversationSecurityState
 import com.afkanerd.deku.messages.domain.MessageRecipient
 import com.afkanerd.deku.messages.presentation.ContactDetailsViewModel
 import com.afkanerd.deku.messages.ui.components.ContactAvatar
+import com.afkanerd.deku.messages.ui.components.ONE_UI_POPUP_MENU_ALPHA
 import com.afkanerd.deku.messages.ui.components.OneUiCompactBar
 import com.afkanerd.deku.messages.ui.theme.MessagesTheme
 
@@ -427,7 +429,15 @@ private fun SubscriptionRow(
         }
         Box {
             TextButton(onClick = { expanded = true }) { Text(stringResource(R.string._switch)) }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(
+                    alpha = ONE_UI_POPUP_MENU_ALPHA,
+                ),
+                tonalElevation = 0.dp,
+                shadowElevation = 8.dp,
+            ) {
                 header.subscriptions.forEach { subscription ->
                     DropdownMenuItem(
                         text = { Text(subscription.displayName) },

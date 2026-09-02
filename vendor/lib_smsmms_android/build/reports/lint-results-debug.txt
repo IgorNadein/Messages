@@ -1,0 +1,641 @@
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt:113: Warning: Consider using apply() instead; commit writes its data to persistent storage immediately, whereas apply will handle it in the background [ApplySharedPref]
+                .commit()
+                 ~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt:163: Warning: Consider using apply() instead; commit writes its data to persistent storage immediately, whereas apply will handle it in the background [ApplySharedPref]
+        editor.commit()
+               ~~~~~~~~
+
+   Explanation for issues of type "ApplySharedPref":
+   Consider using apply() instead of commit on shared preferences. Whereas
+   commit blocks and writes its data to persistent storage immediately, apply
+   will handle it in the background.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:29: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk 36
+        ~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application or sdk runs on a version of Android that is more
+   recent than your targetSdkVersion specifies that it has been tested with,
+   various compatibility modes kick in. This ensures that your application
+   continues to work, but it may look out of place. For example, if the
+   targetSdkVersion is less than 14, your app may get an option button in the
+   UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/AndroidManifest.xml:31: Warning: Attribute localeConfig is only used in API level 33 and higher (current min is 24) [UnusedAttribute]
+        android:localeConfig="@xml/locales_config" >
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/dekusms_blue.xml:2: Warning: Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more [VectorRaster]
+    android:width="486dp"
+                   ~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/dekusms_dark_theme.xml:2: Warning: Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more [VectorRaster]
+    android:width="486dp"
+                   ~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/dekusms_default.xml:2: Warning: Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more [VectorRaster]
+    android:width="486dp"
+                   ~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/set_default_sms_app.xml:2: Warning: Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more [VectorRaster]
+    android:width="301dp"
+                   ~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/undraw_team_work_i1f3.xml:3: Warning: Limit vector icons sizes to 200×200 to keep icon drawing fast; see https://developer.android.com/studio/write/vector-asset-studio#when for more [VectorRaster]
+    android:height="758dp"
+                    ~~~~~
+
+   Explanation for issues of type "VectorRaster":
+   Vector icons require API 21 or API 24 depending on used features, but when
+   minSdkVersion is less than 21 or 24 and Android Gradle plugin 1.4 or higher
+   is used, a vector drawable placed in the drawable folder is automatically
+   moved to drawable-anydpi-v21 or drawable-anydpi-v24 and bitmap images are
+   generated for different screen resolutions for backwards compatibility.
+
+   However, there are some limitations to this raster image generation, and
+   this lint check flags elements and attributes that are not fully supported.
+   You should manually check whether the generated output is acceptable for
+   those older devices.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:72: Warning: A newer version of androidx.core:core-ktx than 1.17.0 is available: 1.19.0 [GradleDependency]
+    implementation "androidx.core:core-ktx:1.17.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:73: Warning: A newer version of androidx.appcompat:appcompat than 1.7.1 is available: 1.8.0 [GradleDependency]
+    implementation "androidx.appcompat:appcompat:1.7.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:74: Warning: A newer version of com.google.android.material:material than 1.13.0 is available: 1.14.0 [GradleDependency]
+    implementation "com.google.android.material:material:1.13.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:77: Warning: A newer version of androidx.paging:paging-common than 3.4.1 is available: 3.5.1 [GradleDependency]
+    implementation "androidx.paging:paging-common:3.4.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:116: Warning: A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1 [GradleDependency]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:117: Warning: A newer version of androidx.datastore:datastore-preferences-core than 1.2.0 is available: 1.2.1 [GradleDependency]
+    implementation "androidx.datastore:datastore-preferences-core:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:118: Warning: A newer version of androidx.work:work-runtime-ktx than 2.11.1 is available: 2.11.2 [GradleDependency]
+    implementation "androidx.work:work-runtime-ktx:2.11.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:119: Warning: A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1 [GradleDependency]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:122: Warning: A newer version of androidx.sqlite:sqlite than 2.6.2 is available: 2.7.0 [GradleDependency]
+    api 'androidx.sqlite:sqlite:2.6.2'
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:125: Warning: A newer version of androidx.datastore:datastore-preferences than 1.2.0 is available: 1.2.1 [GradleDependency]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:128: Warning: A newer version of androidx.datastore:datastore-preferences-core than 1.2.0 is available: 1.2.1 [GradleDependency]
+    implementation "androidx.datastore:datastore-preferences-core:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:5: Warning: A newer version of org.jetbrains.kotlin.plugin.serialization than 2.3.10 is available: 2.4.10 [NewerVersionAvailable]
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.10'
+                                                           ~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:84: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-serialization-json than 1.10.0 is available: 1.11.0 [NewerVersionAvailable]
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:87: Warning: A newer version of com.googlecode.libphonenumber:libphonenumber than 9.0.25 is available: 9.0.38 [NewerVersionAvailable]
+    implementation "com.googlecode.libphonenumber:libphonenumber:9.0.25"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:114: Warning: A newer version of com.google.code.gson:gson than 2.13.2 is available: 2.14.0 [NewerVersionAvailable]
+    implementation("com.google.code.gson:gson:2.13.2")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:121: Warning: A newer version of net.zetetic:sqlcipher-android than 4.14.1 is available: 4.18.0 [NewerVersionAvailable]
+    api 'net.zetetic:sqlcipher-android:4.14.1@aar'
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NewerVersionAvailable":
+   This detector checks with a central repository to see if there are newer
+   versions available for the dependencies used by this project. This is
+   similar to the GradleDependency check, which checks for newer versions
+   available in the Android SDK tools and libraries, but this works with any
+   MavenCentral dependency, and connects to the library every time, which
+   makes it more flexible but also much slower.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values/strings.xml:73: Warning: Did you mean "example!" instead of "example1"? [Typos]
+    <string name="add_new_gateway_server_smtp_recipient_helper">Use commas for multiple recipients e.g example@email.com, example1@email.com</string>
+                                                                                                                          ~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values/strings.xml:483: Warning: Did you mean "English!" instead of "English1"? [Typos]
+    <string name="english">English1</string>
+                           ~~~~~~~~
+
+   Explanation for issues of type "Typos":
+   This check looks through the string definitions, and if it finds any words
+   that look like likely misspellings, they are flagged.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:2: Warning: The resource string "app_name" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="app_name" translatable="false">Deku SMS</string>
+                            ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:3: Warning: The resource string "app_name" has been marked as translatable="false" elsewhere (usually in the values folder), but is translated to "de" (German) here [Untranslatable]
+    <string name="app_name">Deku SMS</string>
+            ~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:3: Warning: The resource string "privacy_policy_url" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="privacy_policy_url" translatable="false">https://smswithoutborders.com/privacy-policy</string>
+                                      ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:4: Warning: The resource string "privacy_policy_url" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="privacy_policy_url" translatable="false">https://smswithoutborders.com/privacy-policy</string>
+                                      ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:4: Warning: The resource string "running_gateway_clients_channel_name" has been marked as translatable="false" elsewhere (usually in the values folder), but is translated to "fr" (French) here [Untranslatable]
+    <string name="running_gateway_clients_channel_name">Exécution de passerelles SMS</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:5: Warning: The resource string "foreground_service_failed_channel_name" has been marked as translatable="false" elsewhere (usually in the values folder), but is translated to "fr" (French) here [Untranslatable]
+    <string name="foreground_service_failed_channel_name">Les clients de la passerelle SMS se reconnectent automatiquement</string>
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:5: Warning: The resource string "running_gateway_clients_channel_name" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="running_gateway_clients_channel_name" translatable="false">Running Gateway Listeners</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:6: Warning: The resource string "foreground_service_failed_channel_name" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="foreground_service_failed_channel_name" translatable="false">Gateway clients auto-reconnect</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:6: Warning: The resource string "running_gateway_clients_channel_name" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="running_gateway_clients_channel_name" translatable="false">Running Gateway Listeners</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:7: Warning: The resource string "foreground_service_failed_channel_name" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="foreground_service_failed_channel_name" translatable="false">Gateway clients auto-reconnect</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:7: Warning: The resource string "message_failed_channel_name" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="message_failed_channel_name" translatable="false">Message Failed</string>
+                                               ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:8: Warning: The resource string "message_failed_channel_name" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="message_failed_channel_name" translatable="false">Message Failed</string>
+                                               ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:16: Warning: The resource string "gateway_client_service_notification_id" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="gateway_client_service_notification_id" translatable="false">100000000</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:16: Warning: The resource string "gateway_client_service_notification_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="gateway_client_service_notification_id" translatable="false">100000000</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:17: Warning: The resource string "message_failed_notification_id" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="message_failed_notification_id" translatable="false">100000001</string>
+                                                  ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:17: Warning: The resource string "message_failed_notification_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="message_failed_notification_id" translatable="false">100000001</string>
+                                                  ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:20: Warning: The resource string "incoming_messages_channel_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="incoming_messages_channel_id" translatable="false">@string/incoming_messages_channel_name</string>
+                                                ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:21: Warning: The resource string "running_gateway_clients_channel_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="running_gateway_clients_channel_id" translatable="false">@string/running_gateway_clients_channel_name</string>
+                                                      ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:22: Warning: The resource string "foreground_service_failed_channel_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="foreground_service_failed_channel_id" translatable="false">@string/foreground_service_failed_channel_name</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:23: Warning: The resource string "message_failed_channel_id" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="message_failed_channel_id" translatable="false">@string/message_failed_channel_name</string>
+                                             ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:81: Warning: The resource string "settings_advanced_developers_key" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_advanced_developers_key" translatable="false">settings_advanced_developers_key</string>
+                                                    ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:82: Warning: The resource string "settings_locale" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_locale" translatable="false">settings_locale</string>
+                                   ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:98: Warning: The resource string "settings_advanced_developers_key" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_advanced_developers_key" translatable="false">settings_advanced_developers_key</string>
+                                                    ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:99: Warning: The resource string "settings_locale" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_locale" translatable="false">settings_locale</string>
+                                   ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:109: Warning: The resource string "settings_gateway_client_default_virtualhost" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_gateway_client_default_virtualhost" translatable="false">/</string>
+                                                               ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:110: Warning: The resource string "settings_gateway_client_default_port" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_gateway_client_default_port" translatable="false">5672</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:111: Warning: The resource string "settings_gateway_client_amqp_protocol" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_gateway_client_amqp_protocol" translatable="false">AMQP</string>
+                                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:112: Warning: The resource string "settings_gateway_client_amqps_protocol" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="settings_gateway_client_amqps_protocol" translatable="false">AMQP/SSL</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:133: Warning: The resource string "settings_gateway_client_default_virtualhost" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_gateway_client_default_virtualhost" translatable="false">/</string>
+                                                               ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:134: Warning: The resource string "settings_gateway_client_default_port" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_gateway_client_default_port" translatable="false">5672</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:137: Warning: The resource string "settings_gateway_client_amqp_protocol" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_gateway_client_amqp_protocol" translatable="false">AMQP</string>
+                                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:138: Warning: The resource string "settings_gateway_client_amqps_protocol" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="settings_gateway_client_amqps_protocol" translatable="false">AMQP/SSL</string>
+                                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:140: Warning: The resource string "about_deku_github_titile" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="about_deku_github_titile" translatable="false">GitHub</string>
+                                            ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:143: Warning: The resource string "about_deku_github_url" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="about_deku_github_url" translatable="false">https://github.com/deku-messaging/Deku-SMS-Android</string>
+                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:180: Warning: The resource string "about_deku_github_titile" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="about_deku_github_titile" translatable="false">GitHub</string>
+                                            ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:183: Warning: The resource string "about_deku_github_url" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="about_deku_github_url" translatable="false">https://github.com/deku-messaging/Deku-SMS-Android</string>
+                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:190: Warning: The resource string "conversation_shortcode_learn_more_ok" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="conversation_shortcode_learn_more_ok" translatable="false">OK</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:207: Warning: The resource string "configs_load_natives" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="configs_load_natives" translatable="false">LOAD NATIVES</string>
+                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:215: Warning: The resource string "conversations_secure_conversation_request_information_deku_encryption_link" is marked as translatable="false", but is translated to "de" (German) here [Untranslatable]
+    <string name="conversations_secure_conversation_request_information_deku_encryption_link" translatable="false">https://github.com/deku-messaging/Deku-SMS-Android?tab=readme-ov-file#-end-to-end-encryption</string>
+                                                                                              ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:239: Warning: The resource string "conversation_shortcode_learn_more_ok" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="conversation_shortcode_learn_more_ok" translatable="false">OK</string>
+                                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:252: Warning: The resource string "language_english_value" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="language_english_value" translatable="false">en</string>
+                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:253: Warning: The resource string "language_french_value" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="language_french_value" translatable="false">fr</string>
+                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:254: Warning: The resource string "language_russian_value" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="language_russian_value" translatable="false">ru</string>
+                                          ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:255: Warning: The resource string "language_german_value" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="language_german_value" translatable="false">de</string>
+                                         ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:258: Warning: The resource string "sample_date" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="sample_date" translatable="false">9:26 AM . MTN</string>
+                               ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:267: Warning: The resource string "configs_load_natives" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="configs_load_natives" translatable="false">LOAD NATIVES</string>
+                                        ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:277: Warning: The resource string "conversations_secure_conversation_request_information_deku_encryption_link" is marked as translatable="false", but is translated to "pl" (Polish) here [Untranslatable]
+    <string name="conversations_secure_conversation_request_information_deku_encryption_link" translatable="false">https://github.com/deku-messaging/Deku-SMS-Android?tab=readme-ov-file#-end-to-end-encryption</string>
+                                                                                              ~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "Untranslatable":
+   Strings can be marked with translatable=false to indicate that they are not
+   intended to be translated, but are present in the resource file for other
+   purposes (for example for non-display strings that should vary by some
+   other configuration qualifier such as screen size or API level).
+
+   There are cases where translators accidentally translate these strings
+   anyway, and lint will flag these occurrences with this lint check.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values/strings.xml:481: Warning: Formatting %d followed by words ("sent"): This should probably be a plural rather than a string [PluralsCandidate]
+    <string name="of_sent">%1$d of %2$d sent…</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "PluralsCandidate":
+   This lint check looks for potential errors in internationalization where
+   you have translated a message which involves a quantity and it looks like
+   other parts of the string may need grammatical changes.
+
+   For example, rather than something like this:
+     <string name="try_again">Try again in %d seconds.</string>
+   you should be using a plural:
+      <plurals name="try_again">
+           <item quantity="one">Try again in %d second</item>
+           <item quantity="other">Try again in %d seconds</item>
+       </plurals>
+   This will ensure that in other languages the right set of translations are
+   provided for the different quantity classes.
+
+   (This check depends on some heuristics, so it may not accurately determine
+   whether a string really should be a quantity. You can use tools:ignore to
+   filter out false positives.
+
+   https://developer.android.com/guide/topics/resources/string-resource.html#Plurals
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/receivers/MmsReceiverBroadcastReceiver.kt:16: Warning: This broadcast receiver declares an intent-filter for a protected broadcast action string, which can only be sent by the system, not third-party applications. However, the receiver's onReceive method does not appear to call getAction to ensure that the received Intent's action string matches the expected value, potentially making it possible for another actor to send a spoofed intent with no action string or a different action string and cause undesired behavior. In this case, it is possible that the onReceive method passed the received Intent to another method that checked the action string. If so, this finding can safely be ignored. [UnsafeProtectedBroadcastReceiver]
+    override fun onReceive(context: Context?, intent: Intent?) {
+                 ~~~~~~~~~
+
+   Explanation for issues of type "UnsafeProtectedBroadcastReceiver":
+   `BroadcastReceiver`s that declare an intent-filter for a
+   protected-broadcast action string must check that the received intent's
+   action string matches the expected value, otherwise it is possible for
+   malicious actors to spoof intents.
+
+   https://goo.gle/UnsafeProtectedBroadcastReceiver
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/AndroidManifest.xml:78: Warning: Exported receiver does not require permission [ExportedReceiver]
+        <receiver
+         ~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/AndroidManifest.xml:99: Warning: Exported receiver does not require permission [ExportedReceiver]
+        <receiver
+         ~~~~~~~~
+
+   Explanation for issues of type "ExportedReceiver":
+   Exported receivers (receivers which either set exported=true or contain an
+   intent-filter and do not specify exported=false) should define a permission
+   that an entity must have in order to launch the receiver or bind to it.
+   Without this, any application can use this receiver.
+
+   https://goo.gle/ExportedReceiver
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/AndroidManifest.xml:10: Warning: Did you mean android.permission.WRITE_OBB? [SystemPermissionTypo]
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SystemPermissionTypo":
+   This check looks for required permissions that look like well-known system
+   permissions or permissions from the Android SDK, but aren't, and may be
+   typos.
+
+   Please double check the permission value you have supplied.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:331: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_image">Image MMS...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:332: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_video">Vidéo MMS...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:343: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="give_it_a_minute">Donne-lui une minute...</string>
+                                    ~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:357: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_image">MMS-Bild...</string>
+                             ~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:358: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_video">MMS-Video...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-fr/strings.xml:358: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="waiting_to_send">en attente d\'envoi...</string>
+                                   ~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:369: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="give_it_a_minute">Geben Sie ihm eine Minute Zeit ...</string>
+                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-ru/strings.xml:375: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_image">MMS-изображение...</string>
+                             ~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-ru/strings.xml:376: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_video">MMS-видео...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-de/strings.xml:384: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="waiting_to_send">warte auf Senden...</string>
+                                   ~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-ru/strings.xml:387: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="give_it_a_minute">Подождите минутку...</string>
+                                    ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-ru/strings.xml:402: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="waiting_to_send">жду отправки...</string>
+                                   ~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:419: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_image">Obraz MMS...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:420: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="mms_video">Wideo MMS...</string>
+                             ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:431: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="give_it_a_minute">Daj temu minutę...</string>
+                                    ~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values-pl/strings.xml:446: Warning: Replace "..." with ellipsis character (…, &#8230;) ? [TypographyEllipsis]
+    <string name="waiting_to_send">czekam na wysłanie...</string>
+                                   ~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "TypographyEllipsis":
+   You can replace the string "..." with a dedicated ellipsis character,
+   ellipsis character (u2026, &#8230;). This can help make the text more
+   readable.
+
+   https://en.wikipedia.org/wiki/Ellipsis
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/drawable/egs_cyberpunk2077_cdprojektred_s1_03_2560x1440_359e77d3cd0a40aebf3bbc130d14c5c7.webp: Warning: Found bitmap drawable res/drawable/egs_cyberpunk2077_cdprojektred_s1_03_2560x1440_359e77d3cd0a40aebf3bbc130d14c5c7.webp in densityless folder [IconLocation]
+
+   Explanation for issues of type "IconLocation":
+   The res/drawable folder is intended for density-independent graphics such
+   as shapes defined in XML. For bitmaps, move it to drawable-mdpi and
+   consider providing higher and lower resolution versions in drawable-ldpi,
+   drawable-hdpi and drawable-xhdpi. If the icon really is density independent
+   (for example a solid color) you can place it in drawable-nodpi.
+
+   https://developer.android.com/guide/practices/screens_support.html
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/res/values/strings.xml:178: Warning: The standard Android way to capitalize cancel is "Cancel" (tip: use @android:string/cancel instead) [ButtonCase]
+    <string name="message_threads_menu_cancel">cancel</string>
+                                               ~~~~~~
+
+   Explanation for issues of type "ButtonCase":
+   The standard capitalization for OK/Cancel dialogs is "OK" and "Cancel". To
+   ensure that your dialogs use the standard strings, you can use the resource
+   strings @android:string/ok and @android:string/cancel.
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Activity.kt:116: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+    return Uri.parse("android.resource://${packageName}/$drawableId")
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt:108: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+            prefs.edit()
+            ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsFragmentCodec.kt:160: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+        val editor = prefs.edit().putStringSet(KEY_ACTIVE, active)
+                     ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt:26: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+            prefs.edit()
+            ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt:39: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+        prefs.edit()
+        ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/transport/DataSmsPartStatusTracker.kt:55: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+        prefs.edit().also { editor ->
+        ~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt:126: Warning: Use the KTX extension function Bitmap.scale instead? [UseKtx]
+            val resized = Bitmap.createScaledBitmap(
+                          ^
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsCarrierLimits.kt:148: Warning: Use the KTX extension function Bitmap.scale instead? [UseKtx]
+    return Bitmap.createScaledBitmap(
+           ^
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/MmsParticipants.kt:75: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+    val uri = Uri.parse("content://mms/$messageId/addr")
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt:373: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+    with(sharedPreferences.edit()) {
+         ~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/src/main/java/com/afkanerd/smswithoutborders_libsmsmms/extensions/context/Notifications.kt:434: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+    with(sharedPreferences.edit()) {
+         ~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseKtx":
+   The Android KTX libraries decorates the Android platform SDK as well as
+   various libraries with more convenient extension functions available from
+   Kotlin, allowing you to use default parameters, named parameters, and
+   more.
+
+   Available options:
+
+   **remove-defaults** (default is true):
+   Whether to skip arguments that match the defaults provided by the extension.
+
+   Extensions often provide default values for some of the parameters. For example:
+   ```kotlin
+   fun Path.readLines(charset: Charset = Charsets.UTF_8): List<String> { return Files.readAllLines(this, charset) }
+   ```
+   This lint check will by default automatically omit parameters that match the default, so if your code was calling
+
+   ```kotlin
+   Files.readAllLines(file, Charset.UTF_8)
+   ```
+   lint would replace this with
+   ```kotlin
+   file.readLines()
+   ```
+   rather than
+
+   ```kotlin
+   file.readLines(Charset.UTF_8
+   ```
+   You can turn this behavior off using this option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="remove-defaults" value="true" />
+       </issue>
+   </lint>
+   ```
+
+   **require-present** (default is true):
+   Whether to only offer extensions already available.
+
+   This option lets you only have lint suggest extension replacements if those extensions are already available on the class path (in other words, you're already depending on the library containing the extension method.)
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="require-present" value="true" />
+       </issue>
+   </lint>
+   ```
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:77: Hint: Add suffix -ktx to enable the Kotlin extensions for this library [KtxExtensionAvailable]
+    implementation "androidx.paging:paging-common:3.4.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:122: Hint: Add suffix -ktx to enable the Kotlin extensions for this library [KtxExtensionAvailable]
+    api 'androidx.sqlite:sqlite:2.6.2'
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "KtxExtensionAvailable":
+   Android KTX extensions augment some libraries with support for modern
+   Kotlin language features like extension functions, extension properties,
+   lambdas, named parameters, coroutines, and more.
+
+   In Kotlin projects, use the KTX version of a library by replacing the
+   dependency in your build.gradle file. For example, you can replace
+   androidx.fragment:fragment with androidx.fragment:fragment-ktx.
+
+   https://developer.android.com/kotlin/ktx
+
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:72: Warning: Use the existing version catalog reference (libs.androidx.ktx) instead [UseTomlInstead]
+    implementation "androidx.core:core-ktx:1.17.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:73: Warning: Use the existing version catalog reference (libs.androidx.appcompat) instead [UseTomlInstead]
+    implementation "androidx.appcompat:appcompat:1.7.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:74: Warning: Use the existing version catalog reference (libs.material) instead [UseTomlInstead]
+    implementation "com.google.android.material:material:1.13.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:75: Warning: Use version catalog instead [UseTomlInstead]
+    implementation "androidx.room:room-common-jvm:2.8.4"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:76: Warning: Use version catalog instead (androidx.room:room-runtime is already available as androidx-room-runtime, but using version 2.8.1 instead) [UseTomlInstead]
+    implementation "androidx.room:room-runtime:2.8.4"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:77: Warning: Use version catalog instead [UseTomlInstead]
+    implementation "androidx.paging:paging-common:3.4.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:78: Warning: Use the existing version catalog reference (libs.junit) instead [UseTomlInstead]
+    testImplementation "junit:junit:4.13.2"
+                       ~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:79: Warning: Use version catalog instead [UseTomlInstead]
+    testImplementation "org.robolectric:robolectric:4.16.1"
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:80: Warning: Use the existing version catalog reference (libs.androidx.junit) instead [UseTomlInstead]
+    androidTestImplementation "androidx.test.ext:junit:1.3.0"
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:81: Warning: Use the existing version catalog reference (libs.androidx.espresso.core) instead [UseTomlInstead]
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.7.0"
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:82: Warning: Use version catalog instead (androidx.room:room-testing is already available as androidx-room-testing, but using version 2.8.1 instead) [UseTomlInstead]
+    androidTestImplementation "androidx.room:room-testing:2.8.4"
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:83: Warning: Use version catalog instead (androidx.room:room-compiler is already available as androidx-room-compiler, but using version 2.8.1 instead) [UseTomlInstead]
+    annotationProcessor "androidx.room:room-compiler:2.8.4"
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:84: Warning: Use version catalog instead (org.jetbrains.kotlinx:kotlinx-serialization-json is already available as kotlinx-serialization-json, but using version 1.9.0 instead) [UseTomlInstead]
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:86: Warning: Use the existing version catalog reference (libs.android.smsmms) instead [UseTomlInstead]
+    implementation "org.fossify:android-smsmms:c3e678befd"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:87: Warning: Use version catalog instead (com.googlecode.libphonenumber:libphonenumber is already available as libphonenumber, but using version 9.0.15 instead) [UseTomlInstead]
+    implementation "com.googlecode.libphonenumber:libphonenumber:9.0.25"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:114: Warning: Use the existing version catalog reference (libs.gson) instead [UseTomlInstead]
+    implementation("com.google.code.gson:gson:2.13.2")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:116: Warning: Use version catalog instead (androidx.datastore:datastore-preferences is already available as androidx-datastore-preferences, but using version 1.1.7 instead) [UseTomlInstead]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:117: Warning: Use version catalog instead [UseTomlInstead]
+    implementation "androidx.datastore:datastore-preferences-core:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:118: Warning: Use version catalog instead [UseTomlInstead]
+    implementation "androidx.work:work-runtime-ktx:2.11.1"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:119: Warning: Use version catalog instead (androidx.datastore:datastore-preferences is already available as androidx-datastore-preferences, but using version 1.1.7 instead) [UseTomlInstead]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:121: Warning: Use version catalog instead [UseTomlInstead]
+    api 'net.zetetic:sqlcipher-android:4.14.1@aar'
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:122: Warning: Use version catalog instead [UseTomlInstead]
+    api 'androidx.sqlite:sqlite:2.6.2'
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:123: Warning: Use the existing version catalog reference (libs.androidx.security.crypto) instead [UseTomlInstead]
+    implementation "androidx.security:security-crypto:1.1.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:125: Warning: Use version catalog instead (androidx.datastore:datastore-preferences is already available as androidx-datastore-preferences, but using version 1.1.7 instead) [UseTomlInstead]
+    implementation "androidx.datastore:datastore-preferences:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/lizerk/Dev/Сообщения/vendor/lib_smsmms_android/build.gradle:128: Warning: Use version catalog instead [UseTomlInstead]
+    implementation "androidx.datastore:datastore-preferences-core:1.2.0"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseTomlInstead":
+   If your project is using a libs.versions.toml file, you should place all
+   Gradle dependencies in the TOML file. This lint check looks for version
+   declarations outside of the TOML file and suggests moving them (and in the
+   IDE, provides a quickfix to performing the operation automatically).
+
+0 errors, 133 warnings, 2 hints

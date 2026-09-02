@@ -40,9 +40,9 @@ class SecureOutboundDecisionEngineTest {
     }
 
     @Test
-    fun pendingBrokenAndNonTextTransportsRemainAvailableAsPlainMessages() = runTest {
-        assertPlainAllowed(decide(SecureSessionStatus.SECURE_PENDING))
-        assertPlainAllowed(decide(SecureSessionStatus.SECURE_BROKEN))
+    fun pendingAndBrokenSessionsBlockSilentPlaintextDowngrade() = runTest {
+        assertTrue(decide(SecureSessionStatus.SECURE_PENDING) is OutboundSmsDecision.Block)
+        assertTrue(decide(SecureSessionStatus.SECURE_BROKEN) is OutboundSmsDecision.Block)
 
         val binary = outbound.copy(transportData = byteArrayOf(0x44, 0x45))
         val decision = SecureOutboundDecisionEngine.decide(
@@ -60,8 +60,8 @@ class SecureOutboundDecisionEngineTest {
     }
 
     @Test
-    fun plainSmsAndValidKeyExchangeRemainAvailable() = runTest {
-        assertTrue(decide(SecureSessionStatus.PLAIN) is OutboundSmsDecision.Allow)
+    fun requiredSecureSendBlocksPlainSessionButValidKeyExchangeRemainsAvailable() = runTest {
+        assertTrue(decide(SecureSessionStatus.PLAIN) is OutboundSmsDecision.Block)
 
         val key = ByteArray(32)
         val exchange = outbound.copy(
@@ -79,7 +79,29 @@ class SecureOutboundDecisionEngineTest {
             exchange,
             trustedControlMessage = false,
         ) { null }
-        assertPlainAllowed(untrusted)
+        assertTrue(untrusted is OutboundSmsDecision.Block)
+    }
+
+    @Test
+    fun confirmedDifferentSimResendUsesPlaintextAndNeverInvokesEncryption() = runTest {
+        var encryptionInvoked = false
+        val decision = SecureOutboundDecisionEngine.decide(
+            status = SecureSessionStatus.SECURE_ESTABLISHED,
+            message = outbound.copy(
+                transportText = validCipherText(),
+                retryTransportText = validCipherText(),
+                forcePlainText = true,
+            ),
+            forcePlainText = true,
+        ) {
+            encryptionInvoked = true
+            validCipherText()
+        }
+
+        assertPlainAllowed(decision)
+        assertFalse(encryptionInvoked)
+        val resent = (decision as OutboundSmsDecision.Allow).message
+        assertTrue(resent.retryTransportText == null)
     }
 
     private suspend fun decide(status: SecureSessionStatus) =
