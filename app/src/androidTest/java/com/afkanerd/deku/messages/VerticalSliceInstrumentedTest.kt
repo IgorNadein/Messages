@@ -16,9 +16,13 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.onAllNodes
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.performTextInput
@@ -173,7 +177,10 @@ class VerticalSliceInstrumentedTest {
     @Test
     fun conversationListUsesLayeredOneUiCompositionAndPreservesPrimaryActions() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val service = VerticalSliceService(defaultSms = true, contactAccess = true)
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+        )
         val viewModel = InboxViewModel(service)
         var searchClicks = 0
         var newMessageClicks = 0
@@ -268,7 +275,10 @@ class VerticalSliceInstrumentedTest {
     @Test
     fun conversationPopupMenusUseOneUiGeometryAndPreserveActions() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val service = VerticalSliceService(defaultSms = true, contactAccess = true)
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+        )
         val viewModel = InboxViewModel(service)
         var settingsClicks = 0
 
@@ -872,6 +882,363 @@ class VerticalSliceInstrumentedTest {
     }
 
     @Test
+    fun userCanSwitchFutureMessagesFromEncryptedToRegularSms() {
+        val service = VerticalSliceService(defaultSms = true, contactAccess = true)
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-composer-encrypted").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-security-inline-status").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-composer-encrypted").performClick()
+        composeRule.onNodeWithTag("oneui-secure-sending-switch")
+            .assertIsDisplayed()
+            .performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.secureSendingEnabled == false
+        }
+    }
+
+    @Test
+    fun transparentConversationBottomOverlayKeepsLatestMessageReachable() {
+        val service = VerticalSliceService(defaultSms = true, contactAccess = true)
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-conversation-bottom-overlay").assertIsDisplayed()
+        val latestMessage = composeRule.onNodeWithContentDescription(
+            "message-50000",
+            substring = true,
+        ).fetchSemanticsNode().boundsInRoot
+        val securityStatus = composeRule.onNodeWithTag("oneui-security-inline-status")
+            .fetchSemanticsNode().boundsInRoot
+        val composerBackground = composeRule
+            .onNodeWithTag("oneui-conversation-composer-background")
+            .fetchSemanticsNode().boundsInRoot
+
+        assertTrue(
+            "latestMessage=$latestMessage securityStatus=$securityStatus",
+            latestMessage.bottom <= securityStatus.top,
+        )
+        assertTrue(
+            "securityStatus=$securityStatus composerBackground=$composerBackground",
+            composerBackground.top >= securityStatus.bottom,
+        )
+    }
+
+    @Test
+    fun decryptionFailureIsCompactAndDoesNotOfferKeyRenewalOnTheMessage() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            includeDecryptionFailure = true,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(
+            context.getString(R.string.oneui_security_event_decrypt_failed)
+        ).assertIsDisplayed()
+        val failureMessage = composeRule.onNodeWithTag("oneui-decryption-failure-message")
+            .fetchSemanticsNode().boundsInRoot
+        val root = composeRule.onRoot().fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "failureMessage=$failureMessage root=$root",
+            failureMessage.left <= root.width * 0.1f,
+        )
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithText(
+                context.getString(R.string.oneui_request_new_key)
+            ).fetchSemanticsNodes().size,
+        )
+    }
+
+    @Test
+    fun outgoingDeliveryStatesUseSocialStyleCheckmarks() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            outgoingDeliveryPreview = true,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag(
+            "oneui-delivery-sent",
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+        composeRule.onNodeWithTag(
+            "oneui-delivery-delivered",
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+        composeRule.onNodeWithTag(
+            "oneui-delivery-queued",
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+        composeRule.onNodeWithTag(
+            "oneui-delivery-failed",
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+        val sentBubble = composeRule.onNodeWithTag("oneui-message-bubble-delivery-sent")
+            .fetchSemanticsNode().boundsInRoot
+        val sentMetadata = composeRule.onNodeWithTag(
+            "oneui-message-metadata-delivery-sent",
+            useUnmergedTree = true,
+        ).fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "bubble=$sentBubble metadata=$sentMetadata",
+            sentMetadata.left >= sentBubble.left &&
+                sentMetadata.top >= sentBubble.top &&
+                sentMetadata.right <= sentBubble.right &&
+                sentMetadata.bottom <= sentBubble.bottom,
+        )
+        assertTrue(
+            composeRule.onAllNodesWithText(
+                "SMS ·",
+                substring = true,
+                useUnmergedTree = true,
+            ).fetchSemanticsNodes().size >= 4,
+        )
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithText(context.getString(R.string.oneui_sent))
+                .fetchSemanticsNodes().size,
+        )
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithText(context.getString(R.string.oneui_delivered))
+                .fetchSemanticsNodes().size,
+        )
+    }
+
+    @Test
+    fun longPressOnMessageOpensWorkingActionMenu() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(defaultSms = true, contactAccess = true)
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+        var copiedText: String? = null
+        var forwardedText: String? = null
+        var sharedItem: TimelineItem? = null
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onCopyMessage = { copiedText = it },
+                    onForwardMessage = { forwardedText = it },
+                    onShareMessage = { sharedItem = it },
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        val message = composeRule.onNodeWithTag("oneui-message-bubble-synthetic-50000")
+        message.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-actions").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-message-action-select-text").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-message-action-favorite").assertIsDisplayed()
+        val rootBounds = composeRule.onAllNodes(isRoot()).fetchSemanticsNodes()
+            .maxBy { it.boundsInWindow.width }
+            .boundsInWindow
+        val messageBounds = message.fetchSemanticsNode().boundsInWindow
+        val menuBounds = composeRule.onNodeWithTag("oneui-message-actions")
+            .fetchSemanticsNode().boundsInWindow
+        assertTrue("menu=$menuBounds root=$rootBounds", menuBounds.width < rootBounds.width * 0.8f)
+        assertTrue(
+            "menu=$menuBounds message=$messageBounds",
+            kotlin.math.abs(menuBounds.left - messageBounds.left) <= 24f &&
+                menuBounds.top <= messageBounds.bottom + 24f,
+        )
+        composeRule.onNodeWithTag("oneui-message-action-copy").performClick()
+        composeRule.runOnIdle { assertEquals("message-50000", copiedText) }
+
+        message.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-forward").performClick()
+        composeRule.runOnIdle { assertEquals("message-50000", forwardedText) }
+
+        message.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-share").performClick()
+        composeRule.runOnIdle { assertEquals("synthetic-50000", sharedItem?.stableId) }
+
+        message.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-favorite").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.favoriteMessageActions == listOf("synthetic-50000" to true)
+        }
+        composeRule.onNodeWithContentDescription(
+            context.getString(R.string.oneui_message_favorite),
+            useUnmergedTree = true,
+        ).assertIsDisplayed()
+
+        message.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-message-action-details").performClick()
+        composeRule.onNodeWithText(context.getString(R.string.oneui_message_detail_type))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText("SMSS").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-message-details-back").performClick()
+
+        composeRule.onNodeWithTag("oneui-message-action-delete").performClick()
+        composeRule.onNodeWithText(context.getString(R.string.oneui_delete_message_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-message-delete-confirm").performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.deletedMessageStableIds == listOf("synthetic-50000")
+        }
+    }
+
+    @Test
+    fun conversationHeaderExpandsLikeSamsungAndKeepsActionsWorking() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            dualSim = true,
+            multipleContactNumbers = true,
+        )
+        val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+        var backClicks = 0
+        var calledAddress: String? = null
+        var videoCalledAddress: String? = null
+        var detailsClicks = 0
+        var addedRecipients: List<String>? = null
+        var selectedNumber: String? = null
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = { backClicks++ },
+                    onCall = { calledAddress = it },
+                    onVideoCall = { videoCalledAddress = it },
+                    onMore = { detailsClicks++ },
+                    onAddRecipients = { addedRecipients = it },
+                    onNumberSelected = { selectedNumber = it },
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-conversation-header-compact").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-conversation-header-expand").performClick()
+        composeRule.onNodeWithTag("oneui-conversation-header-expanded").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-conversation-header-scrim").assertIsDisplayed()
+        composeRule.onNodeWithContentDescription(context.getString(R.string.call)).performClick()
+        composeRule.onNodeWithContentDescription(
+            context.getString(R.string.oneui_video_call)
+        ).performClick()
+        composeRule.onNodeWithContentDescription(
+            context.getString(R.string.oneui_contact_details)
+        ).performClick()
+        val addRecipientsButton = composeRule.onNodeWithTag("oneui-add-recipients")
+            .fetchSemanticsNode().boundsInRoot
+        val addRecipientsText = composeRule
+            .onNodeWithText(context.getString(R.string.oneui_add_recipients))
+            .fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "button=$addRecipientsButton text=$addRecipientsText",
+            kotlin.math.abs(
+                (addRecipientsText.top - addRecipientsButton.top) -
+                    (addRecipientsButton.bottom - addRecipientsText.bottom)
+            ) <= 8f,
+        )
+        composeRule.onNodeWithTag("oneui-add-recipients").performClick()
+        saveScreenshot("oneui_conversation_header_expanded.png")
+
+        composeRule.runOnIdle {
+            assertEquals(ADDRESS, calledAddress)
+            assertEquals(ADDRESS, videoCalledAddress)
+            assertEquals(1, detailsClicks)
+            assertEquals(listOf(ADDRESS), addedRecipients)
+        }
+
+        composeRule.onNodeWithContentDescription(
+            context.getString(R.string.oneui_collapse_conversation_details)
+        ).performClick()
+        composeRule.onNodeWithContentDescription(
+            context.getString(R.string.oneui_more_options)
+        ).performClick()
+        composeRule.onNodeWithContentDescription(context.getString(R.string.oneui_back))
+            .performClick()
+        composeRule.runOnIdle {
+            assertEquals(2, detailsClicks)
+            assertEquals(1, backClicks)
+        }
+
+        composeRule.onNodeWithTag("oneui-conversation-header-expand").performClick()
+        composeRule.onNodeWithTag("oneui-conversation-number-selector").performClick()
+        composeRule.onNodeWithTag("oneui-conversation-number-menu").assertIsDisplayed()
+        composeRule.onNodeWithText(SECOND_ADDRESS).performClick()
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            viewModel.state.value.header?.address == SECOND_ADDRESS
+        }
+        composeRule.onNodeWithText("message-50000").assertIsDisplayed()
+        composeRule.runOnIdle {
+            viewModel.selectSubscription(SECOND_SIM)
+            viewModel.updateDraft("sent through selected route")
+            viewModel.send()
+        }
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.sentAddress == SECOND_ADDRESS &&
+                service.sentSubscriptionId == SECOND_SIM
+        }
+        composeRule.runOnIdle {
+            assertEquals(SECOND_ADDRESS, selectedNumber)
+            assertEquals(listOf(THREAD_ID, THREAD_ID + 1), service.requestedTimelineThreadIds)
+            assertEquals(SECOND_ADDRESS, service.sentAddress)
+            assertEquals(SECOND_SIM, service.sentSubscriptionId)
+        }
+    }
+
+    @Test
     fun conversationExposesComposerDualSimAndMessageStateToTalkBack() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val service = VerticalSliceService(
@@ -900,12 +1267,23 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithContentDescription(
             context.getString(R.string.oneui_message_hint)
         ).assertIsDisplayed()
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithContentDescription(
+                context.getString(R.string.attachment_photo)
+            ).fetchSemanticsNodes().size,
+        )
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithContentDescription(
+                context.getString(R.string.attachment_camera)
+            ).fetchSemanticsNodes().size,
+        )
         composeRule.onNodeWithContentDescription(
-            context.getString(R.string.attachment_photo)
+            context.getString(R.string.attachment_menu)
         ).assertIsDisplayed()
-        composeRule.onNodeWithContentDescription(
-            context.getString(R.string.attachment_camera)
-        ).assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-composer-encrypted").assertIsDisplayed()
+        composeRule.onNodeWithText("SIM 1").assertIsDisplayed()
         composeRule.onNodeWithContentDescription(
             context.getString(R.string.choose_sim_card)
         ).assertIsDisplayed()
@@ -980,11 +1358,7 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithTag("oneui-recipient-picker").assertIsDisplayed()
         val pickerSearch = composeRule.onNodeWithTag("oneui-recipient-picker-search")
         pickerSearch.assertIsDisplayed()
-        pickerSearch.performClick()
-        composeRule.onNodeWithText(
-            context.getString(R.string.oneui_find_contact_or_enter_number)
-        ).assertIsDisplayed()
-        composeRule.onNodeWithText(EXISTING_CONTACT).performClick()
+        composeRule.onNodeWithText(EXISTING_CONTACT).assertIsDisplayed().performClick()
         composeRule.onNodeWithText(
             context.getString(R.string.oneui_selected_recipients_count, 1)
         ).assertIsDisplayed()
@@ -993,12 +1367,22 @@ class VerticalSliceInstrumentedTest {
         composeRule.onNodeWithTag("oneui-new-conversation").assertIsDisplayed()
         composeRule.onNodeWithText(EXISTING_CONTACT).assertIsDisplayed()
         composeRule.onNodeWithTag("oneui-new-message-input").assertIsEnabled()
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithContentDescription(
+                context.getString(R.string.attachment_photo)
+            ).fetchSemanticsNodes().size,
+        )
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithContentDescription(
+                context.getString(R.string.attachment_camera)
+            ).fetchSemanticsNodes().size,
+        )
         composeRule.onNodeWithContentDescription(
-            context.getString(R.string.attachment_photo)
+            context.getString(R.string.attachment_menu)
         ).assertIsDisplayed()
-        composeRule.onNodeWithContentDescription(
-            context.getString(R.string.attachment_camera)
-        ).assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-composer-plain").assertIsDisplayed()
         assertEquals(null, destination)
         assertEquals(0, service.sendCalls)
 
@@ -1117,11 +1501,16 @@ class VerticalSliceInstrumentedTest {
         private val unreadMessages: Int = 0,
         private val conversationCount: Int = 1,
         private val shortCategoryCount: Int = 1,
+        private val includeDecryptionFailure: Boolean = false,
+        private val multipleContactNumbers: Boolean = false,
+        private val outgoingDeliveryPreview: Boolean = false,
     ) : MessageService {
         var promptCompleted = false
         var importCalls = 0
+        var secureSendingEnabled: Boolean? = null
         var messageStoreReady = false
         var sentText: String? = null
+        var sentAddress: String? = null
         var sentSubscriptionId: Long? = null
         var savedDraftText: String? = null
         var sendCalls = 0
@@ -1129,6 +1518,9 @@ class VerticalSliceInstrumentedTest {
         var mmsRecipients: List<String>? = null
         var generatedTimelineItems = 0
         var maximumRequestedLoad = 0
+        var requestedTimelineThreadIds: List<Int> = emptyList()
+        val deletedMessageStableIds = mutableListOf<String>()
+        val favoriteMessageActions = mutableListOf<Pair<String, Boolean>>()
         val threadActions = mutableListOf<Pair<Int, ConversationThreadAction>>()
         val createdGroups = mutableListOf<ConversationGroup>()
         val updatedGroups = mutableListOf<ConversationGroup>()
@@ -1248,7 +1640,31 @@ class VerticalSliceInstrumentedTest {
                         maximumRequestedLoad = maxOf(maximumRequestedLoad, params.loadSize)
                         val data = (start until end).map { offset ->
                             val id = TOTAL_MESSAGES - offset
-                            if(dualSim && id == TOTAL_MESSAGES - 1) {
+                            val previewState = if(outgoingDeliveryPreview) {
+                                listOf(
+                                    DeliveryState.SENT,
+                                    DeliveryState.DELIVERED,
+                                    DeliveryState.QUEUED,
+                                    DeliveryState.FAILED,
+                                ).getOrNull(offset)
+                            } else null
+                            if(previewState != null) {
+                                TimelineItem.Text(
+                                    stableId = "delivery-${previewState.name.lowercase()}",
+                                    timestampMillis = id * 180_000L,
+                                    text = "delivery-${previewState.name.lowercase()}",
+                                    direction = MessageDirection.OUTGOING,
+                                    deliveryState = previewState,
+                                    isSecure = false,
+                                )
+                            } else if(includeDecryptionFailure && id == TOTAL_MESSAGES) {
+                                TimelineItem.SecurityEvent(
+                                    stableId = "synthetic-decryption-failure",
+                                    timestampMillis = id.toLong(),
+                                    kind = com.afkanerd.deku.messages.domain.SecurityEventKind.DECRYPTION_FAILED,
+                                    direction = MessageDirection.INCOMING,
+                                )
+                            } else if(dualSim && id == TOTAL_MESSAGES - 1) {
                                 TimelineItem.Media(
                                     stableId = "synthetic-media",
                                     timestampMillis = id.toLong(),
@@ -1283,6 +1699,11 @@ class VerticalSliceInstrumentedTest {
             },
         ).flow
 
+        override fun timeline(threadIds: List<Int>): Flow<PagingData<TimelineItem>> {
+            requestedTimelineThreadIds = threadIds
+            return timeline(threadIds.first())
+        }
+
         override fun attachmentTransfers(address: String): Flow<List<AttachmentTransfer>> =
             flowOf(
                 if(!dualSim) emptyList() else listOf(
@@ -1303,6 +1724,15 @@ class VerticalSliceInstrumentedTest {
                     )
                 )
             )
+
+        override suspend fun deleteMessage(stableId: String): Boolean {
+            deletedMessageStableIds += stableId
+            return true
+        }
+        override suspend fun setMessageFavorite(stableId: String, favorite: Boolean): Boolean {
+            favoriteMessageActions += stableId to favorite
+            return true
+        }
         override suspend fun performAttachmentAction(
             transferId: String,
             action: AttachmentAction,
@@ -1332,6 +1762,27 @@ class VerticalSliceInstrumentedTest {
                     if(dualSim) add(SimSubscription(SECOND_SIM, "SIM 2", 1))
                 },
                 securityState = ConversationSecurityState.SECURE_VERIFIED,
+                availableContactNumbers = if(multipleContactNumbers) {
+                    listOf(
+                        MessageRecipient(
+                            id = 1L,
+                            address = address,
+                            displayName = EXISTING_CONTACT,
+                            avatarUri = null,
+                            label = "Mobile",
+                        ),
+                        MessageRecipient(
+                            id = 2L,
+                            address = SECOND_ADDRESS,
+                            displayName = EXISTING_CONTACT,
+                            avatarUri = null,
+                            label = "Work",
+                        ),
+                    )
+                } else emptyList(),
+                relatedThreadIds = if(multipleContactNumbers) {
+                    listOf(THREAD_ID, THREAD_ID + 1)
+                } else listOf(THREAD_ID),
             )
         override suspend fun conversationHeader(
             addresses: List<String>,
@@ -1363,6 +1814,9 @@ class VerticalSliceInstrumentedTest {
             savedDraftText = text
         }
         override suspend fun selectSubscription(address: String, subscriptionId: Long) = Unit
+        override suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) {
+            secureSendingEnabled = enabled
+        }
         override suspend fun sendText(
             address: String,
             threadId: Int,
@@ -1371,6 +1825,7 @@ class VerticalSliceInstrumentedTest {
         ): SendResult {
             sendCalls++
             sentText = text
+            sentAddress = address
             sentSubscriptionId = subscriptionId
             return SendResult.Sent(1)
         }

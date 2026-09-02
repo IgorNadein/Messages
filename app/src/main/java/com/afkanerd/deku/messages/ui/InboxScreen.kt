@@ -138,6 +138,7 @@ import com.afkanerd.deku.messages.ui.components.ContactAvatar
 import com.afkanerd.deku.messages.ui.components.OneUiEmptyState
 import com.afkanerd.deku.messages.ui.components.OneUiExpandedTitle
 import com.afkanerd.deku.messages.ui.theme.MessagesTheme
+import com.afkanerd.deku.messages.ui.components.ONE_UI_POPUP_MENU_ALPHA
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -1562,7 +1563,9 @@ private fun OneUiPopupMenu(
             .width(282.dp)
             .testTag(testTag),
         shape = RoundedCornerShape(24.dp),
-        containerColor = MessagesTheme.semanticColors.inboxControlSurface,
+        containerColor = MessagesTheme.semanticColors.inboxControlSurface.copy(
+            alpha = ONE_UI_POPUP_MENU_ALPHA,
+        ),
         tonalElevation = 0.dp,
         shadowElevation = 8.dp,
         content = content,

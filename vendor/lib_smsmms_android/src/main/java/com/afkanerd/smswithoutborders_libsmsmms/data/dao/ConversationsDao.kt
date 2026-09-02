@@ -146,6 +146,10 @@ interface ConversationsDao {
             "Conversations.mms_thread_id = :threadId ORDER BY date DESC")
     fun getConversations(threadId: Int): PagingSource<Int, Conversations>
 
+    @Query("SELECT * FROM Conversations WHERE thread_id IN (:threadIds) OR " +
+            "Conversations.mms_thread_id IN (:threadIds) ORDER BY date DESC")
+    fun getConversations(threadIds: List<Int>): PagingSource<Int, Conversations>
+
     @Query("SELECT COUNT('_id') FROM Conversations WHERE thread_id = :threadId OR " +
             "Conversations.mms_thread_id = :threadId AND read = 0")
     fun unreadCount(threadId: Int): Int
@@ -164,6 +168,9 @@ interface ConversationsDao {
 
     @Query("SELECT * FROM Threads WHERE threadId = :threadId")
     fun getThread(threadId: Int): Threads?
+
+    @Query("SELECT * FROM Threads WHERE address IN (:addresses) ORDER BY date DESC")
+    fun getThreadsForAddresses(addresses: List<String>): List<Threads>
 
     @Transaction
     fun insert(conversation: Conversations, removeArchive: Boolean = false): Long {

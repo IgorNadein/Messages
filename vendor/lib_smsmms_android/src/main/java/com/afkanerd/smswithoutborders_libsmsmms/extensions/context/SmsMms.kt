@@ -31,6 +31,7 @@ import com.afkanerd.smswithoutborders_libsmsmms.security.InboundSms
 import com.afkanerd.smswithoutborders_libsmsmms.security.InboundSmsPolicyRegistry
 import com.afkanerd.smswithoutborders_libsmsmms.security.SECURE_TRANSPORT_TEXT_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.security.SECURE_RETRY_TRANSPORT_TEXT_EXTRA
+import com.afkanerd.smswithoutborders_libsmsmms.security.FORCE_PLAIN_TEXT_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.MmsSentReceiverImpl
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsTextReceivedReceiver
 import com.google.gson.GsonBuilder
@@ -218,6 +219,7 @@ suspend fun Context.sendSms(
             displayText = text,
             transportData = data,
             retryTransportText = bundle.getString(SECURE_RETRY_TRANSPORT_TEXT_EXTRA),
+            forcePlainText = bundle.getBoolean(FORCE_PLAIN_TEXT_EXTRA, false),
         )
     )) {
         is OutboundSmsDecision.Allow -> decision.message

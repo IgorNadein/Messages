@@ -9,6 +9,7 @@ import com.afkanerd.smswithoutborders.libsignal_doubleratchet.getEncryptionModeS
 import com.afkanerd.smswithoutborders_libsmsmms.security.InboundSms
 import com.afkanerd.smswithoutborders_libsmsmms.security.InboundSmsPolicy
 import com.afkanerd.smswithoutborders_libsmsmms.security.ProcessedInboundSms
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
 
 /** Ensures authenticated ciphertext is resolved before any UI-observable insert. */
 class SecureInboundSmsPolicy : InboundSmsPolicy {
@@ -20,16 +21,19 @@ class SecureInboundSmsPolicy : InboundSmsPolicy {
             return ProcessedInboundSms(displayText = message.transportText)
         }
 
+        val normalizedAddress = runCatching { context.makeE16PhoneNumber(message.address) }
+            .getOrDefault(message.address)
+
         return try {
             val savedMode = SavedEncryptedModes.deserialize(
-                context.getEncryptionModeStatesSync(message.address)
+                context.getEncryptionModeStatesSync(normalizedAddress)
             )
             check(savedMode.mode == EncryptionController.SecureRequestMode.REQUEST_ACCEPTED) {
                 "Secure session setup is not complete"
             }
             val plaintext = EncryptionController.decrypt(
                 context,
-                message.address,
+                normalizedAddress,
                 message.transportText,
             ) ?: throw SecurityException("Secure decryption returned no plaintext")
             ProcessedInboundSms(
@@ -38,7 +42,7 @@ class SecureInboundSmsPolicy : InboundSmsPolicy {
             )
         } catch(e: Exception) {
             Log.w("SecureMessage", "Incoming secure SMS failed authentication", e)
-            EncryptionController.markSessionBroken(context, message.address)
+            EncryptionController.markSessionBroken(context, normalizedAddress)
             ProcessedInboundSms(
                 displayText = context.getString(R.string.security_decryption_failed),
                 secureTransportText = message.transportText,

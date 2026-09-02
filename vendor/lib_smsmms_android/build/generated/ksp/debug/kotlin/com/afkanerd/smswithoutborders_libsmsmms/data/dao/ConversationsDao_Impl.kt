@@ -3042,6 +3042,448 @@ public class ConversationsDao_Impl(
     }
   }
 
+  public override fun getConversations(threadIds: List<Int>): PagingSource<Int, Conversations> {
+    val _stringBuilder: StringBuilder = StringBuilder()
+    _stringBuilder.append("SELECT * FROM Conversations WHERE thread_id IN (")
+    val _inputSize: Int = threadIds.size
+    appendPlaceholders(_stringBuilder, _inputSize)
+    _stringBuilder.append(") OR Conversations.mms_thread_id IN (")
+    val _inputSize_1: Int = threadIds.size
+    appendPlaceholders(_stringBuilder, _inputSize_1)
+    _stringBuilder.append(") ORDER BY date DESC")
+    val _sql: String = _stringBuilder.toString()
+    val _rawQuery: RoomRawQuery = RoomRawQuery(_sql) { _stmt ->
+      var _argIndex: Int = 1
+      for (_item: Int in threadIds) {
+        _stmt.bindLong(_argIndex, _item.toLong())
+        _argIndex++
+      }
+      _argIndex = 1 + _inputSize
+      for (_item_1: Int in threadIds) {
+        _stmt.bindLong(_argIndex, _item_1.toLong())
+        _argIndex++
+      }
+    }
+    return object : LimitOffsetPagingSource<Conversations>(_rawQuery, __db, "Conversations") {
+      protected override suspend fun convertRows(limitOffsetQuery: RoomRawQuery, itemCount: Int): List<Conversations> = performSuspending(__db, true, false) { _connection ->
+        val _stmt: SQLiteStatement = _connection.prepare(limitOffsetQuery.sql)
+        limitOffsetQuery.getBindingFunction().invoke(_stmt)
+        try {
+          val _columnIndexOfId: Int = getColumnIndexOrThrow(_stmt, "id")
+          val _columnIndexOfSmsData: Int = getColumnIndexOrThrow(_stmt, "sms_data")
+          val _columnIndexOfSecureTransportText: Int = getColumnIndexOrThrow(_stmt, "secure_transport_text")
+          val _columnIndexOfSenderAddress: Int = getColumnIndexOrThrow(_stmt, "sender_address")
+          val _columnIndexOfMmsText: Int = getColumnIndexOrThrow(_stmt, "mms_text")
+          val _columnIndexOfMmsContentUri: Int = getColumnIndexOrThrow(_stmt, "mms_content_uri")
+          val _columnIndexOfMmsMimetype: Int = getColumnIndexOrThrow(_stmt, "mms_mimetype")
+          val _columnIndexOfMmsFilename: Int = getColumnIndexOrThrow(_stmt, "mms_filename")
+          val _columnIndexOfMmsFilepath: Int = getColumnIndexOrThrow(_stmt, "mms_filepath")
+          val _columnIndexOfId_1: Int = getColumnIndexOrThrow(_stmt, "_id")
+          val _columnIndexOfThreadId: Int = getColumnIndexOrThrow(_stmt, "thread_id")
+          val _columnIndexOfAddress: Int = getColumnIndexOrThrow(_stmt, "address")
+          val _columnIndexOfPerson: Int = getColumnIndexOrThrow(_stmt, "person")
+          val _columnIndexOfDate: Int = getColumnIndexOrThrow(_stmt, "date")
+          val _columnIndexOfDateSent: Int = getColumnIndexOrThrow(_stmt, "date_sent")
+          val _columnIndexOfProtocol: Int = getColumnIndexOrThrow(_stmt, "protocol")
+          val _columnIndexOfRead: Int = getColumnIndexOrThrow(_stmt, "read")
+          val _columnIndexOfStatus: Int = getColumnIndexOrThrow(_stmt, "status")
+          val _columnIndexOfType: Int = getColumnIndexOrThrow(_stmt, "type")
+          val _columnIndexOfReplyPathPresent: Int = getColumnIndexOrThrow(_stmt, "reply_path_present")
+          val _columnIndexOfSubject: Int = getColumnIndexOrThrow(_stmt, "subject")
+          val _columnIndexOfBody: Int = getColumnIndexOrThrow(_stmt, "body")
+          val _columnIndexOfServiceCenter: Int = getColumnIndexOrThrow(_stmt, "service_center")
+          val _columnIndexOfLocked: Int = getColumnIndexOrThrow(_stmt, "locked")
+          val _columnIndexOfSubId: Int = getColumnIndexOrThrow(_stmt, "sub_id")
+          val _columnIndexOfErrorCode: Int = getColumnIndexOrThrow(_stmt, "error_code")
+          val _columnIndexOfCreator: Int = getColumnIndexOrThrow(_stmt, "creator")
+          val _columnIndexOfSeen: Int = getColumnIndexOrThrow(_stmt, "seen")
+          val _columnIndexOfId_2: Int = getColumnIndexOrThrow(_stmt, "mms__id")
+          val _columnIndexOfThreadId_1: Int = getColumnIndexOrThrow(_stmt, "mms_thread_id")
+          val _columnIndexOfDate_1: Int = getColumnIndexOrThrow(_stmt, "mms_date")
+          val _columnIndexOfDateSent_1: Int = getColumnIndexOrThrow(_stmt, "mms_date_sent")
+          val _columnIndexOfMsgBox: Int = getColumnIndexOrThrow(_stmt, "mms_msg_box")
+          val _columnIndexOfRead_1: Int = getColumnIndexOrThrow(_stmt, "mms_read")
+          val _columnIndexOfMId: Int = getColumnIndexOrThrow(_stmt, "mms_m_id")
+          val _columnIndexOfSub: Int = getColumnIndexOrThrow(_stmt, "mms_sub")
+          val _columnIndexOfSubCs: Int = getColumnIndexOrThrow(_stmt, "mms_sub_cs")
+          val _columnIndexOfCtT: Int = getColumnIndexOrThrow(_stmt, "mms_ct_t")
+          val _columnIndexOfCtL: Int = getColumnIndexOrThrow(_stmt, "mms_ct_l")
+          val _columnIndexOfExp: Int = getColumnIndexOrThrow(_stmt, "mms_exp")
+          val _columnIndexOfMCls: Int = getColumnIndexOrThrow(_stmt, "mms_m_cls")
+          val _columnIndexOfMType: Int = getColumnIndexOrThrow(_stmt, "mms_m_type")
+          val _columnIndexOfV: Int = getColumnIndexOrThrow(_stmt, "mms_v")
+          val _columnIndexOfMSize: Int = getColumnIndexOrThrow(_stmt, "mms_m_size")
+          val _columnIndexOfPri: Int = getColumnIndexOrThrow(_stmt, "mms_pri")
+          val _columnIndexOfRr: Int = getColumnIndexOrThrow(_stmt, "mms_rr")
+          val _columnIndexOfRptA: Int = getColumnIndexOrThrow(_stmt, "mms_rpt_a")
+          val _columnIndexOfRespSt: Int = getColumnIndexOrThrow(_stmt, "mms_resp_st")
+          val _columnIndexOfSt: Int = getColumnIndexOrThrow(_stmt, "mms_st")
+          val _columnIndexOfTrId: Int = getColumnIndexOrThrow(_stmt, "mms_tr_id")
+          val _columnIndexOfRetrSt: Int = getColumnIndexOrThrow(_stmt, "mms_retr_st")
+          val _columnIndexOfRetrTxt: Int = getColumnIndexOrThrow(_stmt, "mms_retr_txt")
+          val _columnIndexOfRetrTxtCs: Int = getColumnIndexOrThrow(_stmt, "mms_retr_txt_cs")
+          val _columnIndexOfReadStatus: Int = getColumnIndexOrThrow(_stmt, "mms_read_status")
+          val _columnIndexOfCtCls: Int = getColumnIndexOrThrow(_stmt, "mms_ct_cls")
+          val _columnIndexOfRespTxt: Int = getColumnIndexOrThrow(_stmt, "mms_resp_txt")
+          val _columnIndexOfDTm: Int = getColumnIndexOrThrow(_stmt, "mms_d_tm")
+          val _columnIndexOfDRpt: Int = getColumnIndexOrThrow(_stmt, "mms_d_rpt")
+          val _columnIndexOfLocked_1: Int = getColumnIndexOrThrow(_stmt, "mms_locked")
+          val _columnIndexOfSubId_1: Int = getColumnIndexOrThrow(_stmt, "mms_sub_id")
+          val _columnIndexOfSeen_1: Int = getColumnIndexOrThrow(_stmt, "mms_seen")
+          val _columnIndexOfCreator_1: Int = getColumnIndexOrThrow(_stmt, "mms_creator")
+          val _columnIndexOfTextOnly: Int = getColumnIndexOrThrow(_stmt, "mms_text_only")
+          val _result: MutableList<Conversations> = mutableListOf()
+          while (_stmt.step()) {
+            val _item_2: Conversations
+            val _tmpId: Long
+            _tmpId = _stmt.getLong(_columnIndexOfId)
+            val _tmpSms_data: ByteArray?
+            if (_stmt.isNull(_columnIndexOfSmsData)) {
+              _tmpSms_data = null
+            } else {
+              _tmpSms_data = _stmt.getBlob(_columnIndexOfSmsData)
+            }
+            val _tmpSecure_transport_text: String?
+            if (_stmt.isNull(_columnIndexOfSecureTransportText)) {
+              _tmpSecure_transport_text = null
+            } else {
+              _tmpSecure_transport_text = _stmt.getText(_columnIndexOfSecureTransportText)
+            }
+            val _tmpSender_address: String?
+            if (_stmt.isNull(_columnIndexOfSenderAddress)) {
+              _tmpSender_address = null
+            } else {
+              _tmpSender_address = _stmt.getText(_columnIndexOfSenderAddress)
+            }
+            val _tmpMms_text: String?
+            if (_stmt.isNull(_columnIndexOfMmsText)) {
+              _tmpMms_text = null
+            } else {
+              _tmpMms_text = _stmt.getText(_columnIndexOfMmsText)
+            }
+            val _tmpMms_content_uri: String?
+            if (_stmt.isNull(_columnIndexOfMmsContentUri)) {
+              _tmpMms_content_uri = null
+            } else {
+              _tmpMms_content_uri = _stmt.getText(_columnIndexOfMmsContentUri)
+            }
+            val _tmpMms_mimetype: String?
+            if (_stmt.isNull(_columnIndexOfMmsMimetype)) {
+              _tmpMms_mimetype = null
+            } else {
+              _tmpMms_mimetype = _stmt.getText(_columnIndexOfMmsMimetype)
+            }
+            val _tmpMms_filename: String?
+            if (_stmt.isNull(_columnIndexOfMmsFilename)) {
+              _tmpMms_filename = null
+            } else {
+              _tmpMms_filename = _stmt.getText(_columnIndexOfMmsFilename)
+            }
+            val _tmpMms_filepath: String?
+            if (_stmt.isNull(_columnIndexOfMmsFilepath)) {
+              _tmpMms_filepath = null
+            } else {
+              _tmpMms_filepath = _stmt.getText(_columnIndexOfMmsFilepath)
+            }
+            val _tmpSms: SmsMmsNatives.Sms?
+            if (!(_stmt.isNull(_columnIndexOfId_1) && _stmt.isNull(_columnIndexOfThreadId) && _stmt.isNull(_columnIndexOfAddress) && _stmt.isNull(_columnIndexOfPerson) && _stmt.isNull(_columnIndexOfDate) && _stmt.isNull(_columnIndexOfDateSent) && _stmt.isNull(_columnIndexOfProtocol) && _stmt.isNull(_columnIndexOfRead) && _stmt.isNull(_columnIndexOfStatus) && _stmt.isNull(_columnIndexOfType) && _stmt.isNull(_columnIndexOfReplyPathPresent) && _stmt.isNull(_columnIndexOfSubject) && _stmt.isNull(_columnIndexOfBody) && _stmt.isNull(_columnIndexOfServiceCenter) && _stmt.isNull(_columnIndexOfLocked) && _stmt.isNull(_columnIndexOfSubId) && _stmt.isNull(_columnIndexOfErrorCode) && _stmt.isNull(_columnIndexOfCreator) && _stmt.isNull(_columnIndexOfSeen))) {
+              val _tmp_id: Long?
+              if (_stmt.isNull(_columnIndexOfId_1)) {
+                _tmp_id = null
+              } else {
+                _tmp_id = _stmt.getLong(_columnIndexOfId_1)
+              }
+              val _tmpThread_id: Int
+              _tmpThread_id = _stmt.getLong(_columnIndexOfThreadId).toInt()
+              val _tmpAddress: String?
+              if (_stmt.isNull(_columnIndexOfAddress)) {
+                _tmpAddress = null
+              } else {
+                _tmpAddress = _stmt.getText(_columnIndexOfAddress)
+              }
+              val _tmpPerson: String?
+              if (_stmt.isNull(_columnIndexOfPerson)) {
+                _tmpPerson = null
+              } else {
+                _tmpPerson = _stmt.getText(_columnIndexOfPerson)
+              }
+              val _tmpDate: Long
+              _tmpDate = _stmt.getLong(_columnIndexOfDate)
+              val _tmpDate_sent: Long
+              _tmpDate_sent = _stmt.getLong(_columnIndexOfDateSent)
+              val _tmpProtocol: String?
+              if (_stmt.isNull(_columnIndexOfProtocol)) {
+                _tmpProtocol = null
+              } else {
+                _tmpProtocol = _stmt.getText(_columnIndexOfProtocol)
+              }
+              val _tmpRead: Int
+              _tmpRead = _stmt.getLong(_columnIndexOfRead).toInt()
+              val _tmpStatus: Int
+              _tmpStatus = _stmt.getLong(_columnIndexOfStatus).toInt()
+              val _tmpType: Int
+              _tmpType = _stmt.getLong(_columnIndexOfType).toInt()
+              val _tmpReply_path_present: String?
+              if (_stmt.isNull(_columnIndexOfReplyPathPresent)) {
+                _tmpReply_path_present = null
+              } else {
+                _tmpReply_path_present = _stmt.getText(_columnIndexOfReplyPathPresent)
+              }
+              val _tmpSubject: String?
+              if (_stmt.isNull(_columnIndexOfSubject)) {
+                _tmpSubject = null
+              } else {
+                _tmpSubject = _stmt.getText(_columnIndexOfSubject)
+              }
+              val _tmpBody: String?
+              if (_stmt.isNull(_columnIndexOfBody)) {
+                _tmpBody = null
+              } else {
+                _tmpBody = _stmt.getText(_columnIndexOfBody)
+              }
+              val _tmpService_center: String?
+              if (_stmt.isNull(_columnIndexOfServiceCenter)) {
+                _tmpService_center = null
+              } else {
+                _tmpService_center = _stmt.getText(_columnIndexOfServiceCenter)
+              }
+              val _tmpLocked: Int?
+              if (_stmt.isNull(_columnIndexOfLocked)) {
+                _tmpLocked = null
+              } else {
+                _tmpLocked = _stmt.getLong(_columnIndexOfLocked).toInt()
+              }
+              val _tmpSub_id: Long
+              _tmpSub_id = _stmt.getLong(_columnIndexOfSubId)
+              val _tmpError_code: Int?
+              if (_stmt.isNull(_columnIndexOfErrorCode)) {
+                _tmpError_code = null
+              } else {
+                _tmpError_code = _stmt.getLong(_columnIndexOfErrorCode).toInt()
+              }
+              val _tmpCreator: String?
+              if (_stmt.isNull(_columnIndexOfCreator)) {
+                _tmpCreator = null
+              } else {
+                _tmpCreator = _stmt.getText(_columnIndexOfCreator)
+              }
+              val _tmpSeen: Int?
+              if (_stmt.isNull(_columnIndexOfSeen)) {
+                _tmpSeen = null
+              } else {
+                _tmpSeen = _stmt.getLong(_columnIndexOfSeen).toInt()
+              }
+              _tmpSms = SmsMmsNatives.Sms(_tmp_id,_tmpThread_id,_tmpAddress,_tmpPerson,_tmpDate,_tmpDate_sent,_tmpProtocol,_tmpRead,_tmpStatus,_tmpType,_tmpReply_path_present,_tmpSubject,_tmpBody,_tmpService_center,_tmpLocked,_tmpSub_id,_tmpError_code,_tmpCreator,_tmpSeen)
+            } else {
+              _tmpSms = null
+            }
+            val _tmpMms: SmsMmsNatives.Mms?
+            if (!(_stmt.isNull(_columnIndexOfId_2) && _stmt.isNull(_columnIndexOfThreadId_1) && _stmt.isNull(_columnIndexOfDate_1) && _stmt.isNull(_columnIndexOfDateSent_1) && _stmt.isNull(_columnIndexOfMsgBox) && _stmt.isNull(_columnIndexOfRead_1) && _stmt.isNull(_columnIndexOfMId) && _stmt.isNull(_columnIndexOfSub) && _stmt.isNull(_columnIndexOfSubCs) && _stmt.isNull(_columnIndexOfCtT) && _stmt.isNull(_columnIndexOfCtL) && _stmt.isNull(_columnIndexOfExp) && _stmt.isNull(_columnIndexOfMCls) && _stmt.isNull(_columnIndexOfMType) && _stmt.isNull(_columnIndexOfV) && _stmt.isNull(_columnIndexOfMSize) && _stmt.isNull(_columnIndexOfPri) && _stmt.isNull(_columnIndexOfRr) && _stmt.isNull(_columnIndexOfRptA) && _stmt.isNull(_columnIndexOfRespSt) && _stmt.isNull(_columnIndexOfSt) && _stmt.isNull(_columnIndexOfTrId) && _stmt.isNull(_columnIndexOfRetrSt) && _stmt.isNull(_columnIndexOfRetrTxt) && _stmt.isNull(_columnIndexOfRetrTxtCs) && _stmt.isNull(_columnIndexOfReadStatus) && _stmt.isNull(_columnIndexOfCtCls) && _stmt.isNull(_columnIndexOfRespTxt) && _stmt.isNull(_columnIndexOfDTm) && _stmt.isNull(_columnIndexOfDRpt) && _stmt.isNull(_columnIndexOfLocked_1) && _stmt.isNull(_columnIndexOfSubId_1) && _stmt.isNull(_columnIndexOfSeen_1) && _stmt.isNull(_columnIndexOfCreator_1) && _stmt.isNull(_columnIndexOfTextOnly))) {
+              val _tmp_id_1: Long
+              _tmp_id_1 = _stmt.getLong(_columnIndexOfId_2)
+              val _tmpThread_id_1: Int
+              _tmpThread_id_1 = _stmt.getLong(_columnIndexOfThreadId_1).toInt()
+              val _tmpDate_1: Long
+              _tmpDate_1 = _stmt.getLong(_columnIndexOfDate_1)
+              val _tmpDate_sent_1: Long
+              _tmpDate_sent_1 = _stmt.getLong(_columnIndexOfDateSent_1)
+              val _tmpMsg_box: Int
+              _tmpMsg_box = _stmt.getLong(_columnIndexOfMsgBox).toInt()
+              val _tmpRead_1: Int?
+              if (_stmt.isNull(_columnIndexOfRead_1)) {
+                _tmpRead_1 = null
+              } else {
+                _tmpRead_1 = _stmt.getLong(_columnIndexOfRead_1).toInt()
+              }
+              val _tmpM_id: String?
+              if (_stmt.isNull(_columnIndexOfMId)) {
+                _tmpM_id = null
+              } else {
+                _tmpM_id = _stmt.getText(_columnIndexOfMId)
+              }
+              val _tmpSub: String?
+              if (_stmt.isNull(_columnIndexOfSub)) {
+                _tmpSub = null
+              } else {
+                _tmpSub = _stmt.getText(_columnIndexOfSub)
+              }
+              val _tmpSub_cs: Int?
+              if (_stmt.isNull(_columnIndexOfSubCs)) {
+                _tmpSub_cs = null
+              } else {
+                _tmpSub_cs = _stmt.getLong(_columnIndexOfSubCs).toInt()
+              }
+              val _tmpCt_t: String?
+              if (_stmt.isNull(_columnIndexOfCtT)) {
+                _tmpCt_t = null
+              } else {
+                _tmpCt_t = _stmt.getText(_columnIndexOfCtT)
+              }
+              val _tmpCt_l: String?
+              if (_stmt.isNull(_columnIndexOfCtL)) {
+                _tmpCt_l = null
+              } else {
+                _tmpCt_l = _stmt.getText(_columnIndexOfCtL)
+              }
+              val _tmpExp: String?
+              if (_stmt.isNull(_columnIndexOfExp)) {
+                _tmpExp = null
+              } else {
+                _tmpExp = _stmt.getText(_columnIndexOfExp)
+              }
+              val _tmpM_cls: String?
+              if (_stmt.isNull(_columnIndexOfMCls)) {
+                _tmpM_cls = null
+              } else {
+                _tmpM_cls = _stmt.getText(_columnIndexOfMCls)
+              }
+              val _tmpM_type: Int?
+              if (_stmt.isNull(_columnIndexOfMType)) {
+                _tmpM_type = null
+              } else {
+                _tmpM_type = _stmt.getLong(_columnIndexOfMType).toInt()
+              }
+              val _tmpV: Int?
+              if (_stmt.isNull(_columnIndexOfV)) {
+                _tmpV = null
+              } else {
+                _tmpV = _stmt.getLong(_columnIndexOfV).toInt()
+              }
+              val _tmpM_size: Int?
+              if (_stmt.isNull(_columnIndexOfMSize)) {
+                _tmpM_size = null
+              } else {
+                _tmpM_size = _stmt.getLong(_columnIndexOfMSize).toInt()
+              }
+              val _tmpPri: Int?
+              if (_stmt.isNull(_columnIndexOfPri)) {
+                _tmpPri = null
+              } else {
+                _tmpPri = _stmt.getLong(_columnIndexOfPri).toInt()
+              }
+              val _tmpRr: Int?
+              if (_stmt.isNull(_columnIndexOfRr)) {
+                _tmpRr = null
+              } else {
+                _tmpRr = _stmt.getLong(_columnIndexOfRr).toInt()
+              }
+              val _tmpRpt_a: String?
+              if (_stmt.isNull(_columnIndexOfRptA)) {
+                _tmpRpt_a = null
+              } else {
+                _tmpRpt_a = _stmt.getText(_columnIndexOfRptA)
+              }
+              val _tmpResp_st: String?
+              if (_stmt.isNull(_columnIndexOfRespSt)) {
+                _tmpResp_st = null
+              } else {
+                _tmpResp_st = _stmt.getText(_columnIndexOfRespSt)
+              }
+              val _tmpSt: String?
+              if (_stmt.isNull(_columnIndexOfSt)) {
+                _tmpSt = null
+              } else {
+                _tmpSt = _stmt.getText(_columnIndexOfSt)
+              }
+              val _tmpTr_id: String?
+              if (_stmt.isNull(_columnIndexOfTrId)) {
+                _tmpTr_id = null
+              } else {
+                _tmpTr_id = _stmt.getText(_columnIndexOfTrId)
+              }
+              val _tmpRetr_st: String?
+              if (_stmt.isNull(_columnIndexOfRetrSt)) {
+                _tmpRetr_st = null
+              } else {
+                _tmpRetr_st = _stmt.getText(_columnIndexOfRetrSt)
+              }
+              val _tmpRetr_txt: String?
+              if (_stmt.isNull(_columnIndexOfRetrTxt)) {
+                _tmpRetr_txt = null
+              } else {
+                _tmpRetr_txt = _stmt.getText(_columnIndexOfRetrTxt)
+              }
+              val _tmpRetr_txt_cs: String?
+              if (_stmt.isNull(_columnIndexOfRetrTxtCs)) {
+                _tmpRetr_txt_cs = null
+              } else {
+                _tmpRetr_txt_cs = _stmt.getText(_columnIndexOfRetrTxtCs)
+              }
+              val _tmpRead_status: String?
+              if (_stmt.isNull(_columnIndexOfReadStatus)) {
+                _tmpRead_status = null
+              } else {
+                _tmpRead_status = _stmt.getText(_columnIndexOfReadStatus)
+              }
+              val _tmpCt_cls: String?
+              if (_stmt.isNull(_columnIndexOfCtCls)) {
+                _tmpCt_cls = null
+              } else {
+                _tmpCt_cls = _stmt.getText(_columnIndexOfCtCls)
+              }
+              val _tmpResp_txt: String?
+              if (_stmt.isNull(_columnIndexOfRespTxt)) {
+                _tmpResp_txt = null
+              } else {
+                _tmpResp_txt = _stmt.getText(_columnIndexOfRespTxt)
+              }
+              val _tmpD_tm: String?
+              if (_stmt.isNull(_columnIndexOfDTm)) {
+                _tmpD_tm = null
+              } else {
+                _tmpD_tm = _stmt.getText(_columnIndexOfDTm)
+              }
+              val _tmpD_rpt: Int?
+              if (_stmt.isNull(_columnIndexOfDRpt)) {
+                _tmpD_rpt = null
+              } else {
+                _tmpD_rpt = _stmt.getLong(_columnIndexOfDRpt).toInt()
+              }
+              val _tmpLocked_1: Int?
+              if (_stmt.isNull(_columnIndexOfLocked_1)) {
+                _tmpLocked_1 = null
+              } else {
+                _tmpLocked_1 = _stmt.getLong(_columnIndexOfLocked_1).toInt()
+              }
+              val _tmpSub_id_1: Long?
+              if (_stmt.isNull(_columnIndexOfSubId_1)) {
+                _tmpSub_id_1 = null
+              } else {
+                _tmpSub_id_1 = _stmt.getLong(_columnIndexOfSubId_1)
+              }
+              val _tmpSeen_1: Int?
+              if (_stmt.isNull(_columnIndexOfSeen_1)) {
+                _tmpSeen_1 = null
+              } else {
+                _tmpSeen_1 = _stmt.getLong(_columnIndexOfSeen_1).toInt()
+              }
+              val _tmpCreator_1: String?
+              if (_stmt.isNull(_columnIndexOfCreator_1)) {
+                _tmpCreator_1 = null
+              } else {
+                _tmpCreator_1 = _stmt.getText(_columnIndexOfCreator_1)
+              }
+              val _tmpText_only: Int?
+              if (_stmt.isNull(_columnIndexOfTextOnly)) {
+                _tmpText_only = null
+              } else {
+                _tmpText_only = _stmt.getLong(_columnIndexOfTextOnly).toInt()
+              }
+              _tmpMms = SmsMmsNatives.Mms(_tmp_id_1,_tmpThread_id_1,_tmpDate_1,_tmpDate_sent_1,_tmpMsg_box,_tmpRead_1,_tmpM_id,_tmpSub,_tmpSub_cs,_tmpCt_t,_tmpCt_l,_tmpExp,_tmpM_cls,_tmpM_type,_tmpV,_tmpM_size,_tmpPri,_tmpRr,_tmpRpt_a,_tmpResp_st,_tmpSt,_tmpTr_id,_tmpRetr_st,_tmpRetr_txt,_tmpRetr_txt_cs,_tmpRead_status,_tmpCt_cls,_tmpResp_txt,_tmpD_tm,_tmpD_rpt,_tmpLocked_1,_tmpSub_id_1,_tmpSeen_1,_tmpCreator_1,_tmpText_only)
+            } else {
+              _tmpMms = null
+            }
+            _item_2 = Conversations(_tmpId,_tmpSms,_tmpMms,_tmpSms_data,_tmpSecure_transport_text,_tmpSender_address,_tmpMms_text,_tmpMms_content_uri,_tmpMms_mimetype,_tmpMms_filename,_tmpMms_filepath)
+            _result.add(_item_2)
+          }
+          _result
+        } finally {
+          _stmt.close()
+        }
+      }
+    }
+  }
+
   public override fun unreadCount(threadId: Int): Int {
     val _sql: String = "SELECT COUNT('_id') FROM Conversations WHERE thread_id = ? OR Conversations.mms_thread_id = ? AND read = 0"
     return performBlocking(__db, true, false) { _connection ->
@@ -3124,6 +3566,82 @@ public class ConversationsDao_Impl(
           _result = Threads(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpType,_tmpConversationId,_tmpIsMms,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnread,_tmpIsPinned)
         } else {
           _result = null
+        }
+        _result
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
+  public override fun getThreadsForAddresses(addresses: List<String>): List<Threads> {
+    val _stringBuilder: StringBuilder = StringBuilder()
+    _stringBuilder.append("SELECT * FROM Threads WHERE address IN (")
+    val _inputSize: Int = addresses.size
+    appendPlaceholders(_stringBuilder, _inputSize)
+    _stringBuilder.append(") ORDER BY date DESC")
+    val _sql: String = _stringBuilder.toString()
+    return performBlocking(__db, true, false) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        var _argIndex: Int = 1
+        for (_item: String in addresses) {
+          _stmt.bindText(_argIndex, _item)
+          _argIndex++
+        }
+        val _columnIndexOfThreadId: Int = getColumnIndexOrThrow(_stmt, "threadId")
+        val _columnIndexOfAddress: Int = getColumnIndexOrThrow(_stmt, "address")
+        val _columnIndexOfSnippet: Int = getColumnIndexOrThrow(_stmt, "snippet")
+        val _columnIndexOfDate: Int = getColumnIndexOrThrow(_stmt, "date")
+        val _columnIndexOfType: Int = getColumnIndexOrThrow(_stmt, "type")
+        val _columnIndexOfConversationId: Int = getColumnIndexOrThrow(_stmt, "conversationId")
+        val _columnIndexOfIsMms: Int = getColumnIndexOrThrow(_stmt, "isMms")
+        val _columnIndexOfIsMute: Int = getColumnIndexOrThrow(_stmt, "isMute")
+        val _columnIndexOfIsArchive: Int = getColumnIndexOrThrow(_stmt, "isArchive")
+        val _columnIndexOfIsBlocked: Int = getColumnIndexOrThrow(_stmt, "isBlocked")
+        val _columnIndexOfUnread: Int = getColumnIndexOrThrow(_stmt, "unread")
+        val _columnIndexOfIsPinned: Int = getColumnIndexOrThrow(_stmt, "isPinned")
+        val _result: MutableList<Threads> = mutableListOf()
+        while (_stmt.step()) {
+          val _item_1: Threads
+          val _tmpThreadId: Int
+          _tmpThreadId = _stmt.getLong(_columnIndexOfThreadId).toInt()
+          val _tmpAddress: String
+          _tmpAddress = _stmt.getText(_columnIndexOfAddress)
+          val _tmpSnippet: String
+          _tmpSnippet = _stmt.getText(_columnIndexOfSnippet)
+          val _tmpDate: Long
+          _tmpDate = _stmt.getLong(_columnIndexOfDate)
+          val _tmpType: Int
+          _tmpType = _stmt.getLong(_columnIndexOfType).toInt()
+          val _tmpConversationId: Long
+          _tmpConversationId = _stmt.getLong(_columnIndexOfConversationId)
+          val _tmpIsMms: Boolean
+          val _tmp: Int
+          _tmp = _stmt.getLong(_columnIndexOfIsMms).toInt()
+          _tmpIsMms = _tmp != 0
+          val _tmpIsMute: Boolean
+          val _tmp_1: Int
+          _tmp_1 = _stmt.getLong(_columnIndexOfIsMute).toInt()
+          _tmpIsMute = _tmp_1 != 0
+          val _tmpIsArchive: Boolean
+          val _tmp_2: Int
+          _tmp_2 = _stmt.getLong(_columnIndexOfIsArchive).toInt()
+          _tmpIsArchive = _tmp_2 != 0
+          val _tmpIsBlocked: Boolean
+          val _tmp_3: Int
+          _tmp_3 = _stmt.getLong(_columnIndexOfIsBlocked).toInt()
+          _tmpIsBlocked = _tmp_3 != 0
+          val _tmpUnread: Boolean
+          val _tmp_4: Int
+          _tmp_4 = _stmt.getLong(_columnIndexOfUnread).toInt()
+          _tmpUnread = _tmp_4 != 0
+          val _tmpIsPinned: Boolean
+          val _tmp_5: Int
+          _tmp_5 = _stmt.getLong(_columnIndexOfIsPinned).toInt()
+          _tmpIsPinned = _tmp_5 != 0
+          _item_1 = Threads(_tmpThreadId,_tmpAddress,_tmpSnippet,_tmpDate,_tmpType,_tmpConversationId,_tmpIsMms,_tmpIsMute,_tmpIsArchive,_tmpIsBlocked,_tmpUnread,_tmpIsPinned)
+          _result.add(_item_1)
         }
         _result
       } finally {

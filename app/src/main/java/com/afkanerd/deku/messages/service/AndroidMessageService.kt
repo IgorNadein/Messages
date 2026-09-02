@@ -1,13 +1,16 @@
 package com.afkanerd.deku.messages.service
 
 import android.Manifest
+import android.content.ContentUris
 import android.content.Context
 import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Telephony
 import android.provider.BlockedNumberContract
 import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Phone
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
@@ -55,6 +58,7 @@ import com.afkanerd.deku.messages.domain.TimelineItem
 import com.afkanerd.deku.security.SecureSessionStatus
 import com.afkanerd.deku.Router.Models.RouterHandler
 import com.afkanerd.deku.security.SecureSessionStatusResolver
+import com.afkanerd.deku.security.SecureSendPreference
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.EncryptionController
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.IdentityKeyManager
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.IdentityVerificationStatus
@@ -87,6 +91,7 @@ import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.settingsSetCo
 import com.afkanerd.smswithoutborders_libsmsmms.data.data.models.SmsMmsNatives
 import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
 import com.afkanerd.smswithoutborders_libsmsmms.security.OutboundSmsBlockedException
+import com.afkanerd.smswithoutborders_libsmsmms.security.FORCE_PLAIN_TEXT_EXTRA
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -149,9 +154,13 @@ class AndroidMessageService(context: Context) : MessageService {
         }.flow.map { page ->
             page.map { thread ->
                 MessageStorageDispatcher.read {
+                    val decryptionFailureText = appContext.getString(
+                        R.string.security_decryption_failed
+                    )
                     val snippet = when {
                         thread.smsData != null -> SECURITY_UPDATE_SNIPPET
-                        thread.secureTransportText != null -> DECRYPTION_FAILED_SNIPPET
+                        thread.secureTransportText != null &&
+                            thread.snippet == decryptionFailureText -> DECRYPTION_FAILED_SNIPPET
                         else -> SearchSnippetPolicy.safeSnippet(
                             thread.snippet,
                             appContext.getString(R.string.oneui_secure_recovery),
@@ -594,24 +603,34 @@ class AndroidMessageService(context: Context) : MessageService {
             }
         }
 
-    override fun timeline(threadId: Int): Flow<PagingData<TimelineItem>> {
+    override fun timeline(threadId: Int): Flow<PagingData<TimelineItem>> =
+        timeline(listOf(threadId))
+
+    override fun timeline(threadIds: List<Int>): Flow<PagingData<TimelineItem>> {
+        val resolvedThreadIds = threadIds.distinct()
+        if(resolvedThreadIds.isEmpty()) return flowOf(PagingData.empty())
         val dao = requireNotNull(appContext.getDatabase().conversationsDao())
         return flow {
             val participants = MessageStorageDispatcher.read {
-                resolveThreadParticipants(
-                    threadId = threadId,
-                    fallbackAddress = dao.getThread(threadId)?.address.orEmpty(),
-                )
+                resolvedThreadIds.flatMap { threadId ->
+                    resolveThreadParticipants(
+                        threadId = threadId,
+                        fallbackAddress = dao.getThread(threadId)?.address.orEmpty(),
+                    )
+                }.distinct()
             }
-            val secureConversation = participants.singleOrNull()?.let { address ->
+            val secureAddresses = participants.filterTo(HashSet()) { address ->
                 SecureSessionStatusResolver.resolve(appContext, address) != SecureSessionStatus.PLAIN
-            } == true
+            }
             emitAll(Pager(
                 MessagePagingPolicy.config()
-            ) { dao.getConversations(threadId) }.flow.map { page ->
+            ) { dao.getConversations(resolvedThreadIds) }.flow.map { page ->
                 page
                     .filter(ConversationEntityMapper::shouldExpose)
                     .map { entity ->
+                        val entityAddress = entity.sms?.address
+                            ?.let(::normalizeParticipantAddress)
+                        val secureConversation = entityAddress in secureAddresses
                         val author = entity.sender_address?.takeIf(String::isNotBlank)?.let {
                             MessageAuthor(
                                 address = it,
@@ -619,7 +638,12 @@ class AndroidMessageService(context: Context) : MessageService {
                                 avatarUri = contactPhoto(it),
                             )
                         }
-                        ConversationEntityMapper.map(entity, secureConversation, author)
+                        ConversationEntityMapper.map(
+                            entity,
+                            secureConversation,
+                            author,
+                            appContext.getString(R.string.security_decryption_failed),
+                        ).withFavorite(messageFavorite("message-${entity.id}"))
                     }
             })
         }.flowOn(Dispatchers.IO)
@@ -634,6 +658,73 @@ class AndroidMessageService(context: Context) : MessageService {
             .observeForAddress(normalizedAddress)
             .map { transfers -> transfers.map(AttachmentTransferMapper::map) }
             .flowOn(Dispatchers.IO)
+    }
+
+    override fun attachmentTransfers(addresses: List<String>): Flow<List<AttachmentTransfer>> {
+        val normalizedAddresses = addresses
+            .map(appContext::makeE16PhoneNumber)
+            .filter(String::isNotBlank)
+            .distinct()
+        if(normalizedAddresses.isEmpty()) return flowOf(emptyList())
+        return Datastore.getDatastore(appContext)
+            .attachmentTransferDao()
+            .observeForAddresses(normalizedAddresses)
+            .map { transfers -> transfers.map(AttachmentTransferMapper::map) }
+            .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun deleteMessage(stableId: String): Boolean = withContext(Dispatchers.IO) {
+        val localId = stableId.removePrefix(MESSAGE_STABLE_ID_PREFIX).toLongOrNull()
+            ?: return@withContext false
+        val dao = appContext.getDatabase().conversationsDao()
+            ?: return@withContext false
+        val conversation = MessageStorageDispatcher.read {
+            dao.getConversation(localId)
+        } ?: return@withContext false
+        val providerId = conversation.sms?._id ?: return@withContext false
+        val providerCollection = if(
+            conversation.mms != null || !conversation.mms_content_uri.isNullOrBlank()
+        ) {
+            Telephony.Mms.CONTENT_URI
+        } else {
+            Telephony.Sms.CONTENT_URI
+        }
+        val providerDeleteSucceeded = runCatching {
+            appContext.contentResolver.delete(
+                ContentUris.withAppendedId(providerCollection, providerId),
+                null,
+                null,
+            )
+        }.isSuccess
+        if(!providerDeleteSucceeded) return@withContext false
+        MessageStorageDispatcher.write {
+            dao.delete(conversation, true)
+        }
+        appContext.getSharedPreferences(MESSAGE_ACTION_PREFERENCES, Context.MODE_PRIVATE)
+            .edit { remove(stableId) }
+        true
+    }
+
+    override suspend fun setMessageFavorite(
+        stableId: String,
+        favorite: Boolean,
+    ): Boolean = withContext(Dispatchers.IO) {
+        if(!stableId.startsWith(MESSAGE_STABLE_ID_PREFIX)) return@withContext false
+        appContext.getSharedPreferences(MESSAGE_ACTION_PREFERENCES, Context.MODE_PRIVATE)
+            .edit {
+                if(favorite) putBoolean(stableId, true) else remove(stableId)
+            }
+        true
+    }
+
+    private fun messageFavorite(stableId: String): Boolean = appContext
+        .getSharedPreferences(MESSAGE_ACTION_PREFERENCES, Context.MODE_PRIVATE)
+        .getBoolean(stableId, false)
+
+    private fun TimelineItem.withFavorite(favorite: Boolean): TimelineItem = when(this) {
+        is TimelineItem.Text -> copy(isFavorite = favorite)
+        is TimelineItem.Media -> copy(isFavorite = favorite)
+        is TimelineItem.SecurityEvent -> this
     }
 
     override suspend fun performAttachmentAction(transferId: String, action: AttachmentAction) {
@@ -764,6 +855,28 @@ class AndroidMessageService(context: Context) : MessageService {
         val selectedSubscription = rememberedSubscription
             ?.takeIf { saved -> subscriptions.isEmpty() || subscriptions.any { it.id == saved } }
             ?: defaultSubscription
+        val availableContactNumbers = participants.singleOrNull()?.let { participantAddress ->
+            contactPhoneNumbers(participantAddress).ifEmpty {
+                listOf(
+                    MessageRecipient(
+                        id = participantAddress.hashCode().toLong(),
+                        address = participantAddress,
+                        displayName = contactName(participantAddress),
+                        avatarUri = contactPhoto(participantAddress),
+                    )
+                )
+            }
+        }.orEmpty()
+        val relatedThreadIds = if(availableContactNumbers.size > 1) {
+            val numberAddresses = availableContactNumbers.map(MessageRecipient::address)
+            (appContext.getDatabase().conversationsDao()
+                ?.getThreadsForAddresses(numberAddresses)
+                .orEmpty()
+                .map { it.threadId } + resolvedThreadId)
+                .distinct()
+        } else {
+            listOf(resolvedThreadId)
+        }
         ConversationHeader(
             threadId = resolvedThreadId,
             address = storedAddress,
@@ -774,6 +887,9 @@ class AndroidMessageService(context: Context) : MessageService {
             securityState = participants.singleOrNull()?.let {
                 resolveSecurityState(it)
             } ?: ConversationSecurityState.PLAIN,
+            secureSendingEnabled = participants.singleOrNull()?.let {
+                SecureSendPreference.isEnabled(appContext, it)
+            } ?: false,
             isMuted = storedThread?.isMute == true,
             participants = participants.map { participantAddress ->
                 MessageRecipient(
@@ -783,6 +899,8 @@ class AndroidMessageService(context: Context) : MessageService {
                     avatarUri = contactPhoto(participantAddress),
                 )
             },
+            availableContactNumbers = availableContactNumbers,
+            relatedThreadIds = relatedThreadIds,
         )
     }
 
@@ -834,6 +952,11 @@ class AndroidMessageService(context: Context) : MessageService {
             normalizeStoredAddress(address),
             subscriptionId,
         )
+    }
+
+    override suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) {
+        val normalizedAddress = appContext.makeE16PhoneNumber(address)
+        SecureSendPreference.setEnabled(appContext, normalizedAddress, enabled)
     }
 
     override suspend fun isContactBlocked(address: String): Boolean = withContext(Dispatchers.IO) {
@@ -891,6 +1014,51 @@ class AndroidMessageService(context: Context) : MessageService {
             SendResult.BlockedBySecurity(error.message ?: "Secure send was blocked")
         } catch(error: Throwable) {
             SendResult.Failed(error.message ?: "Unable to send message")
+        }
+    }
+
+    override suspend fun resendMessage(
+        addresses: List<String>,
+        threadId: Int,
+        subscriptionId: Long,
+        item: TimelineItem,
+        forcePlainText: Boolean,
+    ): SendResult = withContext(Dispatchers.IO) {
+        val recipients = addresses.map(appContext::makeE16PhoneNumber)
+            .filter(String::isNotBlank)
+            .distinct()
+        if(recipients.isEmpty()) return@withContext SendResult.Failed("Recipient is empty")
+        try {
+            val conversation = when(item) {
+                is TimelineItem.Text -> appContext.sendSms(
+                    text = item.text,
+                    address = recipients.first(),
+                    threadId = threadId,
+                    subscriptionId = subscriptionId,
+                    data = null,
+                    bundle = Bundle().apply {
+                        putBoolean(FORCE_PLAIN_TEXT_EXTRA, forcePlainText)
+                    },
+                )
+                is TimelineItem.Media -> appContext.sendMms(
+                    text = item.caption.orEmpty(),
+                    addresses = recipients,
+                    threadId = threadId,
+                    subscriptionId = subscriptionId,
+                    contentUri = item.uri?.toUri(),
+                    filename = item.fileName,
+                    mimeType = item.mimeType,
+                )
+                is TimelineItem.SecurityEvent -> null
+            }
+            conversation?.let { SendResult.Sent(it.id) }
+                ?: SendResult.Failed("Message was not queued")
+        } catch(error: OutboundSmsBlockedException) {
+            SendResult.BlockedBySecurity(error.message ?: "Secure session is not ready")
+        } catch(error: SecurityException) {
+            SendResult.BlockedBySecurity(error.message ?: "Message send was blocked")
+        } catch(error: Throwable) {
+            SendResult.Failed(error.message ?: "Unable to resend message")
         }
     }
 
@@ -1085,6 +1253,68 @@ class AndroidMessageService(context: Context) : MessageService {
         return value
     }
 
+    private fun contactPhoneNumbers(address: String): List<MessageRecipient> {
+        if(!hasContactsPermission()) return emptyList()
+        val normalizedAddress = normalizeParticipantAddress(address)
+        val lookupUri = Uri.withAppendedPath(
+            ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+            Uri.encode(normalizedAddress),
+        )
+        val contactId = appContext.contentResolver.query(
+            lookupUri,
+            arrayOf(ContactsContract.PhoneLookup.CONTACT_ID),
+            null,
+            null,
+            null,
+        )?.use { cursor ->
+            if(cursor.moveToFirst()) cursor.getLong(0) else null
+        } ?: return emptyList()
+
+        val projection = arrayOf(
+            Phone._ID,
+            Phone.NUMBER,
+            Phone.DISPLAY_NAME,
+            Phone.PHOTO_URI,
+            Phone.TYPE,
+            Phone.LABEL,
+        )
+        val seen = HashSet<String>()
+        val numbers = ArrayList<MessageRecipient>()
+        appContext.contentResolver.query(
+            Phone.CONTENT_URI,
+            projection,
+            "${Phone.CONTACT_ID} = ?",
+            arrayOf(contactId.toString()),
+            "${Phone.IS_SUPER_PRIMARY} DESC, ${Phone.IS_PRIMARY} DESC, ${Phone._ID} ASC",
+        )?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(Phone._ID)
+            val numberIndex = cursor.getColumnIndexOrThrow(Phone.NUMBER)
+            val nameIndex = cursor.getColumnIndexOrThrow(Phone.DISPLAY_NAME)
+            val photoIndex = cursor.getColumnIndexOrThrow(Phone.PHOTO_URI)
+            val typeIndex = cursor.getColumnIndexOrThrow(Phone.TYPE)
+            val labelIndex = cursor.getColumnIndexOrThrow(Phone.LABEL)
+            while(cursor.moveToNext()) {
+                val number = cursor.getString(numberIndex).orEmpty()
+                val normalized = normalizeParticipantAddress(number)
+                if(normalized.isBlank() || !seen.add(normalized)) continue
+                val customLabel = cursor.getString(labelIndex)
+                val typeLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                    appContext.resources,
+                    cursor.getInt(typeIndex),
+                    customLabel,
+                ).toString()
+                numbers += MessageRecipient(
+                    id = cursor.getLong(idIndex),
+                    address = normalized,
+                    displayName = cursor.getString(nameIndex).orEmpty().ifBlank { normalized },
+                    avatarUri = cursor.getString(photoIndex),
+                    label = typeLabel,
+                )
+            }
+        }
+        return numbers.sortedByDescending { it.address == normalizedAddress }
+    }
+
     private fun resolveThreadParticipants(
         threadId: Int,
         fallbackAddress: String,
@@ -1175,6 +1405,8 @@ class AndroidMessageService(context: Context) : MessageService {
     }
 
     private companion object {
+        const val MESSAGE_STABLE_ID_PREFIX = "message-"
+        const val MESSAGE_ACTION_PREFERENCES = "messages_oneui_message_actions"
         const val THREAD_PAGE_SIZE = 40
         const val MAX_RECIPIENT_RESULTS = 200
         const val SECURITY_UPDATE_SNIPPET = "Security information updated"
@@ -1188,4 +1420,5 @@ class AndroidMessageService(context: Context) : MessageService {
 /** Paging transformations are collected by Compose, so blocking Room/contact work must hop to IO. */
 internal object MessageStorageDispatcher {
     suspend fun <T> read(block: () -> T): T = withContext(Dispatchers.IO) { block() }
+    suspend fun <T> write(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 }

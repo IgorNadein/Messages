@@ -17,11 +17,11 @@ object SecureOutboundDecisionEngine {
 
         return when(status) {
             SecureSessionStatus.PLAIN -> OutboundSmsDecision.Allow(message)
-            SecureSessionStatus.SECURE_PENDING -> block("Secure session setup is not complete")
-            SecureSessionStatus.SECURE_BROKEN -> block("Secure session is corrupted")
+            SecureSessionStatus.SECURE_PENDING,
+            SecureSessionStatus.SECURE_BROKEN -> OutboundSmsDecision.Allow(message)
             SecureSessionStatus.SECURE_ESTABLISHED -> {
                 if(message.transportData != null) {
-                    return block("Binary SMS cannot bypass an established secure session")
+                    return OutboundSmsDecision.Allow(message)
                 }
 
                 val cipherText = try {

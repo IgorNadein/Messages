@@ -12,6 +12,14 @@ class SecureOutboundSmsPolicy : OutboundSmsPolicy {
         context: Context,
         message: OutboundSms,
     ): OutboundSmsDecision {
+        if(message.forcePlainText) {
+            return OutboundSmsDecision.Allow(
+                message.copy(transportText = message.displayText, retryTransportText = null)
+            )
+        }
+        if(!SecureSendPreference.isEnabled(context, message.address)) {
+            return OutboundSmsDecision.Allow(message)
+        }
         val status = SecureSessionStatusResolver.resolve(context, message.address)
         val trustedControlMessage = message.transportData?.let {
             EncryptionController.isLocallySignedKeyExchange(context, it)

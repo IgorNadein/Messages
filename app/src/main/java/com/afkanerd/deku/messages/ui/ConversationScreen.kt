@@ -3,12 +3,16 @@ package com.afkanerd.deku.messages.ui
 import android.text.format.DateFormat
 import android.media.MediaPlayer
 import android.graphics.Bitmap
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +27,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,20 +36,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Forward
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
@@ -62,6 +77,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -78,8 +94,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -88,6 +111,15 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import coil3.compose.AsyncImage
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -110,8 +142,10 @@ import com.afkanerd.deku.messages.presentation.ConversationError
 import com.afkanerd.deku.messages.presentation.ConversationViewModel
 import com.afkanerd.deku.messages.presentation.IdentityVerificationResult
 import com.afkanerd.deku.messages.ui.components.ContactAvatar
-import com.afkanerd.deku.messages.ui.components.OneUiCompactBar
+import com.afkanerd.deku.messages.ui.components.OneUiConversationCompactHeader
+import com.afkanerd.deku.messages.ui.components.OneUiConversationExpandedHeader
 import com.afkanerd.deku.messages.ui.components.OneUiMessageComposer
+import com.afkanerd.deku.messages.ui.components.ONE_UI_POPUP_MENU_ALPHA
 import com.afkanerd.deku.messages.ui.theme.MessagesTheme
 import com.afkanerd.deku.attachments.ui.AttachmentComposer
 import java.util.Calendar
@@ -124,14 +158,21 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ConversationScreen(
     viewModel: ConversationViewModel,
     onBack: () -> Unit,
     onCall: (String) -> Unit,
+    onVideoCall: (String) -> Unit = {},
     onMore: () -> Unit,
+    onAddRecipients: (List<String>) -> Unit = {},
+    onNumberSelected: (String) -> Unit = {},
+    onCopyMessage: (String) -> Unit = {},
+    onForwardMessage: (String) -> Unit = {},
+    onShareMessage: (TimelineItem) -> Unit = {},
     onOpenMedia: (TimelineItem.Media) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -144,6 +185,12 @@ fun ConversationScreen(
     var showSecurityQr by rememberSaveable { mutableStateOf(false) }
     var showAttachmentSheet by rememberSaveable { mutableStateOf(false) }
     var startVoiceRecording by rememberSaveable { mutableStateOf(false) }
+    var showHeaderDetails by rememberSaveable { mutableStateOf(false) }
+    var selectedMessage by remember { mutableStateOf<MessageActionSelection?>(null) }
+    var messageMenuMode by remember { mutableStateOf(MessageMenuMode.ACTIONS) }
+    var favoriteOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+
+    BackHandler(enabled = showHeaderDetails) { showHeaderDetails = false }
 
     val localizedError = state.error?.let {
         stringResource(
@@ -151,6 +198,7 @@ fun ConversationScreen(
                 ConversationError.SECURITY_NOT_READY -> R.string.oneui_secure_send_blocked
                 ConversationError.SECURE_REQUEST_FAILED -> R.string.oneui_secure_request_failed
                 ConversationError.SEND_FAILED -> R.string.oneui_send_failed
+                ConversationError.MESSAGE_ACTION_FAILED -> R.string.oneui_message_action_failed
             }
         )
     }
@@ -205,79 +253,31 @@ fun ConversationScreen(
     }
 
     val header = state.header
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = { SnackbarHost(snackbarHost) },
-        topBar = {
-            OneUiCompactBar(
-                title = header?.displayName ?: header?.address.orEmpty(),
-                showTitle = true,
-                navigation = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.oneui_back),
-                        )
-                    }
-                },
-                actions = {
-                    header?.takeUnless(ConversationHeader::isGroupConversation)?.let {
-                        IconButton(onClick = { onCall(it.address) }) {
-                            Icon(
-                                Icons.Default.Call,
-                                contentDescription = stringResource(R.string.call),
-                            )
-                        }
-                    }
-                    IconButton(onClick = onMore) {
-                        Icon(Icons.Default.MoreVert, stringResource(R.string.oneui_more_options))
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .navigationBarsPadding()
-                    .imePadding(),
-            ) {
-                header?.takeUnless(ConversationHeader::isGroupConversation)?.let {
-                    SecurityInlineStatus(
-                        state = it.securityState,
-                        onClick = {
-                            viewModel.loadSecurityQrPayload()
-                            showSecuritySheet = true
-                        },
-                    )
-                }
-                OneUiMessageComposer(
-                    value = state.draft,
-                    enabled = true,
-                    isSending = state.isSending,
-                    subscriptions = header?.subscriptions.orEmpty(),
-                    selectedSubscriptionId = header?.subscriptionId,
-                    onValueChange = viewModel::updateDraft,
-                    onSubscriptionSelected = viewModel::selectSubscription,
-                    onAttachment = { showAttachmentSheet = true },
-                    onVoice = {
-                        startVoiceRecording = true
-                        showAttachmentSheet = true
-                    },
-                    onSend = viewModel::send,
+    val density = LocalDensity.current
+    var bottomOverlayHeight by remember { mutableStateOf(0.dp) }
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
+            snackbarHost = { SnackbarHost(snackbarHost) },
+            topBar = {
+                OneUiConversationCompactHeader(
+                    header = header,
+                    onBack = onBack,
+                    onExpand = { showHeaderDetails = true },
+                    onMore = onMore,
                 )
-            }
-        },
-    ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
+            },
+        ) { padding ->
+            Box(Modifier.fillMaxSize().padding(padding)) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = listState,
                 reverseLayout = true,
                 contentPadding = PaddingValues(
-                    horizontal = MessagesTheme.spacing.sm,
-                    vertical = MessagesTheme.spacing.md,
+                    start = MessagesTheme.spacing.sm,
+                    top = MessagesTheme.spacing.md,
+                    end = MessagesTheme.spacing.sm,
+                    bottom = bottomOverlayHeight + MessagesTheme.spacing.md,
                 ),
             ) {
                 itemsIndexed(
@@ -298,7 +298,10 @@ fun ConversationScreen(
                         )
                         is ConversationTimelineEntry.Message -> {
                             // Preserve Paging prefetch while displaying transfers in timestamp order.
-                            val item = messages[entry.pagingIndex] ?: entry.item
+                            val persistedItem = messages[entry.pagingIndex] ?: entry.item
+                            val item = favoriteOverrides[persistedItem.stableId]?.let {
+                                persistedItem.withFavorite(it)
+                            } ?: persistedItem
                             val newerMessage = (newer as? ConversationTimelineEntry.Message)?.item
                             val olderMessage = (older as? ConversationTimelineEntry.Message)?.item
                             val connectedNewer = item.canGroupWith(newerMessage)
@@ -310,9 +313,11 @@ fun ConversationScreen(
                                 showSender = header?.isGroupConversation == true &&
                                     !connectedOlder,
                                 showMetadata = !connectedNewer,
+                                showSecurityLabel = true,
                                 onOpenMedia = onOpenMedia,
-                                onSecurityAction = {
-                                    viewModel.requestOrRepairSecureSession(forceRenewal = true)
+                                onLongClick = { item, anchorBounds ->
+                                    selectedMessage = MessageActionSelection(item, anchorBounds)
+                                    messageMenuMode = MessageMenuMode.ACTIONS
                                 },
                             )
                         }
@@ -333,7 +338,74 @@ fun ConversationScreen(
             if(messages.loadState.refresh is LoadState.Loading) {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
+            }
         }
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .imePadding()
+                .onSizeChanged { size ->
+                    bottomOverlayHeight = with(density) { size.height.toDp() }
+                }
+                .testTag("oneui-conversation-bottom-overlay"),
+        ) {
+            header?.takeUnless(ConversationHeader::isGroupConversation)?.let {
+                SecurityInlineStatus(
+                    state = it.securityState,
+                    onClick = {
+                        viewModel.loadSecurityQrPayload()
+                        showSecuritySheet = true
+                    },
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .navigationBarsPadding()
+                    .testTag("oneui-conversation-composer-background"),
+            ) {
+                OneUiMessageComposer(
+                    value = state.draft,
+                    enabled = true,
+                    isSending = state.isSending,
+                    subscriptions = header?.subscriptions.orEmpty(),
+                    selectedSubscriptionId = header?.subscriptionId,
+                    onValueChange = viewModel::updateDraft,
+                    onSubscriptionSelected = viewModel::selectSubscription,
+                    onAttachment = { showAttachmentSheet = true },
+                    onVoice = {
+                        startVoiceRecording = true
+                        showAttachmentSheet = true
+                    },
+                    onSend = viewModel::send,
+                    messageEncrypted = header?.let {
+                        !it.isGroupConversation &&
+                            it.secureSendingEnabled &&
+                            (it.securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
+                                it.securityState == ConversationSecurityState.SECURE_VERIFIED)
+                    },
+                    onSecurityClick = if(header?.isGroupConversation == true) null else ({
+                        viewModel.loadSecurityQrPayload()
+                        showSecuritySheet = true
+                    }),
+                )
+            }
+        }
+        OneUiConversationExpandedHeader(
+            visible = showHeaderDetails,
+            header = header,
+            onCollapse = { showHeaderDetails = false },
+            onCall = onCall,
+            onVideoCall = onVideoCall,
+            onDetails = onMore,
+            onAddRecipients = onAddRecipients,
+            onNumberSelected = { selectedAddress ->
+                viewModel.selectContactNumber(selectedAddress)
+                onNumberSelected(selectedAddress)
+            },
+        )
     }
 
     if(showSecuritySheet && header != null) {
@@ -342,6 +414,7 @@ fun ConversationScreen(
                 state = header.securityState,
                 contactName = header.displayName,
                 fingerprint = state.securityFingerprint,
+                secureSendingEnabled = header.secureSendingEnabled,
                 busy = state.isRequestingSecureSession,
                 onAction = { forceRenewal ->
                     viewModel.requestOrRepairSecureSession(forceRenewal)
@@ -357,6 +430,7 @@ fun ConversationScreen(
                             .setOrientationLocked(false)
                     )
                 },
+                onSecureSendingChange = viewModel::setSecureSendingEnabled,
             )
         }
     }
@@ -382,6 +456,504 @@ fun ConversationScreen(
             onSendAttachment = viewModel::prepareAttachment,
         )
     }
+    selectedMessage?.let { selection ->
+        MessageActionsPopup(
+            selection = selection,
+            mode = messageMenuMode,
+            subscriptions = header?.subscriptions.orEmpty(),
+            selectedSubscriptionId = header?.subscriptionId,
+            onDismiss = { selectedMessage = null },
+            onModeChange = { messageMenuMode = it },
+            onCopy = { text ->
+                onCopyMessage(text)
+                selectedMessage = null
+            },
+            onForward = { text ->
+                onForwardMessage(text)
+                selectedMessage = null
+            },
+            onShare = {
+                onShareMessage(selection.item)
+                selectedMessage = null
+            },
+            onFavorite = { favorite ->
+                favoriteOverrides = favoriteOverrides +
+                    (selection.item.stableId to favorite)
+                viewModel.setMessageFavorite(selection.item, favorite)
+                selectedMessage = null
+            },
+            onDelete = {
+                viewModel.deleteMessage(selection.item)
+                selectedMessage = null
+            },
+            onRetry = { subscriptionId, forcePlainText ->
+                viewModel.resendMessage(selection.item, subscriptionId, forcePlainText)
+                selectedMessage = null
+            },
+        )
+    }
+}
+
+private data class MessageActionSelection(
+    val item: TimelineItem,
+    val anchorBounds: IntRect,
+)
+
+private enum class MessageMenuMode {
+    ACTIONS,
+    SELECT_TEXT,
+    DETAILS,
+    CONFIRM_DELETE,
+    CONFIRM_PLAIN_RESEND,
+}
+
+@Composable
+private fun MessageActionsPopup(
+    selection: MessageActionSelection,
+    mode: MessageMenuMode,
+    subscriptions: List<SimSubscription>,
+    selectedSubscriptionId: Long?,
+    onDismiss: () -> Unit,
+    onModeChange: (MessageMenuMode) -> Unit,
+    onCopy: (String) -> Unit,
+    onForward: (String) -> Unit,
+    onShare: () -> Unit,
+    onFavorite: (Boolean) -> Unit,
+    onDelete: () -> Unit,
+    onRetry: (subscriptionId: Long, forcePlainText: Boolean) -> Unit,
+) {
+    val item = selection.item
+    val actionText = item.messageActionText()
+    val density = LocalDensity.current
+    val positionProvider = remember(selection.anchorBounds, density) {
+        MessagePopupPositionProvider(
+            selectedBounds = selection.anchorBounds,
+            marginPx = with(density) { 12.dp.roundToPx() },
+            overlapPx = with(density) { 10.dp.roundToPx() },
+        )
+    }
+    var pendingPlainSubscription by remember(item.stableId) {
+        mutableStateOf<SimSubscription?>(null)
+    }
+    Popup(
+        popupPositionProvider = positionProvider,
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true),
+    ) {
+        Surface(
+            modifier = Modifier
+                .width(250.dp)
+                .testTag("oneui-message-actions"),
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer.copy(
+                alpha = ONE_UI_POPUP_MENU_ALPHA,
+            ),
+            tonalElevation = 8.dp,
+            shadowElevation = 12.dp,
+        ) {
+            Column(Modifier.padding(vertical = 10.dp)) {
+                when(mode) {
+                    MessageMenuMode.ACTIONS -> {
+                        if(item.isFailedOutgoingMessage()) {
+                            val originalSubscriptionId = item.messageSubscriptionId()
+                                ?: selectedSubscriptionId
+                                ?: subscriptions.firstOrNull()?.id
+                            originalSubscriptionId?.let { subscriptionId ->
+                                MessagePopupTextAction(
+                                    label = stringResource(R.string.oneui_message_action_retry),
+                                    testTag = "oneui-message-action-retry",
+                                    onClick = { onRetry(subscriptionId, false) },
+                                )
+                            }
+                            subscriptions
+                                .filter { it.id != originalSubscriptionId }
+                                .forEach { subscription ->
+                                    MessagePopupTextAction(
+                                        label = stringResource(
+                                            R.string.oneui_message_action_send_with_sim,
+                                            subscription.displayName,
+                                        ),
+                                        testTag = "oneui-message-action-resend-sim-${subscription.id}",
+                                        onClick = {
+                                            if(item.isSecureMessage()) {
+                                                pendingPlainSubscription = subscription
+                                                onModeChange(MessageMenuMode.CONFIRM_PLAIN_RESEND)
+                                            } else {
+                                                onRetry(subscription.id, false)
+                                            }
+                                        },
+                                    )
+                                }
+                            DashedMessageMenuDivider()
+                        }
+                        if(actionText.isNotBlank()) {
+                            MessagePopupTextAction(
+                                label = stringResource(R.string.oneui_message_action_select_text),
+                                testTag = "oneui-message-action-select-text",
+                                onClick = { onModeChange(MessageMenuMode.SELECT_TEXT) },
+                            )
+                            MessagePopupTextAction(
+                                label = stringResource(R.string.oneui_message_action_forward),
+                                testTag = "oneui-message-action-forward",
+                                onClick = { onForward(actionText) },
+                            )
+                        }
+                        MessagePopupTextAction(
+                            label = stringResource(
+                                if(item.isFavoriteMessage()) {
+                                    R.string.oneui_message_action_remove_favorite
+                                } else {
+                                    R.string.oneui_message_action_add_favorite
+                                }
+                            ),
+                            testTag = "oneui-message-action-favorite",
+                            onClick = { onFavorite(!item.isFavoriteMessage()) },
+                        )
+                        MessagePopupTextAction(
+                            label = stringResource(R.string.oneui_message_action_more),
+                            testTag = "oneui-message-action-details",
+                            onClick = { onModeChange(MessageMenuMode.DETAILS) },
+                        )
+                        DashedMessageMenuDivider()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
+                        ) {
+                            MessagePopupIconAction(
+                                icon = Icons.Default.ContentCopy,
+                                label = stringResource(R.string.oneui_message_action_copy),
+                                testTag = "oneui-message-action-copy",
+                                enabled = actionText.isNotBlank(),
+                                onClick = { onCopy(actionText) },
+                                modifier = Modifier.weight(1f),
+                            )
+                            MessagePopupIconAction(
+                                icon = Icons.Default.Share,
+                                label = stringResource(R.string.oneui_message_action_share),
+                                testTag = "oneui-message-action-share",
+                                onClick = onShare,
+                                modifier = Modifier.weight(1f),
+                            )
+                            MessagePopupIconAction(
+                                icon = Icons.Default.Delete,
+                                label = stringResource(R.string.oneui_message_action_delete),
+                                testTag = "oneui-message-action-delete",
+                                onClick = { onModeChange(MessageMenuMode.CONFIRM_DELETE) },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                    MessageMenuMode.SELECT_TEXT -> MessageTextSelectionContent(
+                        text = actionText,
+                        onCopy = { onCopy(actionText) },
+                        onBack = { onModeChange(MessageMenuMode.ACTIONS) },
+                    )
+                    MessageMenuMode.DETAILS -> MessageDetailsContent(
+                        item = item,
+                        onBack = { onModeChange(MessageMenuMode.ACTIONS) },
+                    )
+                    MessageMenuMode.CONFIRM_DELETE -> {
+                        Text(
+                            text = stringResource(R.string.oneui_delete_message_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
+                        )
+                        Text(
+                            text = stringResource(R.string.oneui_delete_message_confirmation),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            TextButton(onClick = { onModeChange(MessageMenuMode.ACTIONS) }) {
+                                Text(stringResource(android.R.string.cancel))
+                            }
+                            TextButton(
+                                onClick = onDelete,
+                                modifier = Modifier.testTag("oneui-message-delete-confirm"),
+                            ) {
+                                Text(
+                                    stringResource(R.string.oneui_message_action_delete),
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    }
+                    MessageMenuMode.CONFIRM_PLAIN_RESEND -> {
+                        Text(
+                            text = stringResource(R.string.oneui_unencrypted_resend_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
+                        )
+                        Text(
+                            text = stringResource(
+                                R.string.oneui_unencrypted_resend_message,
+                                pendingPlainSubscription?.displayName.orEmpty(),
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp),
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            TextButton(onClick = { onModeChange(MessageMenuMode.ACTIONS) }) {
+                                Text(stringResource(android.R.string.cancel))
+                            }
+                            TextButton(
+                                onClick = {
+                                    pendingPlainSubscription?.let { onRetry(it.id, true) }
+                                },
+                                modifier = Modifier.testTag("oneui-message-plain-resend-confirm"),
+                            ) {
+                                Text(stringResource(R.string.oneui_send_unencrypted))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessagePopupTextAction(
+    label: String,
+    testTag: String,
+    onClick: () -> Unit,
+) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .testTag(testTag)
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+    )
+}
+
+@Composable
+private fun MessagePopupIconAction(
+    icon: ImageVector,
+    label: String,
+    testTag: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(enabled = enabled, onClick = onClick)
+            .testTag(testTag)
+            .padding(vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = if(enabled) 1f else 0.38f),
+            modifier = Modifier.size(24.dp),
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = if(enabled) 1f else 0.38f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun DashedMessageMenuDivider() {
+    val color = MaterialTheme.colorScheme.outline
+    Canvas(
+        Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .padding(horizontal = 14.dp),
+    ) {
+        drawLine(
+            color = color,
+            start = Offset.Zero,
+            end = Offset(size.width, 0f),
+            strokeWidth = 1.dp.toPx(),
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(5.dp.toPx(), 4.dp.toPx())),
+        )
+    }
+}
+
+@Composable
+private fun MessageTextSelectionContent(
+    text: String,
+    onCopy: () -> Unit,
+    onBack: () -> Unit,
+) {
+    SelectionContainer {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+        )
+    }
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        TextButton(onClick = onBack) { Text(stringResource(R.string.oneui_back)) }
+        TextButton(onClick = onCopy) {
+            Text(stringResource(R.string.oneui_message_action_copy))
+        }
+    }
+}
+
+@Composable
+private fun MessageDetailsContent(item: TimelineItem, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val date = remember(item.timestampMillis) {
+        listOf(
+            DateFormat.getMediumDateFormat(context).format(Date(item.timestampMillis)),
+            DateFormat.getTimeFormat(context).format(Date(item.timestampMillis)),
+        ).joinToString(" ")
+    }
+    val transport = when(item) {
+        is TimelineItem.Text -> stringResource(
+            if(item.isSecure) R.string.oneui_message_encrypted
+            else R.string.oneui_message_plain
+        )
+        is TimelineItem.Media -> stringResource(
+            if(item.isSecure) R.string.oneui_message_encrypted_mms
+            else R.string.oneui_message_plain_mms
+        )
+        is TimelineItem.SecurityEvent -> stringResource(
+            R.string.oneui_message_detail_security_update
+        )
+    }
+    val delivery = when(item) {
+        is TimelineItem.Text -> deliveryStateLabel(item.deliveryState)
+        is TimelineItem.Media -> deliveryStateLabel(item.deliveryState)
+        is TimelineItem.SecurityEvent -> null
+    }
+    Text(
+        text = stringResource(R.string.oneui_message_action_details),
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+    )
+    MessageDetailRow(stringResource(R.string.oneui_message_detail_type), transport)
+    MessageDetailRow(stringResource(R.string.oneui_message_detail_time), date)
+    delivery?.let {
+        MessageDetailRow(stringResource(R.string.oneui_message_detail_status), it)
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        TextButton(
+            onClick = onBack,
+            modifier = Modifier.testTag("oneui-message-details-back"),
+        ) {
+            Text(stringResource(R.string.oneui_back))
+        }
+    }
+}
+
+@Composable
+private fun MessageDetailRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Text(text = value, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+private fun TimelineItem.messageActionText(): String = when(this) {
+    is TimelineItem.Text -> text
+    is TimelineItem.Media -> caption.orEmpty()
+    is TimelineItem.SecurityEvent -> ""
+}
+
+private fun TimelineItem.isFavoriteMessage(): Boolean = when(this) {
+    is TimelineItem.Text -> isFavorite
+    is TimelineItem.Media -> isFavorite
+    is TimelineItem.SecurityEvent -> false
+}
+
+private fun TimelineItem.isFailedOutgoingMessage(): Boolean = when(this) {
+    is TimelineItem.Text -> direction == MessageDirection.OUTGOING &&
+        deliveryState == DeliveryState.FAILED
+    is TimelineItem.Media -> direction == MessageDirection.OUTGOING &&
+        deliveryState == DeliveryState.FAILED
+    is TimelineItem.SecurityEvent -> false
+}
+
+private fun TimelineItem.isSecureMessage(): Boolean = when(this) {
+    is TimelineItem.Text -> isSecure
+    is TimelineItem.Media -> isSecure
+    is TimelineItem.SecurityEvent -> false
+}
+
+private fun TimelineItem.messageSubscriptionId(): Long? = when(this) {
+    is TimelineItem.Text -> subscriptionId
+    is TimelineItem.Media -> subscriptionId
+    is TimelineItem.SecurityEvent -> null
+}
+
+private class MessagePopupPositionProvider(
+    private val selectedBounds: IntRect,
+    private val marginPx: Int,
+    private val overlapPx: Int,
+) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset {
+        val alignRight = selectedBounds.center.x >= windowSize.width / 2
+        val x = if(alignRight) {
+            selectedBounds.right - popupContentSize.width
+        } else {
+            selectedBounds.left
+        }.coerceIn(
+            marginPx,
+            (windowSize.width - popupContentSize.width - marginPx).coerceAtLeast(marginPx),
+        )
+        val below = selectedBounds.bottom - overlapPx
+        val above = selectedBounds.top - popupContentSize.height + overlapPx
+        val y = if(below + popupContentSize.height <= windowSize.height - marginPx) {
+            below
+        } else {
+            above.coerceAtLeast(marginPx)
+        }
+        return IntOffset(x, y)
+    }
+}
+
+private fun androidx.compose.ui.geometry.Rect.toIntRect(): IntRect = IntRect(
+    left = left.roundToInt(),
+    top = top.roundToInt(),
+    right = right.roundToInt(),
+    bottom = bottom.roundToInt(),
+)
+
+private fun TimelineItem.withFavorite(favorite: Boolean): TimelineItem = when(this) {
+    is TimelineItem.Text -> copy(isFavorite = favorite)
+    is TimelineItem.Media -> copy(isFavorite = favorite)
+    is TimelineItem.SecurityEvent -> this
 }
 
 internal sealed interface ConversationTimelineEntry {
@@ -694,8 +1266,9 @@ private fun TimelineRow(
     connectedOlder: Boolean,
     showSender: Boolean,
     showMetadata: Boolean,
+    showSecurityLabel: Boolean,
     onOpenMedia: (TimelineItem.Media) -> Unit,
-    onSecurityAction: () -> Unit,
+    onLongClick: (TimelineItem, IntRect) -> Unit,
 ) {
     when(item) {
         is TimelineItem.Text -> TextBubble(
@@ -704,9 +1277,18 @@ private fun TimelineRow(
             connectedOlder,
             showSender,
             showMetadata,
+            showSecurityLabel,
+            onLongClick,
         )
-        is TimelineItem.Media -> MediaBubble(item, showSender, showMetadata, onOpenMedia)
-        is TimelineItem.SecurityEvent -> SecurityEventCard(item, onSecurityAction)
+        is TimelineItem.Media -> MediaBubble(
+            item,
+            showSender,
+            showMetadata,
+            showSecurityLabel,
+            onOpenMedia,
+            onLongClick,
+        )
+        is TimelineItem.SecurityEvent -> SecurityEventCard(item)
     }
 }
 
@@ -717,6 +1299,8 @@ private fun TextBubble(
     connectedOlder: Boolean,
     showSender: Boolean,
     showMetadata: Boolean,
+    showSecurityLabel: Boolean,
+    onLongClick: (TimelineItem, IntRect) -> Unit,
 ) {
     val outgoing = item.direction == MessageDirection.OUTGOING
     val shape = bubbleShape(outgoing, connectedNewer, connectedOlder)
@@ -726,31 +1310,67 @@ private fun TextBubble(
         timestampMillis = item.timestampMillis,
         deliveryState = item.deliveryState,
     )
+    var bubbleBounds by remember { mutableStateOf(IntRect.Zero) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if(outgoing) Alignment.End else Alignment.Start,
     ) {
-        if(showSender && !outgoing) SenderLabel(item.author)
         Surface(
             modifier = Modifier
                 .widthIn(max = 330.dp)
+                .testTag("oneui-message-bubble-${item.stableId}")
                 .semantics(mergeDescendants = true) {
                     contentDescription = accessibilityLabel
-                },
+                }
+                .onGloballyPositioned { coordinates ->
+                    bubbleBounds = coordinates.boundsInWindow().toIntRect()
+                }
+                .combinedClickable(
+                    onClick = {},
+                    onLongClick = { onLongClick(item, bubbleBounds) },
+                ),
             shape = shape,
             color = if(outgoing) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            Text(
-                text = item.text,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if(outgoing) MaterialTheme.colorScheme.onPrimary
-                    else MaterialTheme.colorScheme.onSurface,
+            Column(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
-            )
-        }
-        AnimatedVisibility(showMetadata) {
-            MessageMetadata(item.timestampMillis, item.deliveryState, outgoing)
+            ) {
+                if(showSender && !outgoing) SenderLabel(item.author)
+                Text(
+                    text = item.text,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 15.sp,
+                        lineHeight = 20.sp,
+                    ),
+                    color = if(outgoing) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.onSurface,
+                )
+                AnimatedVisibility(
+                    visible = showMetadata,
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    MessageMetadata(
+                        timestampMillis = item.timestampMillis,
+                        state = item.deliveryState,
+                        outgoing = outgoing,
+                        transportLabel = if(showSecurityLabel && item.isSecure) {
+                            stringResource(R.string.oneui_message_encrypted)
+                        } else {
+                            stringResource(R.string.oneui_message_plain)
+                        },
+                        contentColor = if(outgoing) {
+                            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.78f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        isFavorite = item.isFavorite,
+                        modifier = Modifier.testTag(
+                            "oneui-message-metadata-${item.stableId}"
+                        ),
+                    )
+                }
+            }
         }
         Spacer(Modifier.height(if(connectedNewer) 3.dp else 10.dp))
     }
@@ -761,7 +1381,9 @@ private fun MediaBubble(
     item: TimelineItem.Media,
     showSender: Boolean,
     showMetadata: Boolean,
+    showSecurityLabel: Boolean,
     onOpenMedia: (TimelineItem.Media) -> Unit,
+    onLongClick: (TimelineItem, IntRect) -> Unit,
 ) {
     val outgoing = item.direction == MessageDirection.OUTGOING
     val accessibilityLabel = timelineAccessibilityDescription(
@@ -773,45 +1395,77 @@ private fun MediaBubble(
         timestampMillis = item.timestampMillis,
         deliveryState = item.deliveryState,
     )
+    var bubbleBounds by remember { mutableStateOf(IntRect.Zero) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if(outgoing) Alignment.End else Alignment.Start,
     ) {
-        if(showSender && !outgoing) SenderLabel(item.author)
         Surface(
             modifier = Modifier
                 .widthIn(max = 310.dp)
+                .testTag("oneui-message-bubble-${item.stableId}")
                 .semantics(mergeDescendants = true) {
                     contentDescription = accessibilityLabel
                 }
-                .then(
-                    if(item.uri.isNullOrBlank()) Modifier
-                    else Modifier.clickable { onOpenMedia(item) }
+                .onGloballyPositioned { coordinates ->
+                    bubbleBounds = coordinates.boundsInWindow().toIntRect()
+                }
+                .combinedClickable(
+                    onClick = {
+                        if(!item.uri.isNullOrBlank()) onOpenMedia(item)
+                    },
+                    onLongClick = { onLongClick(item, bubbleBounds) },
                 ),
             shape = RoundedCornerShape(MessagesTheme.dimensions.bubbleRadius),
             color = if(outgoing) MaterialTheme.colorScheme.primaryContainer
                 else MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            Row(
+            Column(
                 modifier = Modifier.padding(MessagesTheme.spacing.md),
-                horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
-                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(Icons.Default.Description, contentDescription = null)
-                Column {
-                    Text(
-                        text = item.fileName ?: stringResource(R.string.oneui_attachment),
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    item.caption?.takeIf(String::isNotBlank)?.let {
-                        Text(it, style = MaterialTheme.typography.bodyMedium)
+                if(showSender && !outgoing) SenderLabel(item.author)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Default.Description, contentDescription = null)
+                    Column {
+                        Text(
+                            text = item.fileName ?: stringResource(R.string.oneui_attachment),
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        item.caption?.takeIf(String::isNotBlank)?.let {
+                            Text(it, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
+                }
+                if(showMetadata) {
+                    MessageMetadata(
+                        timestampMillis = item.timestampMillis,
+                        state = item.deliveryState,
+                        outgoing = outgoing,
+                        transportLabel = stringResource(
+                            if(showSecurityLabel && item.isSecure) {
+                                R.string.oneui_message_encrypted_mms
+                            } else {
+                                R.string.oneui_message_plain_mms
+                            }
+                        ),
+                        contentColor = if(outgoing) {
+                            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f)
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        isFavorite = item.isFavorite,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .testTag("oneui-message-metadata-${item.stableId}"),
+                    )
                 }
             }
         }
-        if(showMetadata) MessageMetadata(item.timestampMillis, item.deliveryState, outgoing)
         Spacer(Modifier.height(10.dp))
     }
 }
@@ -823,12 +1477,12 @@ private fun SenderLabel(author: MessageAuthor?) {
         text = author.displayName,
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 8.dp, bottom = 3.dp),
+        modifier = Modifier.padding(bottom = 3.dp),
     )
 }
 
 @Composable
-private fun SecurityEventCard(item: TimelineItem.SecurityEvent, onAction: () -> Unit) {
+private fun SecurityEventCard(item: TimelineItem.SecurityEvent) {
     val title = stringResource(when(item.kind) {
         SecurityEventKind.REQUEST_SENT -> R.string.oneui_security_event_request_sent
         SecurityEventKind.REQUEST_RECEIVED -> R.string.oneui_security_event_request_received
@@ -839,57 +1493,111 @@ private fun SecurityEventCard(item: TimelineItem.SecurityEvent, onAction: () -> 
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = MessagesTheme.spacing.xs),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = when {
+            item.kind != SecurityEventKind.DECRYPTION_FAILED -> Alignment.CenterHorizontally
+            item.direction == MessageDirection.OUTGOING -> Alignment.End
+            else -> Alignment.Start
+        },
     ) {
         Surface(
-            modifier = Modifier.widthIn(max = 360.dp),
+            modifier = Modifier
+                .widthIn(max = 330.dp)
+                .then(
+                    if(item.kind == SecurityEventKind.DECRYPTION_FAILED) {
+                        Modifier.testTag("oneui-decryption-failure-message")
+                    } else Modifier
+                ),
             shape = RoundedCornerShape(MessagesTheme.dimensions.groupRadius),
             color = if(item.kind == SecurityEventKind.DECRYPTION_FAILED) {
                 MaterialTheme.colorScheme.errorContainer
             } else MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            Column(Modifier.padding(MessagesTheme.spacing.md)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
-                ) {
-                    Icon(
-                        imageVector = if(item.kind == SecurityEventKind.DECRYPTION_FAILED) {
-                            Icons.Default.ErrorOutline
-                        } else Icons.Default.Shield,
-                        contentDescription = null,
-                    )
-                    Text(title, style = MaterialTheme.typography.titleMedium)
-                }
-                if(item.kind == SecurityEventKind.DECRYPTION_FAILED) {
-                    Spacer(Modifier.height(MessagesTheme.spacing.xs))
-                    Text(
-                        stringResource(R.string.oneui_security_event_decrypt_help),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Spacer(Modifier.height(MessagesTheme.spacing.sm))
-                    Button(onClick = onAction) {
-                        Text(stringResource(R.string.oneui_request_new_key))
-                    }
-                }
+            Row(
+                modifier = Modifier.padding(
+                    horizontal = MessagesTheme.spacing.md,
+                    vertical = 10.dp,
+                ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
+            ) {
+                Icon(
+                    imageVector = if(item.kind == SecurityEventKind.DECRYPTION_FAILED) {
+                        Icons.Default.ErrorOutline
+                    } else Icons.Default.Shield,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+                Text(title, style = MaterialTheme.typography.labelLarge)
             }
         }
     }
 }
 
 @Composable
-private fun MessageMetadata(timestampMillis: Long, state: DeliveryState, outgoing: Boolean) {
+private fun MessageMetadata(
+    timestampMillis: Long,
+    state: DeliveryState,
+    outgoing: Boolean,
+    transportLabel: String,
+    contentColor: Color,
+    isFavorite: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val time = remember(timestampMillis) {
         DateFormat.getTimeFormat(context).format(Date(timestampMillis))
     }
-    val status = if(outgoing) deliveryStateLabel(state) else null
-    Text(
-        text = listOfNotNull(time, status).joinToString(" · "),
-        style = MaterialTheme.typography.labelMedium,
-        color = if(state == DeliveryState.FAILED) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = MessagesTheme.spacing.xs, vertical = 2.dp),
+    Row(
+        modifier = modifier
+            .padding(top = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "$transportLabel · $time",
+            style = MaterialTheme.typography.labelSmall,
+            color = contentColor,
+        )
+        if(isFavorite) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = stringResource(R.string.oneui_message_favorite),
+                tint = contentColor,
+                modifier = Modifier.size(14.dp),
+            )
+        }
+        if(outgoing) DeliveryStateIndicator(state, contentColor)
+    }
+}
+
+@Composable
+private fun DeliveryStateIndicator(state: DeliveryState, contentColor: Color) {
+    if(state == DeliveryState.RECEIVED) return
+    val status = deliveryStateLabel(state)
+    val icon = when(state) {
+        DeliveryState.QUEUED -> Icons.Default.Schedule
+        DeliveryState.SENT -> Icons.Default.Done
+        DeliveryState.DELIVERED -> Icons.Default.DoneAll
+        DeliveryState.FAILED -> Icons.Default.ErrorOutline
+        DeliveryState.RECEIVED -> return
+    }
+    val tag = when(state) {
+        DeliveryState.QUEUED -> "oneui-delivery-queued"
+        DeliveryState.SENT -> "oneui-delivery-sent"
+        DeliveryState.DELIVERED -> "oneui-delivery-delivered"
+        DeliveryState.FAILED -> "oneui-delivery-failed"
+        DeliveryState.RECEIVED -> return
+    }
+    Icon(
+        imageVector = icon,
+        contentDescription = status,
+        tint = when(state) {
+            DeliveryState.FAILED -> MaterialTheme.colorScheme.error
+            else -> contentColor
+        },
+        modifier = Modifier
+            .size(15.dp)
+            .testTag(tag),
     )
 }
 
@@ -949,26 +1657,26 @@ private fun SecurityInlineStatus(
     onClick: () -> Unit,
 ) {
     if(state == ConversationSecurityState.PLAIN) return
-    Surface(
+    val shape = RoundedCornerShape(MessagesTheme.dimensions.groupRadius)
+    val background = when(state) {
+        ConversationSecurityState.KEY_CHANGED,
+        ConversationSecurityState.RECOVERY_REQUIRED -> MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = MessagesTheme.spacing.sm)
-            .clip(RoundedCornerShape(MessagesTheme.dimensions.groupRadius))
-            .clickable(onClick = onClick),
-        color = when(state) {
-            ConversationSecurityState.KEY_CHANGED,
-            ConversationSecurityState.RECOVERY_REQUIRED -> MaterialTheme.colorScheme.errorContainer
-            else -> MaterialTheme.colorScheme.surfaceVariant
-        },
+            .clip(shape)
+            .background(background)
+            .clickable(onClick = onClick)
+            .padding(horizontal = MessagesTheme.spacing.md, vertical = 10.dp)
+            .testTag("oneui-security-inline-status"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = MessagesTheme.spacing.md, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
-        ) {
-            Icon(Icons.Default.Shield, contentDescription = null, modifier = Modifier.size(20.dp))
-            Text(securityLabel(state), style = MaterialTheme.typography.labelLarge)
-        }
+        Icon(Icons.Default.Shield, contentDescription = null, modifier = Modifier.size(20.dp))
+        Text(securityLabel(state), style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -977,11 +1685,13 @@ internal fun SecuritySheet(
     state: ConversationSecurityState,
     contactName: String,
     fingerprint: String?,
+    secureSendingEnabled: Boolean,
     busy: Boolean,
     onAction: (Boolean) -> Unit,
     onAcceptChangedIdentity: () -> Unit,
     onShowQr: () -> Unit,
     onScanQr: () -> Unit,
+    onSecureSendingChange: (Boolean) -> Unit,
 ) {
     val primaryAction = securitySheetPrimaryAction(state)
     Column(
@@ -1015,6 +1725,35 @@ internal fun SecuritySheet(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyMedium,
         )
+        if(state != ConversationSecurityState.PLAIN) {
+            Spacer(Modifier.height(MessagesTheme.spacing.lg))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(MessagesTheme.dimensions.groupRadius))
+                    .clickable { onSecureSendingChange(!secureSendingEnabled) }
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        stringResource(R.string.oneui_encrypt_future_messages),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        stringResource(R.string.oneui_encrypt_future_messages_description),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Switch(
+                    checked = secureSendingEnabled,
+                    onCheckedChange = onSecureSendingChange,
+                    modifier = Modifier.testTag("oneui-secure-sending-switch"),
+                )
+            }
+        }
         fingerprint?.let {
             Spacer(Modifier.height(MessagesTheme.spacing.lg))
             Text(

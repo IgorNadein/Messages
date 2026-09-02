@@ -1,7 +1,6 @@
 package com.afkanerd.deku.messages.ui.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -19,11 +19,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
-import androidx.compose.material.icons.filled.SimCard
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -48,6 +46,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.messages.domain.SimSubscription
@@ -65,6 +64,8 @@ fun OneUiMessageComposer(
     onAttachment: (() -> Unit)?,
     onVoice: (() -> Unit)?,
     onSend: () -> Unit,
+    messageEncrypted: Boolean? = null,
+    onSecurityClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     composerTestTag: String = "oneui-message-composer",
@@ -82,48 +83,28 @@ fun OneUiMessageComposer(
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .testTag(composerTestTag),
     ) {
-        if(subscriptions.isNotEmpty() && selectedSubscriptionId != null) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 8.dp, bottom = 6.dp),
-                horizontalArrangement = Arrangement.End,
-            ) {
-                OneUiSimSelector(
-                    subscriptions = subscriptions,
-                    selectedSubscriptionId = selectedSubscriptionId,
-                    enabled = canInteract,
-                    onSubscriptionSelected = onSubscriptionSelected,
-                )
-            }
-        }
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(2.dp),
         ) {
+            val encrypted = messageEncrypted == true
             SamsungAttachmentButton(
                 icon = { tint ->
                     Icon(
-                        Icons.Default.Photo,
-                        contentDescription = stringResource(R.string.attachment_photo),
-                        tint = tint,
+                        if(encrypted) Icons.Default.Lock else Icons.Default.LockOpen,
+                        contentDescription = stringResource(
+                            if(encrypted) R.string.oneui_message_encrypted
+                            else R.string.oneui_message_plain
+                        ),
+                        tint = if(encrypted) MaterialTheme.colorScheme.primary else tint,
                     )
                 },
-                enabled = attachmentEnabled,
-                onClick = { onAttachment?.invoke() },
-            )
-            SamsungAttachmentButton(
-                icon = { tint ->
-                    Icon(
-                        Icons.Default.CameraAlt,
-                        contentDescription = stringResource(R.string.attachment_camera),
-                        tint = tint,
-                    )
-                },
-                enabled = attachmentEnabled,
-                onClick = { onAttachment?.invoke() },
+                enabled = canInteract && onSecurityClick != null,
+                onClick = { onSecurityClick?.invoke() },
+                modifier = Modifier.testTag(
+                    if(encrypted) "oneui-composer-encrypted" else "oneui-composer-plain"
+                ),
             )
             SamsungAttachmentButton(
                 icon = { tint ->
@@ -184,14 +165,14 @@ fun OneUiMessageComposer(
                                 .testTag(inputTestTag),
                         )
                     }
-                    Icon(
-                        Icons.Default.SentimentSatisfiedAlt,
-                        contentDescription = null,
-                        modifier = Modifier.size(22.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                            alpha = if(enabled) 0.9f else 0.45f,
-                        ),
-                    )
+                    if(subscriptions.isNotEmpty() && selectedSubscriptionId != null) {
+                        OneUiInlineNetworkSelector(
+                            subscriptions = subscriptions,
+                            selectedSubscriptionId = selectedSubscriptionId,
+                            enabled = canInteract,
+                            onSubscriptionSelected = onSubscriptionSelected,
+                        )
+                    }
                 }
             }
 
@@ -240,9 +221,10 @@ private fun SamsungAttachmentButton(
     icon: @Composable (tint: Color) -> Unit,
     enabled: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(36.dp)
             .clip(CircleShape)
             .clickable(enabled = enabled, onClick = onClick),
@@ -257,7 +239,7 @@ private fun SamsungAttachmentButton(
 }
 
 @Composable
-private fun OneUiSimSelector(
+private fun OneUiInlineNetworkSelector(
     subscriptions: List<SimSubscription>,
     selectedSubscriptionId: Long,
     enabled: Boolean,
@@ -270,42 +252,38 @@ private fun OneUiSimSelector(
     val canChoose = enabled && subscriptions.size > 1
 
     Box {
-        Surface(
+        Box(
             modifier = Modifier
-                .heightIn(min = 32.dp)
+                .heightIn(min = 36.dp)
+                .widthIn(max = 96.dp)
                 .clip(RoundedCornerShape(18.dp))
                 .clickable(enabled = canChoose) { expanded = true }
                 .semantics(mergeDescendants = true) {
                     contentDescription = chooserDescription
                     stateDescription = selected.displayName
                 },
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.background,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            contentAlignment = Alignment.Center,
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                Icon(
-                    Icons.Default.SimCard,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                        alpha = if(enabled) 1f else 0.45f,
-                    ),
-                )
-                Text(
-                    text = selected.displayName,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                        alpha = if(enabled) 1f else 0.45f,
-                    ),
-                )
-            }
+            Text(
+                text = selected.displayName,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                    alpha = if(enabled) 1f else 0.45f,
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 8.dp),
+            )
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(
+                alpha = ONE_UI_POPUP_MENU_ALPHA,
+            ),
+            tonalElevation = 0.dp,
+            shadowElevation = 8.dp,
+        ) {
             subscriptions.forEach { subscription ->
                 DropdownMenuItem(
                     text = { Text(subscription.displayName) },

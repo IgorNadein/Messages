@@ -30,11 +30,13 @@ class IncomingSecureRequestInstrumentedTest {
                     state = ConversationSecurityState.REQUEST_RECEIVED,
                     contactName = "+79990000000",
                     fingerprint = null,
+                    secureSendingEnabled = true,
                     busy = false,
                     onAction = { forceRenewal = it },
                     onAcceptChangedIdentity = {},
                     onShowQr = {},
                     onScanQr = {},
+                    onSecureSendingChange = {},
                 )
             }
         }

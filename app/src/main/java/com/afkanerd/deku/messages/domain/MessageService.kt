@@ -101,7 +101,41 @@ interface MessageService {
 
     fun timeline(threadId: Int): Flow<PagingData<TimelineItem>>
 
+    fun timeline(threadIds: List<Int>): Flow<PagingData<TimelineItem>> =
+        timeline(requireNotNull(threadIds.firstOrNull()))
+
     fun attachmentTransfers(address: String): Flow<List<AttachmentTransfer>>
+
+    fun attachmentTransfers(addresses: List<String>): Flow<List<AttachmentTransfer>> =
+        addresses.firstOrNull()?.let(::attachmentTransfers)
+            ?: kotlinx.coroutines.flow.flowOf(emptyList())
+
+    suspend fun deleteMessage(stableId: String): Boolean = false
+
+    suspend fun setMessageFavorite(stableId: String, favorite: Boolean): Boolean = false
+
+    /** Requeues a failed message. [forcePlainText] is only used after explicit user consent. */
+    suspend fun resendMessage(
+        addresses: List<String>,
+        threadId: Int,
+        subscriptionId: Long,
+        item: TimelineItem,
+        forcePlainText: Boolean = false,
+    ): SendResult = when(item) {
+        is TimelineItem.Text -> sendText(
+            address = addresses.first(),
+            threadId = threadId,
+            subscriptionId = subscriptionId,
+            text = item.text,
+        )
+        is TimelineItem.Media -> sendMms(
+            addresses = addresses,
+            threadId = threadId,
+            subscriptionId = subscriptionId,
+            text = item.caption.orEmpty(),
+        )
+        is TimelineItem.SecurityEvent -> SendResult.Failed("A security event cannot be resent")
+    }
 
     suspend fun performAttachmentAction(transferId: String, action: AttachmentAction)
 
@@ -135,6 +169,8 @@ interface MessageService {
     )
 
     suspend fun selectSubscription(address: String, subscriptionId: Long)
+
+    suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) = Unit
 
     suspend fun isContactBlocked(address: String): Boolean = false
 

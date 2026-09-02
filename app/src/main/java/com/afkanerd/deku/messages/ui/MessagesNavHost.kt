@@ -9,6 +9,8 @@ import android.content.ClipboardManager
 import android.os.Build
 import android.provider.Telephony
 import android.provider.ContactsContract
+import android.telecom.TelecomManager
+import android.telecom.VideoProfile
 import android.text.format.DateUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.afkanerd.deku.messages.domain.MessageService
+import com.afkanerd.deku.messages.domain.TimelineItem
 import com.afkanerd.deku.messages.domain.AppSettingsService
 import com.afkanerd.deku.messages.domain.DeveloperToolsService
 import com.afkanerd.deku.DefaultSMS.BuildConfig
@@ -116,20 +119,74 @@ fun MessagesNavHost(
                             context.startActivity(Intent(Intent.ACTION_DIAL, "tel:$address".toUri()))
                         }
                     },
+                    onVideoCall = { address ->
+                        runCatching {
+                            context.startActivity(
+                                Intent(Intent.ACTION_DIAL, "tel:$address".toUri()).putExtra(
+                                    TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE,
+                                    VideoProfile.STATE_BIDIRECTIONAL,
+                                )
+                            )
+                        }
+                    },
                     onMore = {
+                        val activeHeader = conversationViewModel.state.value.header
                         navController.navigate(
                             ContactDetailsScreenNav(
-                                address = route.address,
+                                address = activeHeader?.address ?: route.address,
                                 encryptionAvailable = false,
-                                subscriptionId = -1,
-                                threadId = route.threadId,
+                                subscriptionId = activeHeader?.subscriptionId?.toInt() ?: -1,
+                                threadId = activeHeader?.threadId ?: route.threadId,
                             )
                         )
                     },
+                    onAddRecipients = { participants ->
+                        navController.navigate(
+                            ComposeNewMessageScreenNav(
+                                subscriptionId = conversationViewModel.state.value.header?.subscriptionId,
+                                initialAddresses = participants.joinToString(","),
+                            )
+                        )
+                    },
+                    onCopyMessage = { text ->
+                        context.getSystemService(ClipboardManager::class.java)
+                            .setPrimaryClip(ClipData.newPlainText("message", text))
+                    },
+                    onForwardMessage = { text ->
+                        navController.navigate(ComposeNewMessageScreenNav(text = text))
+                    },
+                    onShareMessage = { item ->
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            when(item) {
+                                is TimelineItem.Text -> {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, item.text)
+                                }
+                                is TimelineItem.Media -> {
+                                    val contentUri = item.uri?.toUri()
+                                    if(contentUri != null) {
+                                        type = item.mimeType?.ifBlank { "application/octet-stream" }
+                                            ?: "application/octet-stream"
+                                        putExtra(Intent.EXTRA_STREAM, contentUri)
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    } else {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_TEXT, item.caption.orEmpty())
+                                    }
+                                }
+                                is TimelineItem.SecurityEvent -> type = "text/plain"
+                            }
+                        }
+                        runCatching {
+                            context.startActivity(Intent.createChooser(shareIntent, null))
+                        }
+                    },
                     onOpenMedia = { media ->
+                        val activeAddress = conversationViewModel.state.value.header?.address
+                            ?: route.address
                         mediaViewerDestination(
                             item = media,
-                            address = route.address,
+                            address = activeAddress,
                             formattedDate = DateUtils.formatDateTime(
                                 context,
                                 media.timestampMillis,

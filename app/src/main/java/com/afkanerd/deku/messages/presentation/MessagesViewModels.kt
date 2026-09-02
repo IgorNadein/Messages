@@ -331,6 +331,7 @@ enum class ConversationError {
     SEND_FAILED,
     SECURITY_NOT_READY,
     SECURE_REQUEST_FAILED,
+    MESSAGE_ACTION_FAILED,
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -344,14 +345,17 @@ class ConversationViewModel(
         ConversationUiState(draft = initialText.orEmpty())
     )
     val state: StateFlow<ConversationUiState> = _state.asStateFlow()
-    val attachments: Flow<List<AttachmentTransfer>> = messageService.attachmentTransfers(address)
+    private val activeAddresses = MutableStateFlow(listOf(address))
+    val attachments: Flow<List<AttachmentTransfer>> = activeAddresses
+        .flatMapLatest { addresses -> messageService.attachmentTransfers(addresses) }
     private var draftSaveJob: Job? = null
 
     private val activeThreadId = MutableStateFlow(initialThreadId)
-    val timeline: Flow<PagingData<TimelineItem>> = activeThreadId
-        .flatMapLatest { threadId ->
-            if(threadId == null) flowOf(PagingData.empty())
-            else messageService.timeline(threadId)
+    private val activeThreadIds = MutableStateFlow(listOfNotNull(initialThreadId))
+    val timeline: Flow<PagingData<TimelineItem>> = activeThreadIds
+        .flatMapLatest { threadIds ->
+            if(threadIds.isEmpty()) flowOf(PagingData.empty())
+            else messageService.timeline(threadIds)
         }
         .cachedIn(viewModelScope)
 
@@ -361,9 +365,16 @@ class ConversationViewModel(
 
     fun refreshHeader() {
         viewModelScope.launch {
-            runCatching { messageService.conversationHeader(address, activeThreadId.value) }
+            val selectedAddress = _state.value.header?.address ?: address
+            runCatching {
+                messageService.conversationHeader(selectedAddress, activeThreadId.value)
+            }
                 .onSuccess { header ->
                     activeThreadId.value = header.threadId
+                    activeThreadIds.value = header.relatedThreadIds
+                    activeAddresses.value = header.availableContactNumbers
+                        .map(MessageRecipient::address)
+                        .ifEmpty { listOf(header.address) }
                     val restoredDraft = if(_state.value.draft.isBlank()) {
                         messageService.loadDraft(header.threadId)
                     } else {
@@ -374,6 +385,29 @@ class ConversationViewModel(
                         draft = restoredDraft,
                         securityFingerprint = if(header.isGroupConversation) null
                             else messageService.securityFingerprint(header.address),
+                    )
+                }
+                .onFailure {
+                    _state.value = _state.value.copy(error = ConversationError.SEND_FAILED)
+                }
+        }
+    }
+
+    fun selectContactNumber(selectedAddress: String) {
+        val current = _state.value.header ?: return
+        if(current.isGroupConversation || selectedAddress == current.address) return
+        viewModelScope.launch {
+            runCatching { messageService.conversationHeader(selectedAddress, null) }
+                .onSuccess { header ->
+                    activeThreadId.value = header.threadId
+                    activeThreadIds.value = header.relatedThreadIds
+                    activeAddresses.value = header.availableContactNumbers
+                        .map(MessageRecipient::address)
+                        .ifEmpty { listOf(header.address) }
+                    _state.value = _state.value.copy(
+                        header = header,
+                        securityFingerprint = messageService.securityFingerprint(header.address),
+                        error = null,
                     )
                 }
                 .onFailure {
@@ -405,6 +439,18 @@ class ConversationViewModel(
         viewModelScope.launch {
             messageService.selectSubscription(header.address, subscriptionId)
             saveDraftSnapshot()
+        }
+    }
+
+    fun setSecureSendingEnabled(enabled: Boolean) {
+        val header = _state.value.header ?: return
+        if(header.isGroupConversation || header.secureSendingEnabled == enabled) return
+        _state.value = _state.value.copy(
+            header = header.copy(secureSendingEnabled = enabled),
+            error = null,
+        )
+        viewModelScope.launch {
+            messageService.setSecureSendingEnabled(header.address, enabled)
         }
     }
 
@@ -554,6 +600,73 @@ class ConversationViewModel(
         }
     }
 
+    fun deleteMessage(item: TimelineItem) {
+        viewModelScope.launch {
+            runCatching { messageService.deleteMessage(item.stableId) }
+                .onSuccess { deleted ->
+                    if(!deleted) {
+                        _state.value = _state.value.copy(
+                            error = ConversationError.MESSAGE_ACTION_FAILED
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.value = _state.value.copy(
+                        error = ConversationError.MESSAGE_ACTION_FAILED
+                    )
+                }
+        }
+    }
+
+    fun setMessageFavorite(item: TimelineItem, favorite: Boolean) {
+        viewModelScope.launch {
+            runCatching { messageService.setMessageFavorite(item.stableId, favorite) }
+                .onSuccess { updated ->
+                    if(!updated) {
+                        _state.value = _state.value.copy(
+                            error = ConversationError.MESSAGE_ACTION_FAILED
+                        )
+                    }
+                }
+                .onFailure {
+                    _state.value = _state.value.copy(
+                        error = ConversationError.MESSAGE_ACTION_FAILED
+                    )
+                }
+        }
+    }
+
+    fun resendMessage(
+        item: TimelineItem,
+        subscriptionId: Long,
+        forcePlainText: Boolean = false,
+    ) {
+        val header = _state.value.header ?: return
+        if(item.directionOrNull() != com.afkanerd.deku.messages.domain.MessageDirection.OUTGOING ||
+            item.deliveryStateOrNull() != com.afkanerd.deku.messages.domain.DeliveryState.FAILED
+        ) return
+        viewModelScope.launch {
+            val recipients = header.participants
+                .map(MessageRecipient::address)
+                .ifEmpty { GroupMessagePolicy.recipients(header.address) }
+            when(messageService.resendMessage(
+                addresses = recipients,
+                threadId = header.threadId,
+                subscriptionId = subscriptionId,
+                item = item,
+                forcePlainText = forcePlainText,
+            )) {
+                is SendResult.Sent -> Unit
+                is SendResult.BlockedBySecurity -> _state.value = _state.value.copy(
+                    error = ConversationError.SECURITY_NOT_READY,
+                )
+                is SendResult.Failed -> _state.value = _state.value.copy(
+                    error = ConversationError.SEND_FAILED,
+                )
+            }
+        }
+    }
+
     suspend fun prepareAttachment(attachment: PreparedAttachment): Boolean {
         val header = _state.value.header ?: return false
         return when(messageService.prepareAttachment(
@@ -578,6 +691,18 @@ class ConversationViewModel(
             subscriptionId = header.subscriptionId,
             text = snapshot.draft,
         )
+    }
+
+    private fun TimelineItem.directionOrNull() = when(this) {
+        is TimelineItem.Text -> direction
+        is TimelineItem.Media -> direction
+        is TimelineItem.SecurityEvent -> null
+    }
+
+    private fun TimelineItem.deliveryStateOrNull() = when(this) {
+        is TimelineItem.Text -> deliveryState
+        is TimelineItem.Media -> deliveryState
+        is TimelineItem.SecurityEvent -> null
     }
 
     private companion object {

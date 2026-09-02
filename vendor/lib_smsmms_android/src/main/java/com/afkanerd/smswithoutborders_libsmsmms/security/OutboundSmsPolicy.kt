@@ -13,6 +13,7 @@ data class OutboundSms(
     val transportText: String = displayText,
     val transportData: ByteArray? = null,
     val retryTransportText: String? = null,
+    val forcePlainText: Boolean = false,
 )
 
 sealed interface OutboundSmsDecision {
@@ -46,3 +47,7 @@ const val SECURE_TRANSPORT_TEXT_EXTRA =
 
 const val SECURE_RETRY_TRANSPORT_TEXT_EXTRA =
     "com.afkanerd.smswithoutborders_libsmsmms.SECURE_RETRY_TRANSPORT_TEXT"
+
+/** Internal opt-out used only after the UI has confirmed an unencrypted resend. */
+const val FORCE_PLAIN_TEXT_EXTRA =
+    "com.afkanerd.smswithoutborders_libsmsmms.FORCE_PLAIN_TEXT"

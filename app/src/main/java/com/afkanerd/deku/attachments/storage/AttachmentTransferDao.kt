@@ -24,6 +24,9 @@ interface AttachmentTransferDao {
     @Query("SELECT * FROM AttachmentTransfer WHERE address = :address ORDER BY createdAt DESC")
     fun observeForAddress(address: String): Flow<List<AttachmentTransferEntity>>
 
+    @Query("SELECT * FROM AttachmentTransfer WHERE address IN (:addresses) ORDER BY createdAt DESC")
+    fun observeForAddresses(addresses: List<String>): Flow<List<AttachmentTransferEntity>>
+
     @Query("SELECT * FROM AttachmentTransfer WHERE status IN (:statuses) ORDER BY updatedAt ASC")
     suspend fun getByStatuses(statuses: List<String>): List<AttachmentTransferEntity>
 

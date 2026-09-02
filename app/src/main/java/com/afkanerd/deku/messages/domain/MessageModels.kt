@@ -79,6 +79,8 @@ sealed interface TimelineItem {
         val direction: MessageDirection,
         val deliveryState: DeliveryState,
         val isSecure: Boolean,
+        val subscriptionId: Long? = null,
+        val isFavorite: Boolean = false,
         val author: MessageAuthor? = null,
     ) : TimelineItem
 
@@ -91,6 +93,9 @@ sealed interface TimelineItem {
         val caption: String?,
         val direction: MessageDirection,
         val deliveryState: DeliveryState,
+        val isSecure: Boolean = false,
+        val subscriptionId: Long? = null,
+        val isFavorite: Boolean = false,
         val author: MessageAuthor? = null,
     ) : TimelineItem
 
@@ -98,6 +103,7 @@ sealed interface TimelineItem {
         override val stableId: String,
         override val timestampMillis: Long,
         val kind: SecurityEventKind,
+        val direction: MessageDirection? = null,
     ) : TimelineItem
 }
 
@@ -177,8 +183,11 @@ data class ConversationHeader(
     val subscriptionId: Long,
     val subscriptions: List<SimSubscription>,
     val securityState: ConversationSecurityState,
+    val secureSendingEnabled: Boolean = true,
     val isMuted: Boolean = false,
     val participants: List<MessageRecipient> = emptyList(),
+    val availableContactNumbers: List<MessageRecipient> = emptyList(),
+    val relatedThreadIds: List<Int> = listOf(threadId),
 ) {
     val isGroupConversation: Boolean
         get() = participants.size > 1
@@ -196,6 +205,7 @@ data class MessageRecipient(
     val displayName: String,
     val avatarUri: String?,
     val isDirectEntry: Boolean = false,
+    val label: String? = null,
 )
 
 data class ImportProgress(

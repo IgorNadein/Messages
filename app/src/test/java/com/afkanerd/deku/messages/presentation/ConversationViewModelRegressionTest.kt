@@ -113,6 +113,23 @@ class ConversationViewModelRegressionTest {
     }
 
     @Test
+    fun userCanDisableEncryptionForFutureMessagesWithoutRemovingSession() =
+        runTest(dispatcher) {
+            val service = FakeMessageService(
+                securityState = ConversationSecurityState.SECURE_VERIFIED,
+            )
+            val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
+            advanceUntilIdle()
+
+            viewModel.setSecureSendingEnabled(false)
+            advanceUntilIdle()
+
+            assertFalse(viewModel.state.value.header!!.secureSendingEnabled)
+            assertEquals(false, service.secureSendingEnabled)
+            assertEquals(ConversationSecurityState.SECURE_VERIFIED, service.securityState)
+        }
+
+    @Test
     fun decryptionFailureActionForcesKeyRenewal() = runTest(dispatcher) {
         val service = FakeMessageService()
         val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
@@ -476,6 +493,7 @@ class ConversationViewModelRegressionTest {
         var contactBlocked: Boolean = false,
         private val identityVerificationSucceeds: Boolean = false,
         var messageStoreReady: Boolean = false,
+        val securityState: ConversationSecurityState = ConversationSecurityState.PLAIN,
     ) : MessageService {
         var savedDraft: String? = null
         var selectedSubscriptionId: Long? = null
@@ -495,6 +513,7 @@ class ConversationViewModelRegressionTest {
         var lastVerifiedQrPayload: String? = null
         var lastExportDestination: String? = null
         var importCalls = 0
+        var secureSendingEnabled: Boolean? = null
 
         override fun isDefaultSmsApp() = true
         override fun hasContactAccess() = contactAccess
@@ -567,7 +586,7 @@ class ConversationViewModelRegressionTest {
                     SimSubscription(FIRST_SIM, "SIM 1", 0),
                     SimSubscription(SECOND_SIM, "SIM 2", 1),
                 ),
-                securityState = ConversationSecurityState.PLAIN,
+                securityState = securityState,
             )
         override suspend fun conversationHeader(
             addresses: List<String>,
@@ -585,6 +604,9 @@ class ConversationViewModelRegressionTest {
         }
         override suspend fun selectSubscription(address: String, subscriptionId: Long) {
             selectedSubscriptionId = subscriptionId
+        }
+        override suspend fun setSecureSendingEnabled(address: String, enabled: Boolean) {
+            secureSendingEnabled = enabled
         }
         override suspend fun isContactBlocked(address: String) = contactBlocked
         override suspend fun setContactBlocked(address: String, blocked: Boolean): Boolean {

@@ -22,6 +22,7 @@ object ConversationEntityMapper {
         entity: Conversations,
         secureConversation: Boolean = false,
         author: MessageAuthor? = null,
+        decryptionFailureText: String? = null,
     ): TimelineItem {
         val sms = requireNotNull(entity.sms) { "Conversation has no SMS envelope" }
         val stableId = "message-${entity.id}"
@@ -53,7 +54,10 @@ object ConversationEntityMapper {
             return TimelineItem.SecurityEvent(stableId, sms.date, kind)
         }
 
-        if((direction == MessageDirection.INCOMING && entity.secure_transport_text != null) ||
+        if((direction == MessageDirection.INCOMING &&
+                entity.secure_transport_text != null &&
+                decryptionFailureText != null &&
+                body == decryptionFailureText) ||
             SecureMessageCodec.decodeTextOrNull(body) != null ||
             (secureConversation && looksLikeLegacyBinaryPayload(body))
         ) {
@@ -61,6 +65,7 @@ object ConversationEntityMapper {
                 stableId = stableId,
                 timestampMillis = sms.date,
                 kind = SecurityEventKind.DECRYPTION_FAILED,
+                direction = direction,
             )
         }
 
@@ -74,6 +79,8 @@ object ConversationEntityMapper {
                 caption = entity.mms_text ?: sms.body,
                 direction = direction,
                 deliveryState = deliveryState(sms.type, sms.status),
+                isSecure = !entity.secure_transport_text.isNullOrEmpty(),
+                subscriptionId = sms.sub_id,
                 author = author,
             )
         }
@@ -85,6 +92,7 @@ object ConversationEntityMapper {
             direction = direction,
             deliveryState = deliveryState(sms.type, sms.status),
             isSecure = !entity.secure_transport_text.isNullOrEmpty(),
+            subscriptionId = sms.sub_id,
             author = author,
         )
     }

@@ -64,9 +64,6 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
                                                 conversation.sms?.address!!,
                                                 it,
                                             )
-                                            conversation.secure_transport_text = null
-                                            context.getDatabase().conversationsDao()
-                                                ?.update(conversation)
                                         }
                                     } else {
                                         if(type == NotificationTxType.DATA.name) {

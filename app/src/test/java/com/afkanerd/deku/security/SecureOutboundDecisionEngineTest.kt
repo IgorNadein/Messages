@@ -40,23 +40,23 @@ class SecureOutboundDecisionEngineTest {
     }
 
     @Test
-    fun pendingBrokenAndBinaryBypassAreBlocked() = runTest {
-        assertTrue(decide(SecureSessionStatus.SECURE_PENDING) is OutboundSmsDecision.Block)
-        assertTrue(decide(SecureSessionStatus.SECURE_BROKEN) is OutboundSmsDecision.Block)
+    fun pendingBrokenAndNonTextTransportsRemainAvailableAsPlainMessages() = runTest {
+        assertPlainAllowed(decide(SecureSessionStatus.SECURE_PENDING))
+        assertPlainAllowed(decide(SecureSessionStatus.SECURE_BROKEN))
 
         val binary = outbound.copy(transportData = byteArrayOf(0x44, 0x45))
         val decision = SecureOutboundDecisionEngine.decide(
             SecureSessionStatus.SECURE_ESTABLISHED,
             binary,
         ) { validCipherText() }
-        assertTrue(decision is OutboundSmsDecision.Block)
+        assertPlainAllowed(decision)
 
         val mmsMarker = outbound.copy(transportData = byteArrayOf())
         val mmsDecision = SecureOutboundDecisionEngine.decide(
             SecureSessionStatus.SECURE_ESTABLISHED,
             mmsMarker,
         ) { validCipherText() }
-        assertTrue(mmsDecision is OutboundSmsDecision.Block)
+        assertPlainAllowed(mmsDecision)
     }
 
     @Test
@@ -79,11 +79,17 @@ class SecureOutboundDecisionEngineTest {
             exchange,
             trustedControlMessage = false,
         ) { null }
-        assertTrue(untrusted is OutboundSmsDecision.Block)
+        assertPlainAllowed(untrusted)
     }
 
     private suspend fun decide(status: SecureSessionStatus) =
         SecureOutboundDecisionEngine.decide(status, outbound) { validCipherText() }
+
+    private fun assertPlainAllowed(decision: OutboundSmsDecision) {
+        assertTrue(decision is OutboundSmsDecision.Allow)
+        val message = (decision as OutboundSmsDecision.Allow).message
+        assertTrue(message.transportText == message.displayText)
+    }
 
     private fun validCipherText(): String {
         val header = ByteArray(40) { 0x41 }

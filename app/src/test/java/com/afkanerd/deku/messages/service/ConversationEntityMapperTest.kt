@@ -165,6 +165,37 @@ class ConversationEntityMapperTest {
     }
 
     @Test
+    fun successfullyDecryptedIncomingMessageIsASecureTextBubble() {
+        val entity = conversation(
+            type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+            body = "decrypted text",
+        ).copy(secure_transport_text = "authenticated ciphertext")
+
+        val item = ConversationEntityMapper.map(
+            entity,
+            decryptionFailureText = "could not decrypt",
+        ) as TimelineItem.Text
+
+        assertEquals("decrypted text", item.text)
+        assertTrue(item.isSecure)
+    }
+
+    @Test
+    fun storedDecryptionFailureRemainsASecurityEvent() {
+        val entity = conversation(
+            type = Telephony.Sms.MESSAGE_TYPE_INBOX,
+            body = "could not decrypt",
+        ).copy(secure_transport_text = "authenticated ciphertext")
+
+        val item = ConversationEntityMapper.map(
+            entity,
+            decryptionFailureText = "could not decrypt",
+        ) as TimelineItem.SecurityEvent
+
+        assertEquals(SecurityEventKind.DECRYPTION_FAILED, item.kind)
+    }
+
+    @Test
     fun sentDeliveredAndFailedStatesRemainVisibleAfterUiMigration() {
         val sent = ConversationEntityMapper.map(
             conversation(Telephony.Sms.MESSAGE_TYPE_SENT)
