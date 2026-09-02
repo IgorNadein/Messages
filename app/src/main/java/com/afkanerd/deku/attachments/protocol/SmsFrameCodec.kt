@@ -68,18 +68,21 @@ object SmsFrameCodec {
 
     private fun validateSemanticBounds(frame: SmsFrame): String? = when (frame.packetType) {
         SmsPacketType.TRANSFER_OFFER -> when {
+            !AttachmentProtocolFlags.isSupported(frame.flags) -> "Unsupported attachment flags"
             frame.totalChunks !in 1..TransferLimits.MAX_OFFER_FRAGMENTS -> "Offer fragment count is out of bounds"
             frame.chunkIndex >= frame.totalChunks -> "Offer fragment index is out of bounds"
             frame.payload.isEmpty() -> "Empty offer fragment"
             else -> null
         }
         SmsPacketType.TRANSFER_CHUNK -> when {
+            !AttachmentProtocolFlags.isSupported(frame.flags) -> "Unsupported attachment flags"
             frame.totalChunks !in 1..TransferLimits.MAX_TOTAL_CHUNKS -> "Chunk count is out of bounds"
             frame.chunkIndex >= frame.totalChunks -> "Chunk index is out of bounds"
             frame.payload.size < TransferLimits.AEAD_TAG_BYTES -> "Encrypted chunk is too short"
             else -> null
         }
         else -> when {
+            !AttachmentProtocolFlags.isSupported(frame.flags) -> "Unsupported attachment flags"
             frame.totalChunks > TransferLimits.MAX_TOTAL_CHUNKS -> "Chunk count is out of bounds"
             frame.payload.size < TransferLimits.AEAD_TAG_BYTES -> "Encrypted control packet is too short"
             else -> null

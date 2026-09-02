@@ -67,10 +67,7 @@ android {
 
     buildFeatures {
         compose true
-    }
-
-    dexOptions {
-        incremental true
+        buildConfig true
     }
 
     buildscript {
@@ -166,6 +163,8 @@ dependencies {
     def paging_version = "3.3.0"
 
     testImplementation libs.junit
+    testImplementation "androidx.test:core:1.7.0"
+    testImplementation "org.robolectric:robolectric:4.16.1"
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
     // optional - Test helpers

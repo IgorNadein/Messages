@@ -11,6 +11,7 @@ import com.afkanerd.deku.attachments.protocol.AttachmentContext
 import com.afkanerd.deku.attachments.protocol.AttachmentContextCodec
 import com.afkanerd.deku.attachments.protocol.AttachmentManifest
 import com.afkanerd.deku.attachments.protocol.AttachmentManifestCodec
+import com.afkanerd.deku.attachments.protocol.AttachmentProtocolFlags
 import com.afkanerd.deku.attachments.protocol.SmsFrame
 import com.afkanerd.deku.attachments.protocol.SmsFrameCodec
 import com.afkanerd.deku.attachments.protocol.SmsPacketType
@@ -72,15 +73,22 @@ class AttachmentManager private constructor(
         filename: String,
         originalSize: Long? = null,
         metadata: MediaMetadata = MediaMetadata(),
+        protection: AttachmentProtection = AttachmentProtection.SECURE,
     ): AttachmentTransferEntity {
-        check(SecureSessionStatusResolver.resolve(
-            context,
-            address,
-            subscriptionId.toLong(),
-        ) == SecureSessionStatus.SECURE_ESTABLISHED) {
-            "A verified, established secure session is required for attachments"
+        if (protection == AttachmentProtection.SECURE) {
+            check(SecureSessionStatusResolver.resolve(
+                context,
+                address,
+                subscriptionId.toLong(),
+            ) == SecureSessionStatus.SECURE_ESTABLISHED) {
+                "A verified, established secure session is required for protected attachments"
+            }
         }
-        val identityFingerprint = currentIdentityFingerprint(address, subscriptionId)
+        val identityFingerprint = if (protection == AttachmentProtection.SECURE) {
+            currentIdentityFingerprint(address, subscriptionId)
+        } else {
+            ByteArray(0)
+        }
         check(transfers.countActiveForAddress(address) < TransferLimits.MAX_ACTIVE_TRANSFERS_PER_CONTACT) {
             "Too many active transfers for this contact"
         }
@@ -109,7 +117,7 @@ class AttachmentManager private constructor(
         return try {
             prepareStagedFile(
                 address, identityFingerprint, subscriptionId, staged, transferId, mediaType, mimeType,
-                filename, originalSize ?: encodedSize, metadata,
+                filename, originalSize ?: encodedSize, metadata, protection,
             )
         } catch (error: Exception) {
             staged.delete()
@@ -128,6 +136,7 @@ class AttachmentManager private constructor(
         filename: String,
         originalSize: Long,
         metadata: MediaMetadata,
+        protection: AttachmentProtection,
     ): AttachmentTransferEntity {
         val digest = MessageDigest.getInstance("SHA-256")
         FileInputStream(staged).use { input ->
@@ -155,29 +164,34 @@ class AttachmentManager private constructor(
         )
         val key = AttachmentCrypto.generateMasterKey()
         val contextBytes = AttachmentContextCodec.encode(AttachmentContext(manifest, key))
-        val ratchetOffer = try {
-            EncryptionController.encryptBytes(
-                context,
-                SecureChannelId.storageAddress(address, subscriptionId.toLong()),
-                contextBytes,
-            )
-                ?: error("Double Ratchet did not produce an attachment offer")
+        val offerBytes = try {
+            if (protection == AttachmentProtection.SECURE) {
+                EncryptionController.encryptBytes(
+                    context,
+                    SecureChannelId.storageAddress(address, subscriptionId.toLong()),
+                    contextBytes,
+                ) ?: error("Double Ratchet did not produce an attachment offer")
+            } else {
+                contextBytes.copyOf()
+            }
         } finally {
             contextBytes.fill(0)
         }
-        require(ratchetOffer.size <= TransferLimits.MAX_OFFER_FRAGMENTS * TransferLimits.FRAME_PAYLOAD_BYTES) {
+        require(offerBytes.size <= TransferLimits.MAX_OFFER_FRAGMENTS * TransferLimits.FRAME_PAYLOAD_BYTES) {
             "Authenticated offer is too large"
         }
         val now = System.currentTimeMillis()
         val transfer = AttachmentTransferEntity(
             transferId = transferId.toHex(), address = address,
             identityFingerprint = identityFingerprint, subscriptionId = subscriptionId,
-            outgoing = true, mediaType = mediaType.name, mimeType = manifest.mimeType,
+            outgoing = true, protection = protection.name,
+            transport = AttachmentWireTransport.DATA_SMS.name,
+            mediaType = mediaType.name, mimeType = manifest.mimeType,
             filename = manifest.filename, originalSize = originalSize, encodedSize = staged.length(),
             totalChunks = manifest.totalChunks, sha256 = manifest.sha256, codec = manifest.codec,
             width = manifest.width, height = manifest.height, sampleRate = manifest.sampleRate,
             durationMs = manifest.durationMs, status = AttachmentTransferStatus.WAITING_ACCEPT.name,
-            sourcePath = staged.absolutePath, ratchetOffer = ratchetOffer,
+            sourcePath = staged.absolutePath, ratchetOffer = offerBytes,
             createdAt = now, updatedAt = now, expiresAt = now + TRANSFER_TTL_MILLIS,
         )
         try {
@@ -201,12 +215,12 @@ class AttachmentManager private constructor(
         if (status.terminal || status == AttachmentTransferStatus.PAUSED || !transfer.outgoing) {
             return@withLock BinarySendResult.Dispatched
         }
-        if (!identityMatches(transfer) ||
+        if (transfer.isSecure() && (!identityMatches(transfer) ||
             SecureSessionStatusResolver.resolve(
                 context,
                 transfer.address,
                 transfer.subscriptionId.toLong(),
-            ) != SecureSessionStatus.SECURE_ESTABLISHED) {
+            ) != SecureSessionStatus.SECURE_ESTABLISHED)) {
             transfers.update(transfer.copy(
                 status = AttachmentTransferStatus.PAUSED.name,
                 lastError = "Secure identity or session changed",
@@ -230,7 +244,8 @@ class AttachmentManager private constructor(
             return@withLock transport.send(
                 SmsFrame(
                     packetType = SmsPacketType.TRANSFER_OFFER, transferId = transferId,
-                    chunkIndex = index, totalChunks = total, payload = payload,
+                    flags = transfer.protocolFlags(), chunkIndex = index,
+                    totalChunks = total, payload = payload,
                 ),
                 route,
             )
@@ -259,6 +274,7 @@ class AttachmentManager private constructor(
             AttachmentCrypto.encrypt(
                 key, SmsPacketType.TRANSFER_CHUNK, transferId, next, transfer.totalChunks,
                 plaintext, AttachmentCrypto.Direction.INITIATOR_TO_RESPONDER,
+                flags = transfer.protocolFlags(),
             )
         } finally {
             key.fill(0)
@@ -290,18 +306,21 @@ class AttachmentManager private constructor(
 
     private suspend fun receiveOffer(address: String, subscriptionId: Int, frame: SmsFrame) {
         val id = frame.transferId.toHex()
+        if (!AttachmentProtocolFlags.isSupported(frame.flags)) return
         if (transfers.get(id) != null) return
         offers.deleteExpired(System.currentTimeMillis() - OFFER_TTL_MILLIS)
         val current = offers.get(id)
         if (current.isEmpty() && offers.countContexts() >= TransferLimits.MAX_PENDING_TRANSFERS) return
-        if (current.any { it.address != address || it.totalFragments != frame.totalChunks ||
+        if (current.any { it.address != address || it.subscriptionId != subscriptionId ||
+                it.flags != frame.flags || it.totalFragments != frame.totalChunks ||
                 (it.fragmentIndex == frame.chunkIndex && !it.payload.contentEquals(frame.payload)) }) {
             offers.delete(id)
             return
         }
         offers.insert(AttachmentOfferFragmentEntity(
             transferId = id, fragmentIndex = frame.chunkIndex, totalFragments = frame.totalChunks,
-            address = address, subscriptionId = subscriptionId, payload = frame.payload,
+            address = address, subscriptionId = subscriptionId, flags = frame.flags,
+            payload = frame.payload,
             receivedAt = System.currentTimeMillis(),
         ))
         val fragments = offers.get(id)
@@ -311,33 +330,42 @@ class AttachmentManager private constructor(
             offers.delete(id)
             return
         }
-        if (SecureSessionStatusResolver.resolve(
-            context,
-            address,
-            subscriptionId.toLong(),
-        ) != SecureSessionStatus.SECURE_ESTABLISHED) {
+        val protection = if (AttachmentProtocolFlags.isUnprotected(frame.flags)) {
+            AttachmentProtection.UNPROTECTED
+        } else {
+            AttachmentProtection.SECURE
+        }
+        if (protection == AttachmentProtection.SECURE && SecureSessionStatusResolver.resolve(
+                context,
+                address,
+                subscriptionId.toLong(),
+            ) != SecureSessionStatus.SECURE_ESTABLISHED) {
             offers.delete(id)
             return
         }
-        val encrypted = ByteArray(size)
+        val assembledOffer = ByteArray(size)
         var offset = 0
         fragments.forEach {
-            it.payload.copyInto(encrypted, offset)
+            it.payload.copyInto(assembledOffer, offset)
             offset += it.payload.size
         }
         val attachmentContext = try {
-            val plaintext = EncryptionController.decryptBytes(
-                context,
-                SecureChannelId.storageAddress(address, subscriptionId.toLong()),
-                encrypted,
-            ) ?: return
-            try { AttachmentContextCodec.decode(plaintext) } finally { plaintext.fill(0) }
+            if (protection == AttachmentProtection.SECURE) {
+                val plaintext = EncryptionController.decryptBytes(
+                    context,
+                    SecureChannelId.storageAddress(address, subscriptionId.toLong()),
+                    assembledOffer,
+                ) ?: return
+                try { AttachmentContextCodec.decode(plaintext) } finally { plaintext.fill(0) }
+            } else {
+                AttachmentContextCodec.decode(assembledOffer)
+            }
         } catch (error: Exception) {
-            Log.w(TAG, "Rejected unauthenticated attachment offer", error)
+            Log.w(TAG, "Rejected invalid attachment offer", error)
             offers.delete(id)
             return
         } finally {
-            encrypted.fill(0)
+            assembledOffer.fill(0)
         }
         if (attachmentContext.manifest.transferId != frame.transferId ||
             transfers.countActiveForAddress(address) >= TransferLimits.MAX_ACTIVE_TRANSFERS_PER_CONTACT ||
@@ -347,17 +375,22 @@ class AttachmentManager private constructor(
             return
         }
         val manifest = attachmentContext.manifest
-        val identityFingerprint = try {
-            currentIdentityFingerprint(address, subscriptionId)
-        } catch (_: Exception) {
-            attachmentContext.masterKey.fill(0)
-            offers.delete(id)
-            return
+        val identityFingerprint = if (protection == AttachmentProtection.SECURE) {
+            try {
+                currentIdentityFingerprint(address, subscriptionId)
+            } catch (_: Exception) {
+                attachmentContext.masterKey.fill(0)
+                offers.delete(id)
+                return
+            }
+        } else {
+            ByteArray(0)
         }
         val now = System.currentTimeMillis()
         val transfer = AttachmentTransferEntity(
             transferId = id, address = address, identityFingerprint = identityFingerprint,
-            subscriptionId = subscriptionId, outgoing = false,
+            subscriptionId = subscriptionId, outgoing = false, protection = protection.name,
+            transport = AttachmentWireTransport.DATA_SMS.name,
             mediaType = manifest.mediaType.name, mimeType = manifest.mimeType, filename = manifest.filename,
             originalSize = manifest.originalSize, encodedSize = manifest.encodedSize,
             totalChunks = manifest.totalChunks, sha256 = manifest.sha256, codec = manifest.codec,
@@ -381,12 +414,13 @@ class AttachmentManager private constructor(
     private suspend fun receiveAuthenticatedFrame(address: String, subscriptionId: Int, frame: SmsFrame) {
         val transfer = transfers.get(frame.transferId.toHex()) ?: return
         if (transfer.address != address || transfer.subscriptionId != subscriptionId) return
-        if (!identityMatches(transfer) ||
+        if (frame.flags != transfer.protocolFlags()) return
+        if (transfer.isSecure() && (!identityMatches(transfer) ||
             SecureSessionStatusResolver.resolve(
                 context,
                 address,
                 subscriptionId.toLong(),
-            ) != SecureSessionStatus.SECURE_ESTABLISHED) return
+            ) != SecureSessionStatus.SECURE_ESTABLISHED)) return
         val status = runCatching { AttachmentTransferStatus.valueOf(transfer.status) }.getOrNull() ?: return
         if (status.terminal && !(status == AttachmentTransferStatus.COMPLETED &&
                 !transfer.outgoing && (frame.packetType == SmsPacketType.NACK ||
@@ -605,6 +639,7 @@ class AttachmentManager private constructor(
         val frame = try {
             AttachmentCrypto.encrypt(
                 key, type, id, index, transfer.totalChunks, plaintext, direction,
+                flags = transfer.protocolFlags(),
             )
         } finally { key.fill(0) }
         return transport.send(frame, BinaryRoute(transfer.address, transfer.subscriptionId))
@@ -687,6 +722,12 @@ class AttachmentManager private constructor(
     } catch (_: Exception) {
         false
     }
+
+    private fun AttachmentTransferEntity.isSecure(): Boolean =
+        protection == AttachmentProtection.SECURE.name
+
+    private fun AttachmentTransferEntity.protocolFlags(): Int =
+        if (isSecure()) AttachmentProtocolFlags.NONE else AttachmentProtocolFlags.UNPROTECTED
 
     companion object {
         private const val TAG = "AttachmentManager"

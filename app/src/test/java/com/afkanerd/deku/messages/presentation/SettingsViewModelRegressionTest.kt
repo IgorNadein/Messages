@@ -4,6 +4,7 @@ import com.afkanerd.deku.messages.domain.AppSettingsService
 import com.afkanerd.deku.messages.domain.AppSettingsSnapshot
 import com.afkanerd.deku.messages.domain.BooleanSetting
 import com.afkanerd.deku.messages.domain.LanguageOption
+import com.afkanerd.deku.messages.domain.MediaTransport
 import com.afkanerd.deku.messages.domain.SecureMessageTransport
 import com.afkanerd.deku.messages.domain.ThemeMode
 import org.junit.Assert.assertEquals
@@ -22,6 +23,19 @@ class SettingsViewModelRegressionTest {
 
         assertEquals(SecureMessageTransport.DATA_SMS, viewModel.state.value.secureMessageTransport)
         assertEquals("transport:DATA_SMS", service.calls.single())
+    }
+
+    @Test
+    fun `media transport defaults to mms and can be explicitly changed`() {
+        val service = FakeSettingsService()
+        val viewModel = SettingsViewModel(service)
+
+        assertEquals(MediaTransport.MMS, viewModel.state.value.mediaTransport)
+
+        viewModel.setMediaTransport(MediaTransport.DATA_SMS)
+
+        assertEquals(MediaTransport.DATA_SMS, viewModel.state.value.mediaTransport)
+        assertEquals("media:DATA_SMS", service.calls.single())
     }
 
     @Test
@@ -93,6 +107,12 @@ private class FakeSettingsService : AppSettingsService {
     ): AppSettingsSnapshot {
         calls += "transport:$transport"
         value = value.copy(secureMessageTransport = transport)
+        return value
+    }
+
+    override fun setMediaTransport(transport: MediaTransport): AppSettingsSnapshot {
+        calls += "media:$transport"
+        value = value.copy(mediaTransport = transport)
         return value
     }
 }

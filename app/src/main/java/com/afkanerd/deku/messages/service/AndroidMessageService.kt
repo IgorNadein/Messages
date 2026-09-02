@@ -26,6 +26,8 @@ import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersHandler
 import com.afkanerd.deku.RemoteListeners.RemoteListenerConnectionService
 import com.afkanerd.deku.attachments.AttachmentManager
+import com.afkanerd.deku.attachments.transport.MediaTransportPreference
+import com.afkanerd.deku.attachments.transport.MediaTransportRouter
 import com.afkanerd.deku.messages.domain.AttachmentAction
 import com.afkanerd.deku.messages.domain.AttachmentTransfer
 import com.afkanerd.deku.messages.domain.AttachmentKind
@@ -805,21 +807,33 @@ class AndroidMessageService(context: Context) : MessageService {
                 ) ==
                     SecureSessionStatus.SECURE_ESTABLISHED
             } == true
-            if(!secureOneToOne) {
-                val conversation = appContext.sendMms(
-                    text = "",
-                    addresses = recipients,
-                    threadId = appContext.getThreadId(recipients),
-                    subscriptionId = subscriptionId,
-                    contentUri = attachment.sourceUri.toUri(),
-                    filename = attachment.fileName,
-                    mimeType = attachment.mimeType,
-                )
-                return@withContext if(conversation != null) {
-                    AttachmentPrepareResult.Queued
-                } else {
-                    AttachmentPrepareResult.Failed("MMS attachment was not queued")
+            val route = MediaTransportRouter.resolve(
+                selected = MediaTransportPreference.selected(appContext),
+                recipientCount = recipients.size,
+                secureOneToOne = secureOneToOne,
+            )
+            when(route) {
+                MediaTransportRouter.Route.Mms -> {
+                    val conversation = appContext.sendMms(
+                        text = "",
+                        addresses = recipients,
+                        threadId = appContext.getThreadId(recipients),
+                        subscriptionId = subscriptionId,
+                        contentUri = attachment.sourceUri.toUri(),
+                        filename = attachment.fileName,
+                        mimeType = attachment.mimeType,
+                    )
+                    return@withContext if(conversation != null) {
+                        AttachmentPrepareResult.Queued
+                    } else {
+                        AttachmentPrepareResult.Failed("MMS attachment was not queued")
+                    }
                 }
+                MediaTransportRouter.Route.CloudStorage -> return@withContext
+                    AttachmentPrepareResult.Failed("Internet storage is not configured")
+                MediaTransportRouter.Route.UnsupportedGroupDataSms -> return@withContext
+                    AttachmentPrepareResult.Failed("SMS packet media currently supports one recipient")
+                is MediaTransportRouter.Route.DataSms -> Unit
             }
             AttachmentManager.get(appContext).prepareFile(
                 address = recipients.single(),
@@ -840,6 +854,7 @@ class AndroidMessageService(context: Context) : MessageService {
                     sampleRate = attachment.sampleRate,
                     durationMs = attachment.durationMillis,
                 ),
+                protection = (route as MediaTransportRouter.Route.DataSms).protection,
             )
             AttachmentPrepareResult.Queued
         } catch(error: Throwable) {

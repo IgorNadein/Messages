@@ -140,12 +140,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="72"
+            line="76"
             column="20"
-            startOffset="1640"
-            endLine="72"
+            startOffset="1700"
+            endLine="76"
             endColumn="51"
-            endOffset="1671"/>
+            endOffset="1731"/>
     </incident>
 
     <incident
@@ -160,12 +160,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="73"
+            line="77"
             column="20"
-            startOffset="1691"
-            endLine="73"
+            startOffset="1751"
+            endLine="77"
             endColumn="56"
-            endOffset="1727"/>
+            endOffset="1787"/>
     </incident>
 
     <incident
@@ -180,12 +180,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="74"
+            line="78"
             column="20"
-            startOffset="1747"
-            endLine="74"
+            startOffset="1807"
+            endLine="78"
             endColumn="65"
-            endOffset="1792"/>
+            endOffset="1852"/>
     </incident>
 
     <incident
@@ -200,12 +200,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="77"
+            line="81"
             column="20"
-            startOffset="1923"
-            endLine="77"
+            startOffset="1983"
+            endLine="81"
             endColumn="57"
-            endOffset="1960"/>
+            endOffset="2020"/>
     </incident>
 
     <incident
@@ -220,12 +220,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="116"
+            line="120"
             column="20"
-            startOffset="3544"
-            endLine="116"
+            startOffset="3604"
+            endLine="120"
             endColumn="68"
-            endOffset="3592"/>
+            endOffset="3652"/>
     </incident>
 
     <incident
@@ -240,12 +240,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="117"
+            line="121"
             column="20"
-            startOffset="3612"
-            endLine="117"
+            startOffset="3672"
+            endLine="121"
             endColumn="73"
-            endOffset="3665"/>
+            endOffset="3725"/>
     </incident>
 
     <incident
@@ -260,12 +260,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="118"
+            line="122"
             column="20"
-            startOffset="3685"
-            endLine="118"
+            startOffset="3745"
+            endLine="122"
             endColumn="59"
-            endOffset="3724"/>
+            endOffset="3784"/>
     </incident>
 
     <incident
@@ -280,12 +280,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="119"
+            line="123"
             column="20"
-            startOffset="3744"
-            endLine="119"
+            startOffset="3804"
+            endLine="123"
             endColumn="68"
-            endOffset="3792"/>
+            endOffset="3852"/>
     </incident>
 
     <incident
@@ -300,12 +300,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="122"
+            line="126"
             column="9"
-            startOffset="3853"
-            endLine="122"
+            startOffset="3913"
+            endLine="126"
             endColumn="39"
-            endOffset="3883"/>
+            endOffset="3943"/>
     </incident>
 
     <incident
@@ -320,12 +320,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="125"
+            line="129"
             column="20"
-            startOffset="4023"
-            endLine="125"
+            startOffset="4083"
+            endLine="129"
             endColumn="68"
-            endOffset="4071"/>
+            endOffset="4131"/>
     </incident>
 
     <incident
@@ -340,12 +340,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="128"
+            line="132"
             column="20"
-            startOffset="4146"
-            endLine="128"
+            startOffset="4206"
+            endLine="132"
             endColumn="73"
-            endOffset="4199"/>
+            endOffset="4259"/>
     </incident>
 
     <incident
@@ -380,12 +380,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="84"
+            line="88"
             column="20"
-            startOffset="2346"
-            endLine="84"
+            startOffset="2406"
+            endLine="88"
             endColumn="77"
-            endOffset="2403"/>
+            endOffset="2463"/>
     </incident>
 
     <incident
@@ -400,12 +400,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="87"
+            line="91"
             column="20"
-            startOffset="2483"
-            endLine="87"
+            startOffset="2543"
+            endLine="91"
             endColumn="73"
-            endOffset="2536"/>
+            endOffset="2596"/>
     </incident>
 
     <incident
@@ -420,12 +420,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="114"
+            line="118"
             column="20"
-            startOffset="3488"
-            endLine="114"
+            startOffset="3548"
+            endLine="118"
             endColumn="54"
-            endOffset="3522"/>
+            endOffset="3582"/>
     </incident>
 
     <incident
@@ -440,12 +440,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="121"
+            line="125"
             column="9"
-            startOffset="3802"
-            endLine="121"
+            startOffset="3862"
+            endLine="125"
             endColumn="51"
-            endOffset="3844"/>
+            endOffset="3904"/>
     </incident>
 
     <incident
@@ -2765,12 +2765,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="77"
+            line="81"
             column="20"
-            startOffset="1923"
-            endLine="77"
+            startOffset="1983"
+            endLine="81"
             endColumn="57"
-            endOffset="1960"/>
+            endOffset="2020"/>
     </incident>
 
     <incident
@@ -2784,12 +2784,12 @@
             priority="0"/>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="122"
+            line="126"
             column="9"
-            startOffset="3853"
-            endLine="122"
+            startOffset="3913"
+            endLine="126"
             endColumn="39"
-            endOffset="3883"/>
+            endOffset="3943"/>
     </incident>
 
     <incident
@@ -2804,17 +2804,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1640"
-                endOffset="1671"/>
+                startOffset="1700"
+                endOffset="1731"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="72"
+            line="76"
             column="20"
-            startOffset="1640"
-            endLine="72"
+            startOffset="1700"
+            endLine="76"
             endColumn="51"
-            endOffset="1671"/>
+            endOffset="1731"/>
     </incident>
 
     <incident
@@ -2829,17 +2829,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1691"
-                endOffset="1727"/>
+                startOffset="1751"
+                endOffset="1787"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="73"
+            line="77"
             column="20"
-            startOffset="1691"
-            endLine="73"
+            startOffset="1751"
+            endLine="77"
             endColumn="56"
-            endOffset="1727"/>
+            endOffset="1787"/>
     </incident>
 
     <incident
@@ -2854,17 +2854,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1747"
-                endOffset="1792"/>
+                startOffset="1807"
+                endOffset="1852"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="74"
+            line="78"
             column="20"
-            startOffset="1747"
-            endLine="74"
+            startOffset="1807"
+            endLine="78"
             endColumn="65"
-            endOffset="1792"/>
+            endOffset="1852"/>
     </incident>
 
     <incident
@@ -2903,18 +2903,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1812"
-                    endOffset="1849"/>
+                    startOffset="1872"
+                    endOffset="1909"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="75"
+            line="79"
             column="20"
-            startOffset="1812"
-            endLine="75"
+            startOffset="1872"
+            endLine="79"
             endColumn="57"
-            endOffset="1849"/>
+            endOffset="1909"/>
     </incident>
 
     <incident
@@ -2958,8 +2958,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="1869"
-                        endOffset="1903"/>
+                        startOffset="1929"
+                        endOffset="1963"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -2968,18 +2968,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1869"
-                    endOffset="1903"/>
+                    startOffset="1929"
+                    endOffset="1963"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="76"
+            line="80"
             column="20"
-            startOffset="1869"
-            endLine="76"
+            startOffset="1929"
+            endLine="80"
             endColumn="54"
-            endOffset="1903"/>
+            endOffset="1963"/>
     </incident>
 
     <incident
@@ -3018,18 +3018,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="1923"
-                    endOffset="1960"/>
+                    startOffset="1983"
+                    endOffset="2020"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="77"
+            line="81"
             column="20"
-            startOffset="1923"
-            endLine="77"
+            startOffset="1983"
+            endLine="81"
             endColumn="57"
-            endOffset="1960"/>
+            endOffset="2020"/>
     </incident>
 
     <incident
@@ -3044,17 +3044,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="1984"
-                endOffset="2004"/>
+                startOffset="2044"
+                endOffset="2064"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="78"
+            line="82"
             column="24"
-            startOffset="1984"
-            endLine="78"
+            startOffset="2044"
+            endLine="82"
             endColumn="44"
-            endOffset="2004"/>
+            endOffset="2064"/>
     </incident>
 
     <incident
@@ -3062,13 +3062,13 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for robolectric"
+            description="Replace with new library catalog declaration for robolectric-robolectric"
             robot="true">
             <fix-replace
-                description="Replace with robolectricVersion = &quot;4.16.1&quot;..."
+                description="Replace with robolectric = &quot;4.16.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="robolectricVersion = &quot;4.16.1&quot;&#xA;"
+                replacement="robolectric = &quot;4.16.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -3076,10 +3076,10 @@
                     endOffset="1083"/>
             </fix-replace>
             <fix-replace
-                description="Replace with robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }..."
+                description="Replace with robolectric-robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectric&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }&#xA;"
+                replacement="robolectric-robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectric&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
@@ -3087,24 +3087,24 @@
                     endOffset="8674"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.robolectric"
+                description="Replace with libs.robolectric.robolectric"
                 robot="true"
-                replacement="libs.robolectric"
+                replacement="libs.robolectric.robolectric"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2028"
-                    endOffset="2064"/>
+                    startOffset="2088"
+                    endOffset="2124"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="79"
+            line="83"
             column="24"
-            startOffset="2028"
-            endLine="79"
+            startOffset="2088"
+            endLine="83"
             endColumn="60"
-            endOffset="2064"/>
+            endOffset="2124"/>
     </incident>
 
     <incident
@@ -3119,17 +3119,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2095"
-                endOffset="2126"/>
+                startOffset="2155"
+                endOffset="2186"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="80"
+            line="84"
             column="31"
-            startOffset="2095"
-            endLine="80"
+            startOffset="2155"
+            endLine="84"
             endColumn="62"
-            endOffset="2126"/>
+            endOffset="2186"/>
     </incident>
 
     <incident
@@ -3144,17 +3144,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2157"
-                endOffset="2201"/>
+                startOffset="2217"
+                endOffset="2261"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="81"
+            line="85"
             column="31"
-            startOffset="2157"
-            endLine="81"
+            startOffset="2217"
+            endLine="85"
             endColumn="75"
-            endOffset="2201"/>
+            endOffset="2261"/>
     </incident>
 
     <incident
@@ -3198,8 +3198,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2232"
-                        endOffset="2266"/>
+                        startOffset="2292"
+                        endOffset="2326"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3208,18 +3208,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2232"
-                    endOffset="2266"/>
+                    startOffset="2292"
+                    endOffset="2326"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="82"
+            line="86"
             column="31"
-            startOffset="2232"
-            endLine="82"
+            startOffset="2292"
+            endLine="86"
             endColumn="65"
-            endOffset="2266"/>
+            endOffset="2326"/>
     </incident>
 
     <incident
@@ -3263,8 +3263,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2291"
-                        endOffset="2326"/>
+                        startOffset="2351"
+                        endOffset="2386"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3273,18 +3273,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2291"
-                    endOffset="2326"/>
+                    startOffset="2351"
+                    endOffset="2386"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="83"
+            line="87"
             column="25"
-            startOffset="2291"
-            endLine="83"
+            startOffset="2351"
+            endLine="87"
             endColumn="60"
-            endOffset="2326"/>
+            endOffset="2386"/>
     </incident>
 
     <incident
@@ -3293,43 +3293,43 @@
         message="Use version catalog instead (org.jetbrains.kotlinx:kotlinx-serialization-json is already available as `kotlinx-serialization-json`, but using version 1.9.0 instead)">
         <fix-alternatives>
             <fix-composite
-                description="Replace with new library catalog declaration for kotlinx-serialization-json-v1100"
+                description="Replace with new library catalog declaration for jetbrains-kotlinx-serialization-json-v1100"
                 robot="true"
                 independent="true">
                 <fix-replace
-                    description="Replace with kotlinxSerializationJsonVersion = &quot;1.10.0&quot;..."
+                    description="Replace with jetbrainsKotlinxSerializationJson = &quot;1.10.0&quot;..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="kotlinxSerializationJsonVersion = &quot;1.10.0&quot;&#xA;"
+                    replacement="jetbrainsKotlinxSerializationJson = &quot;1.10.0&quot;&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="671"
-                        endOffset="671"/>
+                        startOffset="546"
+                        endOffset="546"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;kotlinxSerializationJsonVersion&quot; }..."
+                    description="Replace with jetbrains-kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;jetbrainsKotlinxSerializationJson&quot; }..."
                     robot="true"
                     independent="true"
                     oldString="_lint_insert_begin_"
-                    replacement="kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;kotlinxSerializationJsonVersion&quot; }&#xA;"
+                    replacement="jetbrains-kotlinx-serialization-json-v1100 = { module = &quot;org.jetbrains.kotlinx:kotlinx-serialization-json&quot;, version.ref = &quot;jetbrainsKotlinxSerializationJson&quot; }&#xA;"
                     priority="0">
                     <range
                         file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="8147"
-                        endOffset="8147"/>
+                        startOffset="7828"
+                        endOffset="7828"/>
                 </fix-replace>
                 <fix-replace
-                    description="Replace with libs.kotlinx.serialization.json.v1100"
+                    description="Replace with libs.jetbrains.kotlinx.serialization.json.v1100"
                     robot="true"
                     independent="true"
-                    replacement="libs.kotlinx.serialization.json.v1100"
+                    replacement="libs.jetbrains.kotlinx.serialization.json.v1100"
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2346"
-                        endOffset="2403"/>
+                        startOffset="2406"
+                        endOffset="2463"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3338,18 +3338,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2346"
-                    endOffset="2403"/>
+                    startOffset="2406"
+                    endOffset="2463"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="84"
+            line="88"
             column="20"
-            startOffset="2346"
-            endLine="84"
+            startOffset="2406"
+            endLine="88"
             endColumn="77"
-            endOffset="2403"/>
+            endOffset="2463"/>
     </incident>
 
     <incident
@@ -3364,17 +3364,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="2424"
-                endOffset="2463"/>
+                startOffset="2484"
+                endOffset="2523"/>
         </fix-replace>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="86"
+            line="90"
             column="20"
-            startOffset="2424"
-            endLine="86"
+            startOffset="2484"
+            endLine="90"
             endColumn="59"
-            endOffset="2463"/>
+            endOffset="2523"/>
     </incident>
 
     <incident
@@ -3418,8 +3418,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="2483"
-                        endOffset="2536"/>
+                        startOffset="2543"
+                        endOffset="2596"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3428,18 +3428,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="2483"
-                    endOffset="2536"/>
+                    startOffset="2543"
+                    endOffset="2596"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="87"
+            line="91"
             column="20"
-            startOffset="2483"
-            endLine="87"
+            startOffset="2543"
+            endLine="91"
             endColumn="73"
-            endOffset="2536"/>
+            endOffset="2596"/>
     </incident>
 
     <incident
@@ -3454,182 +3454,17 @@
             priority="0">
             <range
                 file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="3488"
-                endOffset="3522"/>
+                startOffset="3548"
+                endOffset="3582"/>
         </fix-replace>
-        <location
-            file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="114"
-            column="20"
-            startOffset="3488"
-            endLine="114"
-            endColumn="54"
-            endOffset="3522"/>
-    </incident>
-
-    <incident
-        id="UseTomlInstead"
-        severity="warning"
-        message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
-        <fix-alternatives>
-            <fix-composite
-                description="Replace with new library catalog declaration for androidx-datastore-preferences-v120"
-                robot="true"
-                independent="true">
-                <fix-replace
-                    description="Replace with datastorePreferencesVersion = &quot;1.2.0&quot;..."
-                    robot="true"
-                    independent="true"
-                    oldString="_lint_insert_begin_"
-                    replacement="datastorePreferencesVersion = &quot;1.2.0&quot;&#xA;"
-                    priority="0">
-                    <range
-                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="436"
-                        endOffset="436"/>
-                </fix-replace>
-                <fix-replace
-                    description="Replace with androidx-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;datastorePreferencesVersion&quot; }..."
-                    robot="true"
-                    independent="true"
-                    oldString="_lint_insert_begin_"
-                    replacement="androidx-datastore-preferences-v120 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;datastorePreferencesVersion&quot; }&#xA;"
-                    priority="0">
-                    <range
-                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                        startOffset="2802"
-                        endOffset="2802"/>
-                </fix-replace>
-                <fix-replace
-                    description="Replace with libs.androidx.datastore.preferences.v120"
-                    robot="true"
-                    independent="true"
-                    replacement="libs.androidx.datastore.preferences.v120"
-                    priority="0">
-                    <range
-                        file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="3544"
-                        endOffset="3592"/>
-                </fix-replace>
-            </fix-composite>
-            <fix-replace
-                description="Replace with existing version catalog reference `androidx-datastore-preferences` (version 1.1.7)"
-                replacement="libs.androidx.datastore.preferences"
-                priority="0">
-                <range
-                    file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3544"
-                    endOffset="3592"/>
-            </fix-replace>
-        </fix-alternatives>
-        <location
-            file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="116"
-            column="20"
-            startOffset="3544"
-            endLine="116"
-            endColumn="68"
-            endOffset="3592"/>
-    </incident>
-
-    <incident
-        id="UseTomlInstead"
-        severity="warning"
-        message="Use version catalog instead">
-        <fix-composite
-            description="Replace with new library catalog declaration for androidx-datastore-preferences-core"
-            robot="true">
-            <fix-replace
-                description="Replace with datastorePreferencesCoreVersion = &quot;1.2.0&quot;..."
-                robot="true"
-                oldString="_lint_insert_begin_"
-                replacement="datastorePreferencesCoreVersion = &quot;1.2.0&quot;&#xA;"
-                priority="0">
-                <range
-                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="398"
-                    endOffset="398"/>
-            </fix-replace>
-            <fix-replace
-                description="Replace with androidx-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCoreVersion&quot; }..."
-                robot="true"
-                oldString="_lint_insert_begin_"
-                replacement="androidx-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCoreVersion&quot; }&#xA;"
-                priority="0">
-                <range
-                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="2382"
-                    endOffset="2382"/>
-            </fix-replace>
-            <fix-replace
-                description="Replace with libs.androidx.datastore.preferences.core"
-                robot="true"
-                replacement="libs.androidx.datastore.preferences.core"
-                priority="0">
-                <range
-                    file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3612"
-                    endOffset="3665"/>
-            </fix-replace>
-        </fix-composite>
-        <location
-            file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="117"
-            column="20"
-            startOffset="3612"
-            endLine="117"
-            endColumn="73"
-            endOffset="3665"/>
-    </incident>
-
-    <incident
-        id="UseTomlInstead"
-        severity="warning"
-        message="Use version catalog instead">
-        <fix-composite
-            description="Replace with new library catalog declaration for androidx-work-runtime-ktx"
-            robot="true">
-            <fix-replace
-                description="Replace with workRuntimeKtxVersion = &quot;2.11.1&quot;..."
-                robot="true"
-                oldString="_lint_insert_begin_"
-                replacement="workRuntimeKtxVersion = &quot;2.11.1&quot;&#xA;"
-                priority="0">
-                <range
-                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="1390"
-                    endOffset="1390"/>
-            </fix-replace>
-            <fix-replace
-                description="Replace with androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }..."
-                robot="true"
-                oldString="_lint_insert_begin_"
-                replacement="androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }&#xA;"
-                priority="0">
-                <range
-                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="6539"
-                    endOffset="6539"/>
-            </fix-replace>
-            <fix-replace
-                description="Replace with libs.androidx.work.runtime.ktx"
-                robot="true"
-                replacement="libs.androidx.work.runtime.ktx"
-                priority="0">
-                <range
-                    file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3685"
-                    endOffset="3724"/>
-            </fix-replace>
-        </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
             line="118"
             column="20"
-            startOffset="3685"
+            startOffset="3548"
             endLine="118"
-            endColumn="59"
-            endOffset="3724"/>
+            endColumn="54"
+            endOffset="3582"/>
     </incident>
 
     <incident
@@ -3673,8 +3508,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="3744"
-                        endOffset="3792"/>
+                        startOffset="3604"
+                        endOffset="3652"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3683,18 +3518,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3744"
-                    endOffset="3792"/>
+                    startOffset="3604"
+                    endOffset="3652"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="119"
+            line="120"
             column="20"
-            startOffset="3744"
-            endLine="119"
+            startOffset="3604"
+            endLine="120"
             endColumn="68"
-            endOffset="3792"/>
+            endOffset="3652"/>
     </incident>
 
     <incident
@@ -3702,49 +3537,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for sqlcipher-android"
+            description="Replace with new library catalog declaration for datastore-preferences-core"
             robot="true">
             <fix-replace
-                description="Replace with sqlcipherAndroidVersion = &quot;4.14.1&quot;..."
+                description="Replace with datastorePreferencesCore = &quot;1.2.0&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="sqlcipherAndroidVersion = &quot;4.14.1&quot;&#xA;"
+                replacement="datastorePreferencesCore = &quot;1.2.0&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="1173"
-                    endOffset="1173"/>
+                    startOffset="398"
+                    endOffset="398"/>
             </fix-replace>
             <fix-replace
-                description="Replace with sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }..."
+                description="Replace with datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }&#xA;"
+                replacement="datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="8764"
-                    endOffset="8764"/>
+                    startOffset="7377"
+                    endOffset="7377"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.sqlcipher.android"
+                description="Replace with libs.datastore.preferences.core"
                 robot="true"
-                replacement="libs.sqlcipher.android"
+                replacement="libs.datastore.preferences.core"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3802"
-                    endOffset="3844"/>
+                    startOffset="3672"
+                    endOffset="3725"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
             line="121"
-            column="9"
-            startOffset="3802"
+            column="20"
+            startOffset="3672"
             endLine="121"
-            endColumn="51"
-            endOffset="3844"/>
+            endColumn="73"
+            endOffset="3725"/>
     </incident>
 
     <incident
@@ -3752,74 +3587,49 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for androidx-sqlite"
+            description="Replace with new library catalog declaration for androidx-work-runtime-ktx"
             robot="true">
             <fix-replace
-                description="Replace with sqliteVersion = &quot;2.6.2&quot;..."
+                description="Replace with workRuntimeKtxVersion = &quot;2.11.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="sqliteVersion = &quot;2.6.2&quot;&#xA;"
+                replacement="workRuntimeKtxVersion = &quot;2.11.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="1173"
-                    endOffset="1173"/>
+                    startOffset="1390"
+                    endOffset="1390"/>
             </fix-replace>
             <fix-replace
-                description="Replace with androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }..."
+                description="Replace with androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }&#xA;"
+                replacement="androidx-work-runtime-ktx = { module = &quot;androidx.work:work-runtime-ktx&quot;, version.ref = &quot;workRuntimeKtxVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="5623"
-                    endOffset="5623"/>
+                    startOffset="6539"
+                    endOffset="6539"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.androidx.sqlite"
+                description="Replace with libs.androidx.work.runtime.ktx"
                 robot="true"
-                replacement="libs.androidx.sqlite"
+                replacement="libs.androidx.work.runtime.ktx"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="3853"
-                    endOffset="3883"/>
+                    startOffset="3745"
+                    endOffset="3784"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
             line="122"
-            column="9"
-            startOffset="3853"
-            endLine="122"
-            endColumn="39"
-            endOffset="3883"/>
-    </incident>
-
-    <incident
-        id="UseTomlInstead"
-        severity="warning"
-        message="Use the existing version catalog reference (`libs.androidx.security.crypto`) instead">
-        <fix-replace
-            description="Replace with existing version catalog reference `androidx-security-crypto`"
-            robot="true"
-            independent="true"
-            replacement="libs.androidx.security.crypto"
-            priority="0">
-            <range
-                file="${:lib_smsmms_android*projectDir}/build.gradle"
-                startOffset="3903"
-                endOffset="3944"/>
-        </fix-replace>
-        <location
-            file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="123"
             column="20"
-            startOffset="3903"
-            endLine="123"
-            endColumn="61"
-            endOffset="3944"/>
+            startOffset="3745"
+            endLine="122"
+            endColumn="59"
+            endOffset="3784"/>
     </incident>
 
     <incident
@@ -3863,8 +3673,8 @@
                     priority="0">
                     <range
                         file="${:lib_smsmms_android*projectDir}/build.gradle"
-                        startOffset="4023"
-                        endOffset="4071"/>
+                        startOffset="3804"
+                        endOffset="3852"/>
                 </fix-replace>
             </fix-composite>
             <fix-replace
@@ -3873,18 +3683,18 @@
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="4023"
-                    endOffset="4071"/>
+                    startOffset="3804"
+                    endOffset="3852"/>
             </fix-replace>
         </fix-alternatives>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="125"
+            line="123"
             column="20"
-            startOffset="4023"
-            endLine="125"
+            startOffset="3804"
+            endLine="123"
             endColumn="68"
-            endOffset="4071"/>
+            endOffset="3852"/>
     </incident>
 
     <incident
@@ -3892,49 +3702,239 @@
         severity="warning"
         message="Use version catalog instead">
         <fix-composite
-            description="Replace with new library catalog declaration for datastore-preferences-core"
+            description="Replace with new library catalog declaration for sqlcipher-android"
             robot="true">
             <fix-replace
-                description="Replace with datastorePreferencesCore = &quot;1.2.0&quot;..."
+                description="Replace with sqlcipherAndroidVersion = &quot;4.14.1&quot;..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="datastorePreferencesCore = &quot;1.2.0&quot;&#xA;"
+                replacement="sqlcipherAndroidVersion = &quot;4.14.1&quot;&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="398"
-                    endOffset="398"/>
+                    startOffset="1173"
+                    endOffset="1173"/>
             </fix-replace>
             <fix-replace
-                description="Replace with datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }..."
+                description="Replace with sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }..."
                 robot="true"
                 oldString="_lint_insert_begin_"
-                replacement="datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;datastorePreferencesCore&quot; }&#xA;"
+                replacement="sqlcipher-android = { module = &quot;net.zetetic:sqlcipher-android&quot;, version.ref = &quot;sqlcipherAndroidVersion&quot; }&#xA;"
                 priority="0">
                 <range
                     file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
-                    startOffset="7377"
-                    endOffset="7377"/>
+                    startOffset="8764"
+                    endOffset="8764"/>
             </fix-replace>
             <fix-replace
-                description="Replace with libs.datastore.preferences.core"
+                description="Replace with libs.sqlcipher.android"
                 robot="true"
-                replacement="libs.datastore.preferences.core"
+                replacement="libs.sqlcipher.android"
                 priority="0">
                 <range
                     file="${:lib_smsmms_android*projectDir}/build.gradle"
-                    startOffset="4146"
-                    endOffset="4199"/>
+                    startOffset="3862"
+                    endOffset="3904"/>
             </fix-replace>
         </fix-composite>
         <location
             file="${:lib_smsmms_android*projectDir}/build.gradle"
-            line="128"
+            line="125"
+            column="9"
+            startOffset="3862"
+            endLine="125"
+            endColumn="51"
+            endOffset="3904"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-sqlite"
+            robot="true">
+            <fix-replace
+                description="Replace with sqliteVersion = &quot;2.6.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="sqliteVersion = &quot;2.6.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="1173"
+                    endOffset="1173"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-sqlite = { module = &quot;androidx.sqlite:sqlite&quot;, version.ref = &quot;sqliteVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="5623"
+                    endOffset="5623"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.sqlite"
+                robot="true"
+                replacement="libs.androidx.sqlite"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="3913"
+                    endOffset="3943"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="126"
+            column="9"
+            startOffset="3913"
+            endLine="126"
+            endColumn="39"
+            endOffset="3943"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use the existing version catalog reference (`libs.androidx.security.crypto`) instead">
+        <fix-replace
+            description="Replace with existing version catalog reference `androidx-security-crypto`"
+            robot="true"
+            independent="true"
+            replacement="libs.androidx.security.crypto"
+            priority="0">
+            <range
+                file="${:lib_smsmms_android*projectDir}/build.gradle"
+                startOffset="3963"
+                endOffset="4004"/>
+        </fix-replace>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="127"
             column="20"
-            startOffset="4146"
-            endLine="128"
+            startOffset="3963"
+            endLine="127"
+            endColumn="61"
+            endOffset="4004"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (androidx.datastore:datastore-preferences is already available as `androidx-datastore-preferences`, but using version 1.1.7 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-v120-x2"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with androidxDatastoreDatastorePreferences = &quot;1.2.0&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidxDatastoreDatastorePreferences = &quot;1.2.0&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="123"
+                        endOffset="123"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with androidx-datastore-datastore-preferences-v120-x2 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="androidx-datastore-datastore-preferences-v120-x2 = { module = &quot;androidx.datastore:datastore-preferences&quot;, version.ref = &quot;androidxDatastoreDatastorePreferences&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                        startOffset="2382"
+                        endOffset="2382"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.androidx.datastore.datastore.preferences.v120.x2"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.androidx.datastore.datastore.preferences.v120.x2"
+                    priority="0">
+                    <range
+                        file="${:lib_smsmms_android*projectDir}/build.gradle"
+                        startOffset="4083"
+                        endOffset="4131"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `androidx-datastore-preferences` (version 1.1.7)"
+                replacement="libs.androidx.datastore.preferences"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="4083"
+                    endOffset="4131"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="129"
+            column="20"
+            startOffset="4083"
+            endLine="129"
+            endColumn="68"
+            endOffset="4131"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-datastore-datastore-preferences-core"
+            robot="true">
+            <fix-replace
+                description="Replace with androidxDatastorePreferencesCore = &quot;1.2.0&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidxDatastorePreferencesCore = &quot;1.2.0&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="123"
+                    endOffset="123"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-datastore-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastorePreferencesCore&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-datastore-datastore-preferences-core = { module = &quot;androidx.datastore:datastore-preferences-core&quot;, version.ref = &quot;androidxDatastorePreferencesCore&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/Dev/Сообщения/gradle/libs.versions.toml"
+                    startOffset="2382"
+                    endOffset="2382"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.datastore.datastore.preferences.core"
+                robot="true"
+                replacement="libs.androidx.datastore.datastore.preferences.core"
+                priority="0">
+                <range
+                    file="${:lib_smsmms_android*projectDir}/build.gradle"
+                    startOffset="4206"
+                    endOffset="4259"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:lib_smsmms_android*projectDir}/build.gradle"
+            line="132"
+            column="20"
+            startOffset="4206"
+            endLine="132"
             endColumn="73"
-            endOffset="4199"/>
+            endOffset="4259"/>
     </incident>
 
 </incidents>

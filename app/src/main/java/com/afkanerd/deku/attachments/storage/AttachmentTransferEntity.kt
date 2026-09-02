@@ -3,6 +3,7 @@ package com.afkanerd.deku.attachments.storage
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
 
 @Entity(
     tableName = "AttachmentTransfer",
@@ -14,6 +15,10 @@ data class AttachmentTransferEntity(
     val identityFingerprint: ByteArray,
     val subscriptionId: Int,
     val outgoing: Boolean,
+    @ColumnInfo(defaultValue = "'SECURE'")
+    val protection: String = "SECURE",
+    @ColumnInfo(defaultValue = "'DATA_SMS'")
+    val transport: String = "DATA_SMS",
     val mediaType: String,
     val mimeType: String,
     val filename: String,

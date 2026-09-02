@@ -148,6 +148,8 @@ data class AttachmentTransfer(
     val completedPath: String?,
     val durationMillis: Long,
     val hasError: Boolean,
+    val isSecure: Boolean = true,
+    val transport: MediaTransport = MediaTransport.DATA_SMS,
 )
 
 enum class AttachmentAction {

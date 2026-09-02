@@ -51,6 +51,10 @@ android {
         buildConfig = true
     }
 
+    publishing {
+        singleVariant("release") {}
+    }
+
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas")
     }

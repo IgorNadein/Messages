@@ -2,6 +2,7 @@ package com.afkanerd.deku.attachments.storage
 
 import androidx.room.Entity
 import androidx.room.Index
+import androidx.room.ColumnInfo
 
 @Entity(
     tableName = "AttachmentOfferFragment",
@@ -14,6 +15,8 @@ data class AttachmentOfferFragmentEntity(
     val totalFragments: Int,
     val address: String,
     val subscriptionId: Int,
+    @ColumnInfo(defaultValue = "0")
+    val flags: Int = 0,
     val payload: ByteArray,
     val receivedAt: Long,
 )

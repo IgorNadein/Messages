@@ -7,6 +7,7 @@ import com.afkanerd.deku.messages.domain.AttachmentKind
 import com.afkanerd.deku.messages.domain.AttachmentTransfer
 import com.afkanerd.deku.messages.domain.AttachmentTransferState
 import com.afkanerd.deku.messages.domain.MessageDirection
+import com.afkanerd.deku.messages.domain.MediaTransport
 
 internal object AttachmentTransferMapper {
     fun map(entity: AttachmentTransferEntity): AttachmentTransfer {
@@ -46,6 +47,9 @@ internal object AttachmentTransferMapper {
             completedPath = entity.completedPath,
             durationMillis = entity.durationMs,
             hasError = !entity.lastError.isNullOrBlank(),
+            isSecure = entity.protection == "SECURE",
+            transport = runCatching { MediaTransport.valueOf(entity.transport) }
+                .getOrDefault(MediaTransport.DATA_SMS),
         )
     }
 }

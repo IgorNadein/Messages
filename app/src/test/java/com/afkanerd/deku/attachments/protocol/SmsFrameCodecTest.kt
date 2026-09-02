@@ -59,6 +59,28 @@ class SmsFrameCodecTest {
     }
 
     @Test
+    fun acceptsOnlyDocumentedProtectionFlags() {
+        val unprotected = SmsFrame(
+            packetType = SmsPacketType.TRANSFER_OFFER,
+            flags = AttachmentProtocolFlags.UNPROTECTED,
+            transferId = transferId,
+            chunkIndex = 0,
+            totalChunks = 1,
+            payload = byteArrayOf(1),
+        )
+        assertEquals(
+            unprotected,
+            (SmsFrameCodec.decode(SmsFrameCodec.encode(unprotected)) as
+                SmsFrameCodec.DecodeResult.Success).frame,
+        )
+
+        val unknownFlag = SmsFrameCodec.encode(unprotected).also { encoded ->
+            encoded[4] = 0x02
+        }
+        assertTrue(SmsFrameCodec.decode(unknownFlag) is SmsFrameCodec.DecodeResult.Rejected)
+    }
+
+    @Test
     fun transferIdIsDefensivelyCopied() {
         val source = ByteArray(16) { 7 }
         val id = TransferId.fromBytes(source)

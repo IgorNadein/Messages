@@ -1,1 +1,0 @@
-ÅoÄmÒg×dÙfÇkÊhþgïjäqøp

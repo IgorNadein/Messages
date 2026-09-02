@@ -14,9 +14,9 @@
       proguardRules="proguard.txt"/>
   <library
       name=":@@:lib_signal_double_ratchet_java::debug"
-      jars="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/d6e12b3f0adb271e761555189d995417/transformed/out/jars/classes.jar:/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/d6e12b3f0adb271e761555189d995417/transformed/out/jars/libs/R.jar"
+      jars="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b210c0ec6481bfb0f11c529445b24f80/transformed/out/jars/classes.jar:/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b210c0ec6481bfb0f11c529445b24f80/transformed/out/jars/libs/R.jar"
       resolved="Ð¡Ð¾Ð¾Ð±ÑÐµÐ½Ð¸Ñ:lib_signal_double_ratchet_java:unspecified"
-      folder="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/d6e12b3f0adb271e761555189d995417/transformed/out"
+      folder="/mnt/apps/temp/home-cache/.gradle/caches/8.13/transforms/b210c0ec6481bfb0f11c529445b24f80/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

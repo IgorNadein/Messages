@@ -39,7 +39,7 @@ import kotlin.concurrent.Volatile
 @Database(
     entities = [GatewayServer::class, RemoteListenersQueues::class, RemoteListeners::class,
         AttachmentTransferEntity::class, AttachmentOfferFragmentEntity::class],
-    version = 32,
+    version = 33,
     autoMigrations = [AutoMigration(from = 9, to = 10), AutoMigration(
         from = 10,
         to = 11
@@ -75,7 +75,7 @@ import kotlin.concurrent.Volatile
         to = 29,
         spec = Migrate28To29::class
     ), AutoMigration(from = 29, to = 30), AutoMigration(from = 30, to = 31),
-        AutoMigration(from = 31, to = 32)]
+        AutoMigration(from = 31, to = 32), AutoMigration(from = 32, to = 33)]
 )
 abstract class Datastore : RoomDatabase() {
     @Volatile

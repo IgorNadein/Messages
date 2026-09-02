@@ -46,6 +46,7 @@ class AttachmentCryptoTest {
             frame.copy(totalChunks = 4),
             frame.copy(transferId = TransferId.random()),
             frame.copy(packetType = SmsPacketType.ACK),
+            frame.copy(flags = AttachmentProtocolFlags.UNPROTECTED),
         )
         mutations.forEach {
             assertTrue(AttachmentCrypto.decrypt(key, it, AttachmentCrypto.Direction.INITIATOR_TO_RESPONDER)

@@ -6,6 +6,7 @@ import com.afkanerd.deku.attachments.storage.ChunkTracker
 import com.afkanerd.deku.messages.domain.AttachmentKind
 import com.afkanerd.deku.messages.domain.AttachmentTransferState
 import com.afkanerd.deku.messages.domain.MessageDirection
+import com.afkanerd.deku.messages.domain.MediaTransport
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -50,18 +51,30 @@ class AttachmentTransferMapperTest {
         assertEquals(true, item.hasError)
     }
 
+    @Test
+    fun unprotectedPacketTransferRemainsVisibleAsUnprotected() {
+        val item = AttachmentTransferMapper.map(
+            transfer(protection = "UNPROTECTED")
+        )
+
+        assertEquals(false, item.isSecure)
+        assertEquals(MediaTransport.DATA_SMS, item.transport)
+    }
+
     private fun transfer(
         outgoing: Boolean = true,
         mediaType: String = "FILE",
         status: AttachmentTransferStatus? = AttachmentTransferStatus.SENDING,
         receivedBitmap: ByteArray = ByteArray(0),
         lastError: String? = null,
+        protection: String = "SECURE",
     ) = AttachmentTransferEntity(
         transferId = "transfer-id",
         address = "+79990000000",
         identityFingerprint = ByteArray(32),
         subscriptionId = 1,
         outgoing = outgoing,
+        protection = protection,
         mediaType = mediaType,
         mimeType = "application/octet-stream",
         filename = "file.bin",
