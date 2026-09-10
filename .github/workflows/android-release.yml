@@ -31,7 +31,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -90,6 +90,7 @@ jobs:
           test -x "$apksigner"
           mkdir -p release-assets
           "$apksigner" sign \
+            --v4-signing-enabled false \
             --ks "$RUNNER_TEMP/messages-release.keystore" \
             --ks-key-alias "$KEY_ALIAS" \
             --ks-pass "pass:$KEYSTORE_PASSWORD" \
@@ -114,7 +115,9 @@ jobs:
             Version: ${{ env.VERSION_NAME }}
             Version code: ${{ env.VERSION_CODE }}
             Commit: ${{ github.sha }}
-          files: release-assets/*
+          files: |
+            release-assets/*.apk
+            release-assets/*.apk.sha256
           draft: false
           prerelease: false
           make_latest: true
