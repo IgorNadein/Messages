@@ -14,6 +14,7 @@ data class OutboundSms(
     val transportData: ByteArray? = null,
     val retryTransportText: String? = null,
     val forcePlainText: Boolean = false,
+    val verifiedSecurePayload: Boolean = false,
     val subscriptionId: Long = -1,
 )
 

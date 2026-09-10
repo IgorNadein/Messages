@@ -27,6 +27,7 @@ enum class ConversationFolder {
     DRAFTS,
     MUTED,
     BLOCKED,
+    UNREAD,
 }
 
 enum class ConversationThreadAction {
@@ -146,8 +147,11 @@ data class AttachmentTransfer(
     val totalSms: Int,
     val state: AttachmentTransferState,
     val completedPath: String?,
+    /** Local source while sending, or committed file after receiving. Used only for previews. */
+    val previewPath: String? = completedPath,
     val durationMillis: Long,
     val hasError: Boolean,
+    val errorMessage: String? = null,
     val isSecure: Boolean = true,
     val transport: MediaTransport = MediaTransport.DATA_SMS,
 )
@@ -156,6 +160,8 @@ enum class AttachmentAction {
     ACCEPT,
     REJECT,
     CANCEL,
+    CONTINUE,
+    CONTINUE_WITH_STANDARD_SMS,
 }
 
 data class PreparedAttachment(
@@ -193,6 +199,7 @@ data class ConversationHeader(
     val availableContactNumbers: List<MessageRecipient> = emptyList(),
     val relatedThreadIds: List<Int> = listOf(threadId),
     val securityChannels: List<SecureChannel> = emptyList(),
+    val canReply: Boolean = true,
 ) {
     val isGroupConversation: Boolean
         get() = participants.size > 1

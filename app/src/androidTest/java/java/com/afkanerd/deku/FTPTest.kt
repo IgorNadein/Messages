@@ -12,6 +12,7 @@ import org.apache.commons.net.ftp.FTPSClient
 import org.json.JSONException
 import org.json.JSONObject
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -24,6 +25,7 @@ import java.util.Properties
 
 
 @SmallTest
+@Ignore("Manual FTPS integration test requires external credentials and server")
 class FTPTest {
 
     val properties: Properties = Properties()

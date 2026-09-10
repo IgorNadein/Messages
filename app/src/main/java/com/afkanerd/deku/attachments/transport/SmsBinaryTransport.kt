@@ -8,6 +8,7 @@ import android.os.Build
 import android.telephony.SmsManager
 import com.afkanerd.deku.attachments.protocol.SmsFrame
 import com.afkanerd.deku.attachments.protocol.SmsFrameCodec
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.smsStatusPendingIntentFlags
 
 class SmsBinaryTransport(private val context: Context) : BinaryTransport {
     override suspend fun send(frame: SmsFrame, route: BinaryRoute): BinarySendResult {
@@ -34,7 +35,7 @@ class SmsBinaryTransport(private val context: Context) : BinaryTransport {
             context,
             statusIntent.data.hashCode(),
             statusIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            smsStatusPendingIntentFlags(),
         )
         val deliveredIntent = Intent(context, AttachmentSmsStatusReceiver::class.java).apply {
             action = AttachmentSmsStatusReceiver.ACTION_DELIVERED
@@ -51,7 +52,7 @@ class SmsBinaryTransport(private val context: Context) : BinaryTransport {
             context,
             deliveredIntent.data.hashCode(),
             deliveredIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            smsStatusPendingIntentFlags(),
         )
         return try {
             smsManager(route.subscriptionId).sendDataMessage(

@@ -42,6 +42,13 @@ interface AttachmentTransferDao {
     @Query("SELECT * FROM AttachmentTransfer WHERE expiresAt < :now")
     suspend fun getExpired(now: Long): List<AttachmentTransferEntity>
 
+    @Query("SELECT * FROM AttachmentTransfer WHERE remoteDeleteLocator IS NOT NULL")
+    suspend fun getPendingCloudCleanup(): List<AttachmentTransferEntity>
+
+    @Query("SELECT COUNT(*) FROM AttachmentTransfer WHERE outgoing = 1 AND transport = 'CLOUD_STORAGE' " +
+        "AND (status NOT IN ('COMPLETED', 'FAILED', 'CANCELLED') OR remoteDeleteLocator IS NOT NULL)")
+    suspend fun countCloudTransfersRequiringAccount(): Int
+
     @Query("UPDATE AttachmentTransfer SET smsDelivered = smsDelivered + 1, updatedAt = :now WHERE transferId = :id")
     suspend fun incrementDelivered(id: String, now: Long)
 }

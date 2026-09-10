@@ -1,8 +1,7 @@
 package com.afkanerd.deku.attachments.ui
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -11,28 +10,26 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -47,18 +44,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.attachments.media.PhotoCompressor
-import com.afkanerd.deku.attachments.media.VoiceRecorder
 import com.afkanerd.deku.attachments.protocol.AttachmentManifest
 import com.afkanerd.deku.attachments.protocol.TransferLimits
+import com.afkanerd.deku.attachments.transport.MediaTransportPreference
 import com.afkanerd.deku.messages.domain.AttachmentKind
+import com.afkanerd.deku.messages.domain.MediaTransport
 import com.afkanerd.deku.messages.domain.PreparedAttachment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -80,6 +78,24 @@ private data class PendingAttachment(
     val durationMs: Long = 0,
 )
 
+private fun PreparedAttachment.toPendingAttachment(): PendingAttachment = PendingAttachment(
+    uri = Uri.parse(sourceUri),
+    mediaType = when(kind) {
+        AttachmentKind.PHOTO -> AttachmentManifest.MediaType.PHOTO
+        AttachmentKind.VOICE -> AttachmentManifest.MediaType.VOICE
+        AttachmentKind.FILE -> AttachmentManifest.MediaType.FILE
+    },
+    mimeType = mimeType,
+    filename = fileName,
+    originalSize = originalBytes,
+    encodedSize = encodedBytes,
+    codec = codec,
+    width = width,
+    height = height,
+    sampleRate = sampleRate,
+    durationMs = durationMillis,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttachmentComposer(
@@ -87,21 +103,21 @@ fun AttachmentComposer(
     address: String,
     subscriptionId: Int,
     secureEstablished: Boolean,
-    startVoiceRecording: Boolean = false,
+    initialAttachment: PreparedAttachment? = null,
     onDismiss: () -> Unit,
+    onAttachmentSent: () -> Unit = {},
     onSendAttachment: suspend (PreparedAttachment) -> Boolean,
 ) {
     if (!show) return
     val context = LocalContext.current
+    val mediaTransport = MediaTransportPreference.selected(context, subscriptionId.toLong())
     val compressor = remember { PhotoCompressor(context) }
-    val voiceRecorder = remember { VoiceRecorder(context) }
     val scope = rememberCoroutineScope()
-    var pending by remember { mutableStateOf<PendingAttachment?>(null) }
+    var pending by remember(initialAttachment) {
+        mutableStateOf(initialAttachment?.toPendingAttachment())
+    }
     var photoPreset by remember { mutableStateOf(PhotoCompressor.Preset.LOW) }
     var cameraUri by remember { mutableStateOf<Uri?>(null) }
-    var recording by remember { mutableStateOf(false) }
-    var recordingElapsed by remember { mutableLongStateOf(0L) }
-    var amplitudes by remember { mutableStateOf(emptyList<Int>()) }
     var busy by remember { mutableStateOf(false) }
     val preparationFailedMessage = stringResource(R.string.attachment_failed_prepare)
 
@@ -117,7 +133,13 @@ fun AttachmentComposer(
         busy = true
         scope.launch {
             try {
-                val result = withContext(Dispatchers.IO) { compressor.compress(uri, photoPreset) }
+                val result = withContext(Dispatchers.IO) {
+                    compressor.compress(
+                        source = uri,
+                        preset = photoPreset,
+                        maxEncodedBytes = attachmentTransportMaxBytes(mediaTransport),
+                    )
+                }
                 pending = PendingAttachment(
                     uri = Uri.fromFile(result.file), mediaType = AttachmentManifest.MediaType.PHOTO,
                     mimeType = result.mimeType, filename = "photo.webp",
@@ -148,114 +170,98 @@ fun AttachmentComposer(
     val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { saved ->
         if (saved) cameraUri?.let(::preparePhoto)
     }
-    fun beginRecording() {
-        runCatching {
-            voiceRecorder.start()
-            recordingElapsed = 0L
-            amplitudes = emptyList()
-            recording = true
-        }.onFailure(::reportError)
-    }
-    val audioPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) beginRecording()
-    }
-    DisposableEffect(Unit) { onDispose { if (recording) voiceRecorder.cancel() } }
-    LaunchedEffect(recording) {
-        while(recording) {
-            recordingElapsed = voiceRecorder.elapsedMillis()
-            amplitudes = (amplitudes + voiceRecorder.maxAmplitude()).takeLast(VOICE_WAVEFORM_BARS)
-            delay(VOICE_SAMPLE_INTERVAL_MILLIS)
-        }
-    }
-    LaunchedEffect(show, startVoiceRecording) {
-        if(show && startVoiceRecording && !recording && pending == null) {
-            if(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                beginRecording()
-            } else {
-                audioPermission.launch(Manifest.permission.RECORD_AUDIO)
-            }
-        }
-    }
-
     if (shouldShowAttachmentPicker(pending != null)) {
-        ModalBottomSheet(onDismissRequest = onDismiss) {
-            Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
-            ListItem(
-                    headlineContent = { Text(stringResource(R.string.attachment_file)) },
-                    leadingContent = { Icon(Icons.Default.Description, null) },
-                    modifier = Modifier.fillMaxWidth(),
+        ModalBottomSheet(
+            onDismissRequest = onDismiss,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            tonalElevation = 0.dp,
+        ) {
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Text(
+                    stringResource(R.string.attachment_menu),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 4.dp),
                 )
-                Button(
-                    onClick = { filePicker.launch(arrayOf("*/*")) },
-                    enabled = !busy,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                ) { Text(stringResource(R.string.attachment_choose_file)) }
-
-                Text(stringResource(R.string.attachment_photo_quality), Modifier.padding(16.dp, 12.dp, 16.dp, 4.dp))
-                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    PhotoCompressor.Preset.entries.forEach { preset ->
-                        OutlinedButton(onClick = { photoPreset = preset }, modifier = Modifier.weight(1f)) {
-                            Text(preset.name.lowercase().replaceFirstChar(Char::uppercase))
-                        }
-                    }
-                }
-                Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = {
-                            photoPicker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        },
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    AttachmentMenuTile(
+                        icon = { Icon(Icons.Default.CameraAlt, null) },
+                        label = stringResource(R.string.attachment_camera),
                         enabled = !busy,
                         modifier = Modifier.weight(1f),
-                    ) {
-                        Icon(Icons.Default.Photo, null); Text(stringResource(R.string.attachment_photo))
-                    }
-                    Button(onClick = {
-                        val file = File.createTempFile("camera_", ".jpg", context.cacheDir)
-                        cameraUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-                        camera.launch(cameraUri!!)
-                    }, enabled = !busy, modifier = Modifier.weight(1f)) {
-                        Icon(Icons.Default.CameraAlt, null); Text(stringResource(R.string.attachment_camera))
-                    }
-                }
-
-                if(!recording) {
-                    Button(onClick = {
-                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
-                            beginRecording() else audioPermission.launch(Manifest.permission.RECORD_AUDIO)
-                    }, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                        Icon(Icons.Default.Mic, null)
-                        Text(stringResource(R.string.attachment_voice))
-                    }
-                } else {
-                    VoiceRecordingPanel(
-                        elapsedMillis = recordingElapsed,
-                        amplitudes = amplitudes,
-                        onCancel = {
-                            voiceRecorder.cancel()
-                            recording = false
-                            recordingElapsed = 0L
-                            amplitudes = emptyList()
-                        },
-                        onStop = {
-                            runCatching { voiceRecorder.stop() }.onSuccess { result ->
-                                recording = false
-                                pending = PendingAttachment(
-                                    Uri.fromFile(result.file), AttachmentManifest.MediaType.VOICE,
-                                    result.mimeType, if (result.codec == "opus") "voice.ogg" else "voice.amr",
-                                    result.encodedBytes, result.encodedBytes,
-                                    codec = result.codec,
-                                    sampleRate = result.sampleRate,
-                                    durationMs = result.durationMs,
-                                )
-                            }.onFailure { recording = false; reportError(it) }
+                        onClick = {
+                            val file = File.createTempFile("camera_", ".jpg", context.cacheDir)
+                            cameraUri = FileProvider.getUriForFile(
+                                context,
+                                "${context.packageName}.fileprovider",
+                                file,
+                            )
+                            camera.launch(cameraUri!!)
                         },
                     )
+                    AttachmentMenuTile(
+                        icon = { Icon(Icons.Default.Photo, null) },
+                        label = stringResource(R.string.attachment_photo),
+                        enabled = !busy,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            photoPicker.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly,
+                                )
+                            )
+                        },
+                    )
+                    AttachmentMenuTile(
+                        icon = { Icon(Icons.Default.Description, null) },
+                        label = stringResource(R.string.attachment_file),
+                        enabled = !busy,
+                        modifier = Modifier.weight(1f),
+                        onClick = { filePicker.launch(arrayOf("*/*")) },
+                    )
+                }
+                Text(
+                    stringResource(R.string.attachment_photo_quality),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                )
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    PhotoCompressor.Preset.entries.forEach { preset ->
+                        FilterChip(
+                            selected = photoPreset == preset,
+                            onClick = { photoPreset = preset },
+                            modifier = Modifier.weight(
+                                if(preset == PhotoCompressor.Preset.ORIGINAL) 1.18f else 1f,
+                            ),
+                            shape = RoundedCornerShape(18.dp),
+                            label = {
+                                Text(
+                                    stringResource(
+                                        when(preset) {
+                                            PhotoCompressor.Preset.LOW -> R.string.attachment_quality_low
+                                            PhotoCompressor.Preset.MEDIUM -> R.string.attachment_quality_medium
+                                            PhotoCompressor.Preset.HIGH -> R.string.attachment_quality_high
+                                            PhotoCompressor.Preset.ORIGINAL -> R.string.attachment_quality_original
+                                        }
+                                    ),
+                                    maxLines = 1,
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                            },
+                        )
+                    }
                 }
                 if (busy) Text(stringResource(R.string.attachment_status_preparing), Modifier.padding(16.dp))
+                androidx.compose.foundation.layout.Spacer(Modifier.size(12.dp))
             }
         }
     }
@@ -263,7 +269,18 @@ fun AttachmentComposer(
     pending?.let { item ->
         AttachmentConfirmation(
             item = item,
-            onDismiss = { pending = null },
+            mediaTransport = mediaTransport,
+            recipientCount = address.split(',').map(String::trim).filter(String::isNotEmpty)
+                .distinct().size.coerceAtLeast(1),
+            secureTransfer = secureEstablished,
+            onDismiss = {
+                if(initialAttachment != null) {
+                    onDismiss()
+                } else {
+                    deleteOwnedCacheFile(context, item.uri)
+                    pending = null
+                }
+            },
             onSend = {
                 busy = true
                 scope.launch {
@@ -288,7 +305,9 @@ fun AttachmentComposer(
                             )
                         )
                         if(queued) {
+                            deleteOwnedCacheFile(context, item.uri)
                             pending = null
+                            onAttachmentSent()
                             onDismiss()
                         }
                     } catch (error: Exception) { reportError(error) } finally { busy = false }
@@ -298,55 +317,33 @@ fun AttachmentComposer(
     }
 }
 
-/** A confirmation dialog must replace the picker sheet instead of being composed behind it. */
-internal fun shouldShowAttachmentPicker(hasPendingAttachment: Boolean): Boolean =
-    !hasPendingAttachment
-
 @Composable
-private fun VoiceRecordingPanel(
-    elapsedMillis: Long,
-    amplitudes: List<Int>,
-    onCancel: () -> Unit,
-    onStop: () -> Unit,
+private fun AttachmentMenuTile(
+    icon: @Composable () -> Unit,
+    label: String,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier,
+        shape = RoundedCornerShape(22.dp),
     ) {
-        Text(
-            text = formatVoiceDuration(elapsedMillis),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth().height(42.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            val samples = if(amplitudes.isEmpty()) listOf(0) else amplitudes
-            samples.forEach { amplitude ->
-                val normalized = (amplitude / 32767f).coerceIn(0f, 1f)
-                Box(
-                    Modifier
-                        .width(3.dp)
-                        .height((6 + normalized * 34).dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape)
-                )
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            OutlinedButton(onClick = onCancel, modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.attachment_cancel))
-            }
-            Button(onClick = onStop, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Default.Stop, null)
-                Text(stringResource(R.string.attachment_stop_recording))
-            }
+            icon()
+            Text(label, maxLines = 1)
         }
     }
 }
+
+/** A confirmation dialog must replace the picker sheet instead of being composed behind it. */
+internal fun shouldShowAttachmentPicker(hasPendingAttachment: Boolean): Boolean =
+    !hasPendingAttachment
 
 internal fun formatVoiceDuration(durationMillis: Long): String {
     val totalSeconds = (durationMillis.coerceAtLeast(0L) / 1000L)
@@ -356,13 +353,19 @@ internal fun formatVoiceDuration(durationMillis: Long): String {
 @Composable
 private fun AttachmentConfirmation(
     item: PendingAttachment,
+    mediaTransport: MediaTransport,
+    recipientCount: Int,
+    secureTransfer: Boolean,
     onDismiss: () -> Unit,
     onSend: () -> Unit,
 ) {
-    val sms = runCatching { TransferLimits.estimatedDataSms(item.encodedSize, 300) }.getOrDefault(Int.MAX_VALUE)
-    val overLimit = item.encodedSize !in 1..TransferLimits.MAX_TRANSFER_BYTES.toLong()
-    var player by remember(item.uri) { mutableStateOf<MediaPlayer?>(null) }
-    DisposableEffect(item.uri) { onDispose { player?.release() } }
+    val policy = attachmentConfirmationPolicy(
+        mediaTransport = mediaTransport,
+        encodedBytes = item.encodedSize,
+        recipientCount = recipientCount,
+        secureTransfer = secureTransfer,
+    )
+    val overLimit = item.encodedSize !in 1..policy.maxBytes
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.attachment_confirm_title)) },
@@ -372,26 +375,232 @@ private fun AttachmentConfirmation(
                 if (item.mediaType == AttachmentManifest.MediaType.PHOTO) {
                     AsyncImage(model = item.uri, contentDescription = item.filename, modifier = Modifier.fillMaxWidth())
                 }
-                Text(stringResource(R.string.attachment_size_and_sms, formatBytes(item.encodedSize), sms))
-                if (sms >= TransferLimits.CONFIRM_SMS_COUNT || item.encodedSize >= TransferLimits.CONFIRM_TRANSFER_BYTES) {
+                Text(
+                    when(policy.mediaTransport) {
+                        MediaTransport.DATA_SMS,
+                        MediaTransport.STANDARD_SMS -> stringResource(
+                            R.string.attachment_size_and_sms,
+                            formatBytes(item.encodedSize),
+                            policy.estimatedUnits ?: Int.MAX_VALUE,
+                        )
+                        MediaTransport.MMS -> stringResource(
+                            R.string.attachment_size_and_mms,
+                            formatBytes(item.encodedSize),
+                            policy.estimatedUnits ?: 1,
+                        )
+                        MediaTransport.CLOUD_STORAGE -> stringResource(
+                            R.string.attachment_size_and_cloud,
+                            formatBytes(item.encodedSize),
+                        )
+                    }
+                )
+                if (policy.showSmsCostWarning) {
                     Text(stringResource(R.string.attachment_large_warning))
                 }
-                if (overLimit) Text(stringResource(R.string.attachment_hard_limit, formatBytes(TransferLimits.MAX_TRANSFER_BYTES.toLong())))
+                if(policy.unsupportedGroup) {
+                    Text(stringResource(R.string.attachment_group_transport_unsupported))
+                }
+                if (overLimit) Text(
+                    stringResource(R.string.attachment_hard_limit, formatBytes(policy.maxBytes))
+                )
                 if (item.mediaType == AttachmentManifest.MediaType.VOICE) {
-                    Text(formatVoiceDuration(item.durationMs))
-                    IconButton(onClick = {
-                        player?.release()
-                        player = MediaPlayer().apply { setDataSource(requireNotNull(item.uri.path)); prepare(); start() }
-                    }) { Icon(Icons.Default.PlayArrow, stringResource(R.string.attachment_play_voice)) }
+                    VoiceAttachmentPreview(
+                        uri = item.uri,
+                        expectedDurationMillis = item.durationMs,
+                    )
                 }
             }
         },
-        confirmButton = { Button(onClick = onSend, enabled = !overLimit) { Text(stringResource(R.string.attachment_send)) } },
+        confirmButton = {
+            Button(onClick = onSend, enabled = !overLimit && !policy.unsupportedGroup) {
+                Text(stringResource(
+                    if(policy.showSmsCostWarning) R.string.attachment_continue_anyway
+                    else R.string.attachment_send
+                ))
+            }
+        },
         dismissButton = { OutlinedButton(onClick = onDismiss) { Text(stringResource(R.string.attachment_cancel)) } },
     )
 }
 
+@Composable
+private fun VoiceAttachmentPreview(
+    uri: Uri,
+    expectedDurationMillis: Long,
+) {
+    val context = LocalContext.current
+    var prepared by remember(uri) { mutableStateOf(false) }
+    var playing by remember(uri) { mutableStateOf(false) }
+    var positionMillis by remember(uri) { mutableLongStateOf(0L) }
+    var durationMillis by remember(uri) {
+        mutableLongStateOf(expectedDurationMillis.coerceAtLeast(0L))
+    }
+    var playbackFailed by remember(uri) { mutableStateOf(false) }
+    val player = remember(uri) { MediaPlayer() }
+
+    DisposableEffect(player, uri) {
+        player.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build()
+        )
+        player.setOnPreparedListener { ready ->
+            prepared = true
+            durationMillis = ready.duration.toLong().coerceAtLeast(durationMillis)
+        }
+        player.setOnCompletionListener {
+            playing = false
+            positionMillis = 0L
+        }
+        player.setOnErrorListener { _, _, _ ->
+            prepared = false
+            playing = false
+            playbackFailed = true
+            true
+        }
+        runCatching {
+            player.setDataSource(context, uri)
+            player.prepareAsync()
+        }.onFailure {
+            playbackFailed = true
+        }
+        onDispose {
+            player.setOnPreparedListener(null)
+            player.setOnCompletionListener(null)
+            player.setOnErrorListener(null)
+            player.release()
+        }
+    }
+    LaunchedEffect(playing, player) {
+        while(playing) {
+            positionMillis = runCatching { player.currentPosition.toLong() }
+                .getOrDefault(positionMillis)
+            delay(VOICE_SAMPLE_INTERVAL_MILLIS)
+        }
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                enabled = prepared && !playbackFailed,
+                onClick = {
+                    if(player.isPlaying) {
+                        player.pause()
+                        playing = false
+                        positionMillis = player.currentPosition.toLong()
+                    } else {
+                        if(durationMillis > 0L && positionMillis >= durationMillis) {
+                            player.seekTo(0)
+                            positionMillis = 0L
+                        }
+                        player.start()
+                        playing = true
+                    }
+                },
+            ) {
+                Icon(
+                    if(playing) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    stringResource(R.string.attachment_play_voice),
+                )
+            }
+            Column(Modifier.weight(1f)) {
+                LinearProgressIndicator(
+                    progress = { voicePreviewProgress(positionMillis, durationMillis) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text(
+                    "${formatVoiceDuration(positionMillis)} / ${formatVoiceDuration(durationMillis)}",
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
+        }
+        if(playbackFailed) {
+            Text(
+                stringResource(R.string.attachment_voice_preview_failed),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+
+internal fun voicePreviewProgress(positionMillis: Long, durationMillis: Long): Float =
+    if(durationMillis <= 0L) 0f
+    else (positionMillis.toFloat() / durationMillis).coerceIn(0f, 1f)
+
+internal data class AttachmentConfirmationPolicy(
+    val mediaTransport: MediaTransport,
+    val maxBytes: Long,
+    val estimatedUnits: Int?,
+    val unsupportedGroup: Boolean,
+    val showSmsCostWarning: Boolean,
+)
+
+internal fun attachmentConfirmationPolicy(
+    mediaTransport: MediaTransport,
+    encodedBytes: Long,
+    recipientCount: Int,
+    secureTransfer: Boolean,
+): AttachmentConfirmationPolicy {
+    require(recipientCount > 0)
+    val maxBytes = attachmentTransportMaxBytes(mediaTransport)
+    val estimatedUnits = when(mediaTransport) {
+        MediaTransport.DATA_SMS,
+        MediaTransport.STANDARD_SMS -> runCatching {
+            TransferLimits.estimatedDataSms(encodedBytes, 300)
+        }.getOrDefault(Int.MAX_VALUE).let { units ->
+            if(mediaTransport == MediaTransport.STANDARD_SMS) units * 2 else units
+        }
+        MediaTransport.MMS -> if(secureTransfer) {
+            runCatching { TransferLimits.mmsPartCount(encodedBytes) }
+                .getOrDefault(Int.MAX_VALUE)
+        } else {
+            1
+        }
+        MediaTransport.CLOUD_STORAGE -> null
+    }
+    return AttachmentConfirmationPolicy(
+        mediaTransport = mediaTransport,
+        maxBytes = maxBytes,
+        estimatedUnits = estimatedUnits,
+        unsupportedGroup = recipientCount > 1 && mediaTransport != MediaTransport.MMS,
+        showSmsCostWarning = mediaTransport in setOf(
+            MediaTransport.DATA_SMS,
+            MediaTransport.STANDARD_SMS,
+        ) &&
+            ((estimatedUnits ?: 0) >= TransferLimits.CONFIRM_SMS_COUNT ||
+                encodedBytes >= TransferLimits.CONFIRM_TRANSFER_BYTES),
+    )
+}
+
+internal fun attachmentTransportMaxBytes(mediaTransport: MediaTransport): Long =
+    when(mediaTransport) {
+        MediaTransport.DATA_SMS,
+        MediaTransport.STANDARD_SMS -> TransferLimits.MAX_TRANSFER_BYTES.toLong()
+        MediaTransport.MMS,
+        MediaTransport.CLOUD_STORAGE
+        -> TransferLimits.MAX_MMS_TRANSFER_BYTES.toLong()
+    }
+
 private data class FileDetails(val name: String, val size: Long, val mime: String)
+
+private fun deleteOwnedCacheFile(context: Context, uri: Uri) {
+    if(uri.scheme != "file") return
+    val path = uri.path ?: return
+    runCatching {
+        val cacheRoot = context.cacheDir.canonicalFile
+        val candidate = File(path).canonicalFile
+        if(candidate.parentFile == cacheRoot ||
+            candidate.path.startsWith(cacheRoot.path + File.separator)
+        ) {
+            candidate.delete()
+        }
+    }
+}
 
 private fun fileDetails(context: Context, uri: Uri): FileDetails {
     var name = "attachment.bin"

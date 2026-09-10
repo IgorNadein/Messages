@@ -1,6 +1,7 @@
 package com.afkanerd.deku.attachments.crypto
 
 import com.afkanerd.deku.attachments.protocol.SmsFrame
+import com.afkanerd.deku.attachments.protocol.AttachmentProtocolFlags
 import com.afkanerd.deku.attachments.protocol.SmsPacketType
 import com.afkanerd.deku.attachments.protocol.TransferId
 import com.afkanerd.deku.attachments.protocol.TransferLimits

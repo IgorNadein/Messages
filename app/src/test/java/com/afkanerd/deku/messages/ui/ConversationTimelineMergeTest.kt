@@ -57,6 +57,45 @@ class ConversationTimelineMergeTest {
     }
 
     @Test
+    fun stalePagingIndexFallsBackToSnapshotInsteadOfCrashing() {
+        val snapshotItem = text("snapshot-402", 402)
+        val entry = ConversationTimelineEntry.Message(
+            pagingIndex = 402,
+            item = snapshotItem,
+        )
+        var itemAtCalled = false
+
+        val result = resolvePagedTimelineItem(
+            entry = entry,
+            currentItemCount = 400,
+            itemAt = {
+                itemAtCalled = true
+                error("must not read a stale index")
+            },
+        )
+
+        assertEquals(snapshotItem, result)
+        assertTrue(!itemAtCalled)
+    }
+
+    @Test
+    fun pagingGenerationChangingBetweenCountAndReadFallsBackToSnapshot() {
+        val snapshotItem = text("snapshot-race", 10)
+        val entry = ConversationTimelineEntry.Message(
+            pagingIndex = 10,
+            item = snapshotItem,
+        )
+
+        val result = resolvePagedTimelineItem(
+            entry = entry,
+            currentItemCount = 20,
+            itemAt = { throw IndexOutOfBoundsException("generation changed") },
+        )
+
+        assertEquals(snapshotItem, result)
+    }
+
+    @Test
     fun adjacentIncomingMessagesFromDifferentGroupMembersNeverMerge() {
         val alice = text("alice", 2_000, "+15550000001")
         val bob = text("bob", 1_900, "+15550000002")

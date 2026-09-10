@@ -19,6 +19,11 @@ data class AttachmentTransferEntity(
     val protection: String = "SECURE",
     @ColumnInfo(defaultValue = "'DATA_SMS'")
     val transport: String = "DATA_SMS",
+    @ColumnInfo(defaultValue = "78")
+    val chunkPlaintextBytes: Int = 78,
+    val remoteProvider: String? = null,
+    val remoteLocator: String? = null,
+    val remoteDeleteLocator: String? = null,
     val mediaType: String,
     val mimeType: String,
     val filename: String,

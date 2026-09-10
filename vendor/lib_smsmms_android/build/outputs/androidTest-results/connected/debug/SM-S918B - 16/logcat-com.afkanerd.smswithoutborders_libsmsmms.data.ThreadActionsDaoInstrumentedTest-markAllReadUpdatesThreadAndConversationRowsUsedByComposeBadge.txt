@@ -1,6 +1,0 @@
-09-02 14:51:41.157 30778 30796 I TestRunner: started: markAllReadUpdatesThreadAndConversationRowsUsedByComposeBadge(com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest)
-09-02 14:51:41.157  5253 30661 I SearchableManager: invalidate: com.afkanerd.lib_smsmms_android.test
-09-02 14:51:41.159 26294 26294 W Finsky  : [2] STU: Failed to get storage stats for package 'com.google.android.resolv' (1601: Error getting stats: android.content.pm.PackageManager.NameNotFoundException)
-09-02 14:51:41.163 21454 23420 I Routine@Core[5.0.03.22]: SupportStateUpdater: update
-09-02 14:51:41.171 21454 30168 I Routine@Core[5.0.03.22]: WatchPluginStateGetter: sendRequest
-09-02 14:51:41.174 30778 30796 I TestRunner: finished: markAllReadUpdatesThreadAndConversationRowsUsedByComposeBadge(com.afkanerd.smswithoutborders_libsmsmms.data.ThreadActionsDaoInstrumentedTest)

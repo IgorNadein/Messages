@@ -38,6 +38,7 @@ import com.afkanerd.deku.AboutScreen
 import com.afkanerd.deku.GatewayClientsListScreen
 import com.afkanerd.deku.RemoteForwardingScreen
 import com.afkanerd.deku.RemoteListenersScreen
+import com.afkanerd.deku.UpdatesScreenRoute
 import com.afkanerd.deku.messages.presentation.ConversationViewModel
 import com.afkanerd.deku.messages.presentation.ConversationViewModelFactory
 import com.afkanerd.deku.messages.presentation.ContactDetailsViewModel
@@ -335,6 +336,7 @@ fun MessagesNavHost(
                 onRemoteListeners = { navController.navigate(RemoteListenersScreen) },
                 onGatewayClients = { navController.navigate(GatewayClientsListScreen) },
                 onRoutingHistory = { navController.navigate(RemoteForwardingScreen) },
+                onUpdates = { navController.navigate(UpdatesScreenRoute) },
                 onAbout = { navController.navigate(AboutScreen) },
             )
         }
@@ -390,6 +392,9 @@ fun MessagesNavHost(
                     }
                 },
             )
+        }
+        composable<UpdatesScreenRoute> {
+            UpdatesScreen(onBack = { navController.popBackStack() })
         }
         composable<ImageViewScreenNav> { entry ->
             val route: ImageViewScreenNav = entry.toRoute()

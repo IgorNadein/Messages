@@ -10,8 +10,16 @@ enum class AttachmentProtection {
     UNPROTECTED,
 }
 
-enum class AttachmentWireTransport {
-    DATA_SMS,
-    MMS,
-    CLOUD_STORAGE,
+enum class AttachmentWireTransport(val wireCode: Int) {
+    DATA_SMS(0),
+    MMS(1),
+    CLOUD_STORAGE(2),
+    /** Protocol frames encoded as ordinary multipart text SMS. */
+    STANDARD_SMS(3),
+    ;
+
+    companion object {
+        fun fromWireCode(code: Int): AttachmentWireTransport? =
+            entries.firstOrNull { it.wireCode == code }
+    }
 }

@@ -23,8 +23,11 @@ android {
     compileSdk 36
     namespace 'com.afkanerd.deku.DefaultSMS'
 
-    def _versionName = versionProperties['versionName']
-    def tagVersion = Integer.parseInt(versionProperties['tagVersion'])
+    def _versionName = System.getenv('VERSION_NAME') ?: versionProperties['versionName']
+    def tagVersion = Integer.parseInt(
+        System.getenv('VERSION_CODE_BASE') ?: versionProperties['tagVersion']
+    )
+    def forceUniversalApk = project.findProperty('universalApk')?.toBoolean() ?: false
 
     println(tagVersion)
     println(_versionName)
@@ -38,7 +41,7 @@ android {
 
             // Disable split abis when building appBundle
 //            isEnable = !isBuildingBundle
-            enable !isBuildingBundle
+            enable !isBuildingBundle && !forceUniversalApk
             reset()
             include "arm64-v8a", "armeabi-v7a", "x86_64"
             universalApk false
@@ -51,6 +54,8 @@ android {
         targetSdk 36
         versionCode tagVersion
         versionName _versionName
+        def githubRepository = System.getenv('GITHUB_REPOSITORY') ?: 'IgorNadein/Messages'
+        buildConfigField 'String', 'GITHUB_REPOSITORY', "\"${githubRepository}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
@@ -118,12 +123,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
 

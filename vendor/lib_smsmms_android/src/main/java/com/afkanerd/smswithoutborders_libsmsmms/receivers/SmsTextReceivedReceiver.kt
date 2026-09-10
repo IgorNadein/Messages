@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
+import android.telephony.SmsMessage
 import android.util.Log
 import androidx.core.net.toUri
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.NotificationTxType
@@ -17,6 +18,7 @@ import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.sendNotificat
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.updateSms
 import com.afkanerd.smswithoutborders_libsmsmms.security.SECURE_TRANSPORT_TEXT_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.transport.DataSmsPartStatusTracker
+import com.afkanerd.smswithoutborders_libsmsmms.transport.InboundTextSmsHandlerRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +45,18 @@ class SmsTextReceivedReceiver : BroadcastReceiver() {
                     val pendingResult = goAsync()
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
+                            val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+                            val address = messages.firstOrNull()?.displayOriginatingAddress.orEmpty()
+                            val subscriptionId = intent.extras?.getInt("subscription", -1) ?: -1
+                            val text = messages.joinToString(separator = "") { it.messageBody.orEmpty() }
+                            if(address.isNotBlank() && text.isNotEmpty() &&
+                                InboundTextSmsHandlerRegistry.consume(
+                                    context.applicationContext,
+                                    address,
+                                    subscriptionId,
+                                    text,
+                                )
+                            ) return@launch
                             val conversation = context.registerIncomingSms(intent)
                             val thread = context.getDatabase().threadsDao()
                                 ?.get(conversation.sms?.thread_id!!)
@@ -101,20 +115,18 @@ class SmsTextReceivedReceiver : BroadcastReceiver() {
                             }
                             try {
                                 context.updateSms(uri, conversation)
-                                context.sendBroadcast(Intent(SMS_SENT_BROADCAST_INTENT_LIB).apply {
-                                    putExtra("id", conversation.id)
-                                    putExtra("self", true)
-                                    putExtra(
-                                        "type",
-                                        if(intent.action == SMS_SENT_BROADCAST_INTENT)
-                                            NotificationTxType.TEXT.name else
-                                            NotificationTxType.DATA.name,
-                                    )
-                                    intent.getStringExtra(SECURE_TRANSPORT_TEXT_EXTRA)?.let {
-                                        putExtra(SECURE_TRANSPORT_TEXT_EXTRA, it)
-                                    }
-                                    setPackage(context.packageName)
-                                })
+                                context.sendNotificationBroadcast(
+                                    conversation = conversation,
+                                    type = if(intent.action == SMS_SENT_BROADCAST_INTENT) {
+                                        NotificationTxType.TEXT
+                                    } else {
+                                        NotificationTxType.DATA
+                                    },
+                                    self = true,
+                                    secureTransportText = intent.getStringExtra(
+                                        SECURE_TRANSPORT_TEXT_EXTRA
+                                    ),
+                                )
                             } catch(e: Exception) {
                                 Log.e(CALLBACK_LOG_TAG, "Unable to persist sent SMS status", e)
                             }
@@ -127,16 +139,26 @@ class SmsTextReceivedReceiver : BroadcastReceiver() {
             SMS_DELIVERED_BROADCAST_INTENT, DATA_DELIVERED_BROADCAST_INTENT -> {
                 val pendingResult = goAsync()
                 val callbackResult = resultCode
-                val callbackSuccessful = isSuccessfulSmsCallback(callbackResult)
+                val reportStatus = readDeliveryReportStatus(intent)
+                val reportOutcome = classifyDeliveryReportStatus(reportStatus)
+                val callbackSuccessful = resolveDeliveryCallbackOutcome(
+                    reportOutcome,
+                    callbackResult,
+                )
                 Log.i(
                     CALLBACK_LOG_TAG,
                     "delivered callback action=${intent.action} result=$callbackResult " +
+                        "tpStatus=${reportStatus ?: "missing"} outcome=$reportOutcome " +
                         "id=${intent.getLongExtra("id", -1)} " +
                         "part=${intent.getIntExtra(DATA_PART_INDEX_EXTRA, 0)}/" +
                         intent.getIntExtra(DATA_PART_COUNT_EXTRA, 1),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
+                        // Missing or temporary TP-Status is not proof of delivery. Some Samsung
+                        // firmwares invoke this callback with RESULT_ERROR_NONE but omit the PDU;
+                        // retain one check instead of manufacturing a successful delivery.
+                        if(callbackSuccessful == null) return@launch
                         val id = intent.getLongExtra("id", -1)
                         val uri = intent.getStringExtra("uri")?.toUri()
                         if(intent.getIntExtra(DATA_PART_COUNT_EXTRA, 1) > 1 &&
@@ -160,7 +182,7 @@ class SmsTextReceivedReceiver : BroadcastReceiver() {
                             } else {
                                 conversation.sms?.status = Telephony.Sms.STATUS_FAILED
                                 conversation.sms?.type = Telephony.Sms.MESSAGE_TYPE_FAILED
-                                conversation.sms?.error_code = callbackResult
+                                conversation.sms?.error_code = reportStatus ?: callbackResult
                             }
                             try {
                                 context.updateSms(uri, conversation)
@@ -194,4 +216,50 @@ class SmsTextReceivedReceiver : BroadcastReceiver() {
 fun isSuccessfulSmsCallback(resultCode: Int): Boolean =
     resultCode == Activity.RESULT_OK || resultCode == SMS_RESULT_ERROR_NONE
 
+enum class SmsDeliveryReportOutcome {
+    DELIVERED,
+    PENDING,
+    FAILED,
+    UNKNOWN,
+}
+
+/** Classifies the GSM TP-Status ranges returned by [SmsMessage.getStatus]. */
+fun classifyDeliveryReportStatus(status: Int?): SmsDeliveryReportOutcome = when {
+    status == null || status < 0 -> SmsDeliveryReportOutcome.UNKNOWN
+    status == Telephony.Sms.STATUS_COMPLETE -> SmsDeliveryReportOutcome.DELIVERED
+    status < Telephony.Sms.STATUS_PENDING -> SmsDeliveryReportOutcome.UNKNOWN
+    status < Telephony.Sms.STATUS_FAILED -> SmsDeliveryReportOutcome.PENDING
+    status <= MAX_STANDARD_TP_STATUS -> SmsDeliveryReportOutcome.FAILED
+    else -> SmsDeliveryReportOutcome.UNKNOWN
+}
+
+fun resolveDeliveryCallbackOutcome(
+    reportOutcome: SmsDeliveryReportOutcome,
+    callbackResult: Int,
+): Boolean? = when(reportOutcome) {
+    SmsDeliveryReportOutcome.DELIVERED -> true
+    SmsDeliveryReportOutcome.FAILED -> false
+    SmsDeliveryReportOutcome.PENDING -> null
+    SmsDeliveryReportOutcome.UNKNOWN -> if(isSuccessfulSmsCallback(callbackResult)) {
+        null
+    } else {
+        false
+    }
+}
+
+@Suppress("DEPRECATION")
+fun readDeliveryReportStatus(intent: Intent): Int? {
+    val pdu = intent.getByteArrayExtra("pdu") ?: return null
+    val format = intent.getStringExtra("format")
+    return runCatching {
+        val message = if(format.isNullOrBlank()) {
+            SmsMessage.createFromPdu(pdu)
+        } else {
+            SmsMessage.createFromPdu(pdu, format)
+        }
+        message?.status
+    }.getOrNull()
+}
+
 private const val SMS_RESULT_ERROR_NONE = 0
+private const val MAX_STANDARD_TP_STATUS = 0x7f

@@ -42,7 +42,7 @@ interface ThreadsDao {
     /**
      * Summary projection used by the Compose inbox folders. Folder values mirror
      * ConversationFolder ordinals without coupling this storage module to app UI types:
-     * 0 inbox, 1 archived, 2 drafts, 3 muted, 4 blocked.
+     * 0 inbox, 1 archived, 2 drafts, 3 muted, 4 blocked, 5 unread inbox.
      */
     @Query(
         "SELECT t.threadId, t.address, t.snippet, t.date, t.isPinned, t.isMute, " +
@@ -59,7 +59,12 @@ interface ThreadsDao {
             "OR (:folder = 1 AND t.isArchive = 1) " +
             "OR (:folder = 2 AND t.type = 3) " +
             "OR (:folder = 3 AND t.isMute = 1) " +
-            "OR (:folder = 4 AND t.isBlocked = 1)) " +
+            "OR (:folder = 4 AND t.isBlocked = 1) " +
+            "OR (:folder = 5 AND t.isArchive = 0 AND EXISTS (" +
+            " SELECT 1 FROM Conversations unread_filter " +
+            " WHERE (unread_filter.thread_id = t.threadId " +
+            " OR unread_filter.mms_thread_id = t.threadId) " +
+            " AND unread_filter.read = 0))) " +
             "ORDER BY CASE WHEN :folder = 0 THEN t.isPinned ELSE 0 END DESC, " +
             "t.date DESC, t.threadId DESC"
     )
@@ -81,7 +86,12 @@ interface ThreadsDao {
             "OR (:folder = 1 AND t.isArchive = 1) " +
             "OR (:folder = 2 AND t.type = 3) " +
             "OR (:folder = 3 AND t.isMute = 1) " +
-            "OR (:folder = 4 AND t.isBlocked = 1)) " +
+            "OR (:folder = 4 AND t.isBlocked = 1) " +
+            "OR (:folder = 5 AND t.isArchive = 0 AND EXISTS (" +
+            " SELECT 1 FROM Conversations unread_filter " +
+            " WHERE (unread_filter.thread_id = t.threadId " +
+            " OR unread_filter.mms_thread_id = t.threadId) " +
+            " AND unread_filter.read = 0))) " +
             "ORDER BY CASE WHEN :folder = 0 THEN t.isPinned ELSE 0 END DESC, " +
             "t.date DESC, t.threadId DESC"
     )

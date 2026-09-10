@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Вопрос по исходному DekuSMS
+    url: https://github.com/deku-messaging/Deku-SMS-Android/issues
+    about: Ошибки, которые воспроизводятся в оригинальном проекте без изменений этого форка

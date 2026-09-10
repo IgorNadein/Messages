@@ -6,9 +6,9 @@ import org.junit.Test
 
 class AboutScreenRegressionTest {
     @Test
-    fun sourceCardKeepsTheLegacyProjectDestination() {
+    fun sourceCardOpensThisProjectsRepository() {
         assertEquals(
-            "https://github.com/deku-messaging/Deku-SMS-Android",
+            "https://github.com/IgorNadein/Messages",
             OPEN_SOURCE_PROJECT_URL,
         )
         assertTrue(OPEN_SOURCE_PROJECT_URL.startsWith("https://"))

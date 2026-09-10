@@ -26,6 +26,8 @@ import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.RemoteListeners.Models.RemoteListenersHandler
 import com.afkanerd.deku.RemoteListeners.RemoteListenerConnectionService
 import com.afkanerd.deku.attachments.AttachmentManager
+import com.afkanerd.deku.attachments.AttachmentProtection
+import com.afkanerd.deku.attachments.AttachmentWireTransport
 import com.afkanerd.deku.attachments.transport.MediaTransportPreference
 import com.afkanerd.deku.attachments.transport.MediaTransportRouter
 import com.afkanerd.deku.messages.domain.AttachmentAction
@@ -786,6 +788,9 @@ class AndroidMessageService(context: Context) : MessageService {
                 AttachmentAction.ACCEPT -> manager.accept(transferId)
                 AttachmentAction.REJECT -> manager.reject(transferId)
                 AttachmentAction.CANCEL -> manager.cancel(transferId)
+                AttachmentAction.CONTINUE -> manager.continueTransfer(transferId)
+                AttachmentAction.CONTINUE_WITH_STANDARD_SMS ->
+                    manager.continueWithStandardSms(transferId)
             }
         }
     }
@@ -800,7 +805,8 @@ class AndroidMessageService(context: Context) : MessageService {
                 .map(appContext::makeE16PhoneNumber)
                 .distinct()
             val secureOneToOne = recipients.singleOrNull()?.let { recipient ->
-                SecureSessionStatusResolver.resolve(
+                SecureSendPreference.isEnabled(appContext, recipient, subscriptionId) &&
+                    SecureSessionStatusResolver.resolve(
                     appContext,
                     recipient,
                     subscriptionId,
@@ -808,11 +814,11 @@ class AndroidMessageService(context: Context) : MessageService {
                     SecureSessionStatus.SECURE_ESTABLISHED
             } == true
             val route = MediaTransportRouter.resolve(
-                selected = MediaTransportPreference.selected(appContext),
+                selected = MediaTransportPreference.selected(appContext, subscriptionId),
                 recipientCount = recipients.size,
                 secureOneToOne = secureOneToOne,
             )
-            when(route) {
+            val packetRoute = when(route) {
                 MediaTransportRouter.Route.Mms -> {
                     val conversation = appContext.sendMms(
                         text = "",
@@ -829,11 +835,27 @@ class AndroidMessageService(context: Context) : MessageService {
                         AttachmentPrepareResult.Failed("MMS attachment was not queued")
                     }
                 }
-                MediaTransportRouter.Route.CloudStorage -> return@withContext
-                    AttachmentPrepareResult.Failed("Internet storage is not configured")
-                MediaTransportRouter.Route.UnsupportedGroupDataSms -> return@withContext
-                    AttachmentPrepareResult.Failed("SMS packet media currently supports one recipient")
-                is MediaTransportRouter.Route.DataSms -> Unit
+                is MediaTransportRouter.Route.CloudStorage -> Pair(
+                    route.protection,
+                    AttachmentWireTransport.CLOUD_STORAGE,
+                )
+                MediaTransportRouter.Route.UnsupportedGroupDataSms -> {
+                    return@withContext AttachmentPrepareResult.Failed(
+                        "Packet and cloud media currently support one recipient"
+                    )
+                }
+                MediaTransportRouter.Route.SecureMms -> Pair(
+                    AttachmentProtection.SECURE,
+                    AttachmentWireTransport.MMS,
+                )
+                is MediaTransportRouter.Route.StandardSms -> Pair(
+                    route.protection,
+                    AttachmentWireTransport.STANDARD_SMS,
+                )
+                is MediaTransportRouter.Route.DataSms -> Pair(
+                    route.protection,
+                    AttachmentWireTransport.DATA_SMS,
+                )
             }
             AttachmentManager.get(appContext).prepareFile(
                 address = recipients.single(),
@@ -854,7 +876,8 @@ class AndroidMessageService(context: Context) : MessageService {
                     sampleRate = attachment.sampleRate,
                     durationMs = attachment.durationMillis,
                 ),
-                protection = (route as MediaTransportRouter.Route.DataSms).protection,
+                protection = packetRoute.first,
+                wireTransport = packetRoute.second,
             )
             AttachmentPrepareResult.Queued
         } catch(error: Throwable) {
@@ -1004,6 +1027,7 @@ class AndroidMessageService(context: Context) : MessageService {
             availableContactNumbers = availableContactNumbers,
             relatedThreadIds = relatedThreadIds,
             securityChannels = securityChannels,
+            canReply = ConversationReplyPolicy.canReply(participants),
         )
     }
 
@@ -1232,6 +1256,7 @@ class AndroidMessageService(context: Context) : MessageService {
                             conversation = conversation,
                             self = true,
                             type = if(groupReply) NotificationTxType.MMS else NotificationTxType.TEXT,
+                            showNotification = true,
                         )
                     }
             }

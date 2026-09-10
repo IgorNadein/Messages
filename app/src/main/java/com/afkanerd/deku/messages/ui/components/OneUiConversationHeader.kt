@@ -198,7 +198,7 @@ fun OneUiConversationExpandedHeader(
                             )
                         }
                         Spacer(Modifier.weight(1f))
-                        if(!resolvedHeader.isGroupConversation) {
+                        if(!resolvedHeader.isGroupConversation && resolvedHeader.canReply) {
                             IconButton(onClick = { onCall(resolvedHeader.address) }) {
                                 Icon(
                                     Icons.Default.Call,
@@ -339,25 +339,27 @@ fun OneUiConversationExpandedHeader(
                             }
                         }
                     }
-                    OutlinedButton(
-                        onClick = { onAddRecipients(recipients) },
-                        modifier = Modifier
-                            .padding(
-                                start = 88.dp,
-                                top = MessagesTheme.spacing.xs,
-                                end = 88.dp,
+                    if(resolvedHeader.canReply) {
+                        OutlinedButton(
+                            onClick = { onAddRecipients(recipients) },
+                            modifier = Modifier
+                                .padding(
+                                    start = 88.dp,
+                                    top = MessagesTheme.spacing.xs,
+                                    end = 88.dp,
+                                )
+                                .fillMaxWidth()
+                                .height(40.dp)
+                                .testTag("oneui-add-recipients"),
+                            shape = RoundedCornerShape(24.dp),
+                            contentPadding = PaddingValues(horizontal = MessagesTheme.spacing.md),
+                        ) {
+                            Text(
+                                stringResource(R.string.oneui_add_recipients),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .testTag("oneui-add-recipients"),
-                        shape = RoundedCornerShape(24.dp),
-                        contentPadding = PaddingValues(horizontal = MessagesTheme.spacing.md),
-                    ) {
-                        Text(
-                            stringResource(R.string.oneui_add_recipients),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        }
                     }
                 }
             }

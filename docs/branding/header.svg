@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title description">
+  <title id="title">Сообщения</title>
+  <desc id="description">Свободный SMS-клиент для Android</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15131b"/>
+      <stop offset="0.58" stop-color="#242030"/>
+      <stop offset="1" stop-color="#352854"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d0bcff"/>
+      <stop offset="1" stop-color="#9a82db"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="360" rx="42" fill="url(#background)"/>
+  <circle cx="1100" cy="46" r="180" fill="#7f67be" opacity=".12"/>
+  <circle cx="1010" cy="330" r="130" fill="#d0bcff" opacity=".07"/>
+  <g transform="translate(84 62)" filter="url(#shadow)">
+    <rect width="236" height="236" rx="62" fill="url(#accent)"/>
+    <path d="M58 68c0-14 11-25 25-25h71c14 0 25 11 25 25v58c0 14-11 25-25 25h-40l-35 31 5-31h-1c-14 0-25-11-25-25z" fill="#251f31"/>
+    <rect x="83" y="77" width="70" height="10" rx="5" fill="#d0bcff"/>
+    <rect x="83" y="99" width="51" height="10" rx="5" fill="#d0bcff" opacity=".78"/>
+    <rect x="83" y="121" width="61" height="10" rx="5" fill="#d0bcff" opacity=".56"/>
+  </g>
+  <g fill="#f5efff" font-family="Inter,Segoe UI,Roboto,Arial,sans-serif">
+    <text x="380" y="145" font-size="70" font-weight="700">Сообщения</text>
+    <text x="382" y="200" font-size="27" font-weight="500" fill="#d0c8dc">Свободный SMS-клиент для Android</text>
+  </g>
+  <g transform="translate(382 238)" font-family="Inter,Segoe UI,Roboto,Arial,sans-serif" font-size="18" font-weight="600">
+    <rect width="156" height="44" rx="22" fill="#d0bcff"/>
+    <text x="78" y="28" text-anchor="middle" fill="#251f31">SMS · MMS</text>
+    <rect x="170" width="196" height="44" rx="22" fill="#393344"/>
+    <text x="268" y="28" text-anchor="middle" fill="#e9e0f0">Защищённые чаты</text>
+    <rect x="380" width="180" height="44" rx="22" fill="#393344"/>
+    <text x="470" y="28" text-anchor="middle" fill="#e9e0f0">Без рекламы</text>
+  </g>
+</svg>

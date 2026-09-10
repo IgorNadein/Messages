@@ -40,5 +40,9 @@ data class RouterItem(
     )
 
     fun serializeJson(): String =
-        Json { prettyPrint = true }.encodeToString(this)
+        prettyJson.encodeToString(this)
+
+    private companion object {
+        val prettyJson = Json { prettyPrint = true }
+    }
 }

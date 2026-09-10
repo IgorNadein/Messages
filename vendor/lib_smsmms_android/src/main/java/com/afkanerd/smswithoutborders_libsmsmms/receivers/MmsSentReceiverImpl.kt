@@ -16,6 +16,9 @@ import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.sendNotificat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.afkanerd.smswithoutborders_libsmsmms.transport.INTERNAL_MMS_PART_INDEX_EXTRA
+import com.afkanerd.smswithoutborders_libsmsmms.transport.INTERNAL_MMS_TRANSFER_ID_EXTRA
+import com.afkanerd.smswithoutborders_libsmsmms.transport.InternalMmsSentHandlerRegistry
 
 class MmsSentReceiverImpl: BroadcastReceiver() {
     @SuppressLint("Range")
@@ -23,6 +26,7 @@ class MmsSentReceiverImpl: BroadcastReceiver() {
         val uri = intent.getStringExtra(EXTRA_CONTENT_URI)
         val filepath = intent.getStringExtra(EXTRA_FILE_PATH)
         val id = intent.getLongExtra(EXTRA_ORIGINAL_RESENT_MESSAGE_ID, -1)
+        val internalTransferId = intent.getStringExtra(INTERNAL_MMS_TRANSFER_ID_EXTRA)
         val callbackResult = resultCode
         Log.i(CALLBACK_LOG_TAG, "MMS sent callback result=$callbackResult id=$id")
 
@@ -31,13 +35,28 @@ class MmsSentReceiverImpl: BroadcastReceiver() {
             Telephony.Mms.MESSAGE_BOX_SENT
         } else {
             val msg = context.getString(R.string.unknown_error_sending_mms)
-            Toast.makeText(context, msg + callbackResult, Toast.LENGTH_LONG).show()
+            if(internalTransferId == null) {
+                Toast.makeText(context, msg + callbackResult, Toast.LENGTH_LONG).show()
+            }
             Telephony.Mms.MESSAGE_BOX_FAILED
         }
 
         val pending = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
             try {
+                if(InternalMmsSentHandlerRegistry.consume(
+                        context = context,
+                        transferId = internalTransferId,
+                        partIndex = intent.getIntExtra(INTERNAL_MMS_PART_INDEX_EXTRA, -1),
+                        successful = successful,
+                        resultCode = callbackResult,
+                    )
+                ) {
+                    uri?.let { value ->
+                        runCatching { context.contentResolver.delete(value.toUri(), null, null) }
+                    }
+                    return@launch
+                }
                 context.getDatabase().conversationsDao()
                     ?.getConversation(id)
                     ?.let { conversation ->

@@ -43,12 +43,17 @@ class AttachmentTransferMapperTest {
     }
 
     @Test
-    fun rawTransportFailureIsReducedToSafeBooleanForUi() {
+    fun transportFailureAndLocalPreviewAreAvailableToRecoveryUi() {
         val item = AttachmentTransferMapper.map(
-            transfer(lastError = "SMS send failed (0): internal modem detail")
+            transfer(
+                lastError = "SMS rate limit exceeded",
+                sourcePath = "/tmp/outgoing-voice.ogg",
+            )
         )
 
         assertEquals(true, item.hasError)
+        assertEquals("SMS rate limit exceeded", item.errorMessage)
+        assertEquals("/tmp/outgoing-voice.ogg", item.previewPath)
     }
 
     @Test
@@ -68,6 +73,7 @@ class AttachmentTransferMapperTest {
         receivedBitmap: ByteArray = ByteArray(0),
         lastError: String? = null,
         protection: String = "SECURE",
+        sourcePath: String? = null,
     ) = AttachmentTransferEntity(
         transferId = "transfer-id",
         address = "+79990000000",
@@ -84,6 +90,7 @@ class AttachmentTransferMapperTest {
         sha256 = ByteArray(32),
         status = status?.name ?: "BROKEN",
         lastError = lastError,
+        sourcePath = sourcePath,
         receivedBitmap = receivedBitmap,
         createdAt = 1000,
         updatedAt = 1000,

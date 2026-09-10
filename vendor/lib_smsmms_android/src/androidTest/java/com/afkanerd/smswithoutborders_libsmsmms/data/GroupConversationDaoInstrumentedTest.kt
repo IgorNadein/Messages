@@ -66,15 +66,42 @@ class GroupConversationDaoInstrumentedTest {
         assertEquals(false, pagingSource.invalid)
     }
 
+    @Test
+    fun unreadFolderReturnsOnlyThreadsContainingUnreadMessages() = runBlocking {
+        val conversations = requireNotNull(database.conversationsDao())
+        conversations.insert(groupMms(11, FIRST_MEMBER, listOf(FIRST_MEMBER), read = 0))
+        conversations.insert(
+            groupMms(
+                messageId = 12,
+                sender = SECOND_MEMBER,
+                participants = listOf(SECOND_MEMBER),
+                read = 1,
+                threadId = READ_THREAD_ID,
+            )
+        )
+
+        val allUnread = requireNotNull(database.threadsDao()).getThreadSummaries(folder = 5)
+            .load(PagingSource.LoadParams.Refresh(null, 40, false)) as PagingSource.LoadResult.Page
+        val selectedUnread = requireNotNull(database.threadsDao()).getThreadSummaries(
+            folder = 5,
+            threadIds = listOf(THREAD_ID, READ_THREAD_ID),
+        ).load(PagingSource.LoadParams.Refresh(null, 40, false)) as PagingSource.LoadResult.Page
+
+        assertEquals(listOf(THREAD_ID), allUnread.data.map { it.threadId })
+        assertEquals(listOf(THREAD_ID), selectedUnread.data.map { it.threadId })
+        assertEquals(1, allUnread.data.single().unreadCount)
+    }
+
     private fun groupMms(
         messageId: Long,
         sender: String,
         participants: List<String>,
         read: Int = 1,
+        threadId: Int = THREAD_ID,
     ): Conversations = Conversations(
         sms = SmsMmsNatives.Sms(
             _id = messageId,
-            thread_id = THREAD_ID,
+            thread_id = threadId,
             address = participants.joinToString(","),
             date = messageId,
             date_sent = messageId,
@@ -86,7 +113,7 @@ class GroupConversationDaoInstrumentedTest {
         ),
         mms = SmsMmsNatives.Mms(
             _id = messageId,
-            thread_id = THREAD_ID,
+            thread_id = threadId,
             date = messageId,
             date_sent = messageId,
             msg_box = Telephony.Mms.MESSAGE_BOX_INBOX,
@@ -100,6 +127,7 @@ class GroupConversationDaoInstrumentedTest {
 
     private companion object {
         const val THREAD_ID = 8801
+        const val READ_THREAD_ID = 8802
         const val FIRST_MEMBER = "+79990008801"
         const val SECOND_MEMBER = "+79990008802"
     }

@@ -7,8 +7,10 @@ import com.afkanerd.deku.messages.domain.MediaTransport
 object MediaTransportRouter {
     sealed interface Route {
         data object Mms : Route
+        data object SecureMms : Route
         data class DataSms(val protection: AttachmentProtection) : Route
-        data object CloudStorage : Route
+        data class StandardSms(val protection: AttachmentProtection) : Route
+        data class CloudStorage(val protection: AttachmentProtection) : Route
         data object UnsupportedGroupDataSms : Route
     }
 
@@ -20,9 +22,7 @@ object MediaTransportRouter {
         require(recipientCount > 0)
         return when(selected) {
             MediaTransport.MMS -> if(secureOneToOne) {
-                // Until the encrypted-MMS container and receiver are both available, preserve
-                // the existing protected packet path. Never downgrade a secure attachment.
-                Route.DataSms(AttachmentProtection.SECURE)
+                Route.SecureMms
             } else {
                 Route.Mms
             }
@@ -31,7 +31,19 @@ object MediaTransportRouter {
                 secureOneToOne -> Route.DataSms(AttachmentProtection.SECURE)
                 else -> Route.DataSms(AttachmentProtection.UNPROTECTED)
             }
-            MediaTransport.CLOUD_STORAGE -> Route.CloudStorage
+            MediaTransport.STANDARD_SMS -> when {
+                recipientCount != 1 -> Route.UnsupportedGroupDataSms
+                secureOneToOne -> Route.StandardSms(AttachmentProtection.SECURE)
+                else -> Route.StandardSms(AttachmentProtection.UNPROTECTED)
+            }
+            MediaTransport.CLOUD_STORAGE -> if(recipientCount != 1) {
+                Route.UnsupportedGroupDataSms
+            } else {
+                Route.CloudStorage(
+                    if(secureOneToOne) AttachmentProtection.SECURE
+                    else AttachmentProtection.UNPROTECTED
+                )
+            }
         }
     }
 }

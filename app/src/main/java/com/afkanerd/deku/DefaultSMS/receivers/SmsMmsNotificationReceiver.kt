@@ -24,6 +24,7 @@ import com.afkanerd.smswithoutborders.libsignal_doubleratchet.getEncryptionModeS
 import com.afkanerd.smswithoutborders.libsignal_doubleratchet.removeEncryptionRatchetStates
 import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.NotificationTxType
+import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.SHOW_NOTIFICATION_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.getDatabase
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.makeE16PhoneNumber
 import com.afkanerd.smswithoutborders_libsmsmms.extensions.context.notify
@@ -43,7 +44,7 @@ class SmsMmsNotificationReceiver: BroadcastReceiver() {
                 val id = intent.getLongExtra("id", -1)
                 val self = intent.getBooleanExtra("self", false)
                 val type = intent.getStringExtra("type")
-                val showNotification = intent.getBooleanExtra("showNotification", true)
+                val showNotification = intent.getBooleanExtra(SHOW_NOTIFICATION_EXTRA, !self)
                 val pendingResult = goAsync()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {

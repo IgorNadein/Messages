@@ -25,6 +25,16 @@ class SecureOutboundSmsPolicy : OutboundSmsPolicy {
             message.address,
             message.subscriptionId,
         )
+        if(message.verifiedSecurePayload) {
+            return if(status == SecureSessionStatus.SECURE_ESTABLISHED &&
+                message.transportData != null &&
+                message.displayText.isEmpty()
+            ) {
+                OutboundSmsDecision.Allow(message)
+            } else {
+                OutboundSmsDecision.Block("Verified secure payload requires an established session")
+            }
+        }
         val trustedControlMessage = message.transportData?.let {
             EncryptionController.isLocallySignedKeyExchange(context, it)
         } ?: false
@@ -46,7 +56,11 @@ class SecureOutboundSmsPolicy : OutboundSmsPolicy {
             status != SecureSessionStatus.SECURE_ESTABLISHED ||
             message.forcePlainText ||
             message.transportData != null ||
-            !SecureMessageTransportPreference.shouldUseData(context, message.address)
+            !SecureMessageTransportPreference.shouldUseData(
+                context,
+                message.address,
+                message.subscriptionId,
+            )
         ) return decision
 
         val rawEnvelope = runCatching {

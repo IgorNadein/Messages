@@ -81,6 +81,7 @@ import androidx.compose.ui.platform.testTag
 import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.attachments.ui.AttachmentComposer
 import com.afkanerd.deku.messages.domain.MessageRecipient
+import com.afkanerd.deku.messages.domain.PreparedAttachment
 import com.afkanerd.deku.messages.domain.SimSubscription
 import com.afkanerd.deku.messages.presentation.NewMessageDestination
 import com.afkanerd.deku.messages.presentation.NewMessageViewModel
@@ -100,7 +101,7 @@ fun NewMessageScreen(
     var pickerVisible by rememberSaveable { mutableStateOf(false) }
     var pickerSelectionSnapshot by remember { mutableStateOf<List<MessageRecipient>>(emptyList()) }
     var showAttachmentSheet by rememberSaveable { mutableStateOf(false) }
-    var startVoiceRecording by rememberSaveable { mutableStateOf(false) }
+    var voiceDraft by remember { mutableStateOf<PreparedAttachment?>(null) }
     val focusManager = LocalFocusManager.current
 
     fun cancelPicker() {
@@ -207,10 +208,9 @@ fun NewMessageScreen(
                     onSubscriptionSelected = viewModel::selectSubscription,
                     onRecipientClick = viewModel::selectRecipient,
                     onAttachment = { showAttachmentSheet = true },
-                    onVoice = {
-                        startVoiceRecording = true
-                        showAttachmentSheet = true
-                    },
+                    voiceDraft = voiceDraft,
+                    onVoiceDraftChanged = { voiceDraft = it },
+                    onVoiceSubmit = { showAttachmentSheet = true },
                     onCreateConversation = viewModel::createConversation,
                     onOpenPicker = {
                         pickerSelectionSnapshot = state.selectedRecipients
@@ -231,11 +231,11 @@ fun NewMessageScreen(
             address = attachmentAddress,
             subscriptionId = attachmentSubscriptionId.toInt(),
             secureEstablished = false,
-            startVoiceRecording = startVoiceRecording,
+            initialAttachment = voiceDraft,
             onDismiss = {
-                startVoiceRecording = false
                 showAttachmentSheet = false
             },
+            onAttachmentSent = { voiceDraft = null },
             onSendAttachment = viewModel::prepareAttachment,
         )
     }
@@ -257,7 +257,9 @@ private fun NewConversationComposer(
     onSubscriptionSelected: (Long) -> Unit,
     onRecipientClick: (MessageRecipient) -> Unit,
     onAttachment: () -> Unit,
-    onVoice: () -> Unit,
+    voiceDraft: PreparedAttachment?,
+    onVoiceDraftChanged: (PreparedAttachment?) -> Unit,
+    onVoiceSubmit: (PreparedAttachment) -> Unit,
     onCreateConversation: () -> Unit,
     onOpenPicker: () -> Unit,
 ) {
@@ -323,9 +325,9 @@ private fun NewConversationComposer(
             onAttachment = onAttachment.takeIf {
                 selectedRecipients.isNotEmpty() && selectedSubscriptionId != null
             },
-            onVoice = onVoice.takeIf {
-                selectedRecipients.isNotEmpty() && selectedSubscriptionId != null
-            },
+            voiceDraft = voiceDraft,
+            onVoiceDraftChanged = onVoiceDraftChanged,
+            onVoiceSubmit = onVoiceSubmit,
             onSend = onCreateConversation,
             focusRequester = messageFocusRequester,
             composerTestTag = "oneui-new-message-composer",

@@ -49,7 +49,7 @@ class Network {
 
             return when(result) {
                 is Result.Failure -> {
-                    Log.w(javaClass.name, "HTTP request failed with status ${response.statusCode}")
+                    Log.w(Network::class.java.name, "HTTP request failed with status ${response.statusCode}")
                     NetworkResponseResults(response, Result.Failure(result.error))
                 }
 
@@ -73,7 +73,7 @@ class Network {
 
             return when(result) {
                 is Result.Failure -> {
-                    Log.w(javaClass.name, "HTTP request failed with status ${response.statusCode}")
+                    Log.w(Network::class.java.name, "HTTP request failed with status ${response.statusCode}")
                     NetworkResponseResults(response, Result.Failure(result.error))
                 }
 

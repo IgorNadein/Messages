@@ -27,7 +27,7 @@ class SecureDataSmsHandler : InboundDataSmsHandler {
     ): Boolean {
         if(payload.firstOrNull() != SecureMessageCodec.TYPE_MESSAGE) return false
         if(SecureMessageCodec.decodeMessageOrNull(payload) == null) return true
-        if(SecureMessageTransportPreference.selected(context) !=
+        if(SecureMessageTransportPreference.selected(context, subscriptionId.toLong()) !=
             SecureMessageTransport.DATA_SMS
         ) {
             Log.w(TAG, "Secure Data SMS ignored because the transport is disabled")
@@ -80,6 +80,7 @@ class SecureDataSmsHandler : InboundDataSmsHandler {
         SecureMessageTransportPreference.markFirstLegacyMessageComplete(
             context,
             normalizedAddress,
+            subscriptionId.toLong(),
         )
         val thread = context.getDatabase().threadsDao()?.get(conversation.sms?.thread_id!!)
         context.sendNotificationBroadcast(

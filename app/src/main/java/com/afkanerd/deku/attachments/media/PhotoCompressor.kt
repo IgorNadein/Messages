@@ -28,15 +28,20 @@ class PhotoCompressor(private val context: Context) {
         val codec: String,
     )
 
-    fun compress(source: Uri, preset: Preset): Result {
+    fun compress(
+        source: Uri,
+        preset: Preset,
+        maxEncodedBytes: Long = TransferLimits.MAX_TRANSFER_BYTES.toLong(),
+    ): Result {
+        require(maxEncodedBytes > 0)
         val originalBytes = context.contentResolver.openAssetFileDescriptor(source, "r")
             ?.use { it.length.takeIf { size -> size >= 0 } } ?: 0L
         var bitmap = decodeBounded(source, preset.maxDimension)
         val outputDirectory = File(context.cacheDir, "attachment-photos")
         check(outputDirectory.mkdirs() || outputDirectory.isDirectory)
         if (preset == Preset.ORIGINAL) {
-            require(originalBytes in 1..TransferLimits.MAX_TRANSFER_BYTES.toLong()) {
-                "Original photo exceeds the SMS attachment limit; choose a compressed preset"
+            require(originalBytes in 1..maxEncodedBytes) {
+                "Original photo exceeds the selected media transport limit"
             }
             val mime = context.contentResolver.getType(source) ?: "application/octet-stream"
             val suffix = when (mime) {
@@ -78,8 +83,8 @@ class PhotoCompressor(private val context: Context) {
                 qualityIndex = minOf(2, qualities.lastIndex)
             }
         }
-        require(output.length() <= TransferLimits.MAX_TRANSFER_BYTES) {
-            "Compressed photo is still too large for SMS transfer"
+        require(output.length() <= maxEncodedBytes) {
+            "Compressed photo exceeds the selected media transport limit"
         }
         val result = Result(
             output, originalBytes, output.length(), bitmap.width, bitmap.height,

@@ -428,6 +428,7 @@ class ConversationViewModel(
     }
 
     fun updateDraft(value: String) {
+        if(_state.value.header?.canReply == false) return
         _state.value = _state.value.copy(draft = value, error = null)
         draftSaveJob?.cancel()
         draftSaveJob = viewModelScope.launch {
@@ -481,6 +482,7 @@ class ConversationViewModel(
     fun send() {
         val snapshot = _state.value
         val header = snapshot.header ?: return
+        if(!header.canReply) return
         val body = snapshot.draft.trim()
         if(body.isEmpty() || snapshot.isSending) return
         if(!header.isGroupConversation && header.secureSendingRequested &&
@@ -495,6 +497,7 @@ class ConversationViewModel(
 
     fun sendWithoutEncryption() {
         val snapshot = _state.value
+        if(snapshot.header?.canReply == false) return
         val body = snapshot.draft.trim()
         if(body.isEmpty() || snapshot.isSending) {
             _state.value = snapshot.copy(showSecuritySendWarning = false)
@@ -699,6 +702,7 @@ class ConversationViewModel(
         forcePlainText: Boolean = false,
     ) {
         val header = _state.value.header ?: return
+        if(!header.canReply) return
         if(item.directionOrNull() != com.afkanerd.deku.messages.domain.MessageDirection.OUTGOING ||
             item.deliveryStateOrNull() != com.afkanerd.deku.messages.domain.DeliveryState.FAILED
         ) return
@@ -726,6 +730,7 @@ class ConversationViewModel(
 
     suspend fun prepareAttachment(attachment: PreparedAttachment): Boolean {
         val header = _state.value.header ?: return false
+        if(!header.canReply) return false
         return when(messageService.prepareAttachment(
             address = header.address,
             subscriptionId = header.subscriptionId,
@@ -799,8 +804,46 @@ class SettingsViewModel(
         _state.value = settingsService.setSecureMessageTransport(transport)
     }
 
+    fun setSecureMessageTransport(
+        subscriptionId: Long,
+        transport: SecureMessageTransport,
+    ) {
+        _state.value = settingsService.setSecureMessageTransport(subscriptionId, transport)
+    }
+
     fun setMediaTransport(transport: MediaTransport) {
         _state.value = settingsService.setMediaTransport(transport)
+    }
+
+    fun setMediaTransport(subscriptionId: Long, transport: MediaTransport) {
+        _state.value = settingsService.setMediaTransport(subscriptionId, transport)
+    }
+
+    fun configureCloudStorage(
+        provider: String,
+        endpoint: String,
+        folder: String,
+        accessToken: String,
+        onResult: (Result<Unit>) -> Unit,
+    ) {
+        viewModelScope.launch {
+            val result = runCatching {
+                _state.value = settingsService.configureCloudStorage(
+                    provider,
+                    endpoint,
+                    folder,
+                    accessToken,
+                )
+            }
+            onResult(result.map { Unit })
+        }
+    }
+
+    fun clearCloudStorage(onResult: (Result<Unit>) -> Unit = {}) {
+        viewModelScope.launch {
+            val result = runCatching { _state.value = settingsService.clearCloudStorage() }
+            onResult(result.map { Unit })
+        }
     }
 }
 

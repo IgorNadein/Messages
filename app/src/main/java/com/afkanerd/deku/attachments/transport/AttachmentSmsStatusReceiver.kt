@@ -3,19 +3,18 @@ package com.afkanerd.deku.attachments.transport
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.telephony.SmsManager
+import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.afkanerd.deku.Datastore
 import com.afkanerd.deku.attachments.protocol.SmsPacketType
-import com.afkanerd.deku.attachments.storage.AttachmentTransferStatus
-import com.afkanerd.deku.attachments.storage.ChunkTracker
-import com.afkanerd.deku.attachments.reliability.AttachmentAckTimeoutWorker
 import com.afkanerd.deku.attachments.AttachmentManager
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.isSuccessfulSmsCallback
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.classifyDeliveryReportStatus
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.readDeliveryReportStatus
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.resolveDeliveryCallbackOutcome
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,80 +27,57 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
         val type = SmsPacketType.fromWireValue(intent.getIntExtra(EXTRA_PACKET_TYPE, -1)) ?: return
         val index = intent.getIntExtra(EXTRA_INDEX, -1)
         val callbackResult = resultCode
-        val callbackSuccessful = isSuccessfulSmsCallback(callbackResult)
+        val deliveredCallback = intent.action == ACTION_DELIVERED
+        val reportStatus = if(deliveredCallback) readDeliveryReportStatus(intent) else null
+        val reportOutcome = if(deliveredCallback) {
+            classifyDeliveryReportStatus(reportStatus)
+        } else null
+        val callbackSuccessful = if(deliveredCallback) {
+            resolveDeliveryCallbackOutcome(requireNotNull(reportOutcome), callbackResult)
+        } else {
+            isSuccessfulSmsCallback(callbackResult)
+        }
+        // A missing or temporary TP-Status is not proof of delivery. A later status report or
+        // the bounded receiver-acknowledgement timeout can settle the transfer.
+        if(callbackSuccessful == null) return
+        val partIndex = intent.getIntExtra(EXTRA_TEXT_PART_INDEX, 0)
+        val partCount = intent.getIntExtra(EXTRA_TEXT_PART_COUNT, 1)
+        val callbackToken = intent.getStringExtra(EXTRA_TEXT_CALLBACK_TOKEN)
+        val callbackKey = "${intent.action}.$id.${type.wireValue}.$index.$callbackToken"
+        if(callbackToken != null && !AttachmentSmsPartStatusTracker.shouldFinalize(
+                context = context,
+                key = callbackKey,
+                partIndex = partIndex,
+                partCount = partCount,
+                successful = callbackSuccessful,
+            )
+        ) return
+        if(!callbackSuccessful) {
+            Log.w(
+                "AttachmentSmsStatus",
+                "SMS callback failed: transfer=$id type=$type index=$index " +
+                    "delivered=$deliveredCallback result=$callbackResult " +
+                    "tpStatus=${reportStatus ?: "missing"} outcome=${reportOutcome ?: "sent"}",
+            )
+        }
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val dao = Datastore.getDatastore(context).attachmentTransferDao()
-                val transfer = dao.get(id) ?: return@launch
-                val now = System.currentTimeMillis()
-                if (intent.action == ACTION_DELIVERED) {
-                    if (callbackSuccessful) {
-                        dao.incrementDelivered(id, now)
-                    }
-                    return@launch
-                }
-                if (callbackSuccessful) {
-                    val updated = when (type) {
-                        SmsPacketType.TRANSFER_OFFER -> transfer.copy(
-                            controlSequence = maxOf(transfer.controlSequence, index + 1),
-                            smsSent = transfer.smsSent + 1,
-                            retryCount = 0,
-                            lastError = null,
-                            updatedAt = now,
-                        )
-                        SmsPacketType.TRANSFER_CHUNK -> {
-                            val sent = ChunkTracker.restore(transfer.totalChunks, transfer.sentBitmap)
-                            sent.mark(index)
-                            transfer.copy(
-                                sentBitmap = sent.serialize(), smsSent = transfer.smsSent + 1,
-                                retryCount = 0, lastError = null, updatedAt = now,
-                            )
-                        }
-                        else -> transfer.copy(
-                            smsSent = transfer.smsSent + 1,
-                            retryCount = 0,
-                            lastError = null,
-                            updatedAt = now,
-                        )
-                    }
-                    dao.update(updated)
-                    if (type == SmsPacketType.TRANSFER_COMPLETE && transfer.outgoing &&
-                        transfer.status == AttachmentTransferStatus.COMPLETED.name) {
-                        AttachmentManager.get(context).finalizeSentCompletion(id)
-                    }
-                    if (type == SmsPacketType.TRANSFER_OFFER || type == SmsPacketType.TRANSFER_CHUNK) {
-                        enqueue(context, id, PACING_MILLIS)
-                    }
-                    if (type == SmsPacketType.TRANSFER_CHUNK || type == SmsPacketType.NACK) {
-                        AttachmentAckTimeoutWorker.enqueue(context, id)
-                    }
-                } else {
-                    val retry = transfer.retryCount + 1
-                    val currentStatus = AttachmentTransferStatus.valueOf(transfer.status)
-                    dao.update(transfer.copy(
-                        status = if (currentStatus.terminal) transfer.status
-                            else if (retry >= MAX_RETRIES) AttachmentTransferStatus.FAILED.name
-                            else AttachmentTransferStatus.RETRYING.name,
-                        retryCount = retry,
-                        lastError = smsError(callbackResult),
-                        updatedAt = now,
-                    ))
-                    if (retry < MAX_RETRIES) enqueue(context, id, retryDelay(retry))
-                }
+                AttachmentManager.get(context).onSmsTransportStatus(
+                    transferIdHex = id,
+                    packetType = type,
+                    packetIndex = index,
+                    deliveredCallback = deliveredCallback,
+                    successful = callbackSuccessful,
+                    resultCode = reportStatus ?: callbackResult,
+                )
+            } catch(error: Throwable) {
+                Log.e("AttachmentSmsStatus", "Unable to persist SMS transport callback", error)
+                enqueue(context, id, CALLBACK_RECOVERY_MILLIS)
             } finally {
                 pending.finish()
             }
         }
-    }
-
-    private fun smsError(code: Int): String = when (code) {
-        SmsManager.RESULT_ERROR_NO_SERVICE -> "No mobile service"
-        SmsManager.RESULT_ERROR_RADIO_OFF -> "Mobile radio is off"
-        SmsManager.RESULT_ERROR_LIMIT_EXCEEDED -> "SMS rate limit exceeded"
-        SmsManager.RESULT_ERROR_SHORT_CODE_NOT_ALLOWED,
-        SmsManager.RESULT_ERROR_SHORT_CODE_NEVER_ALLOWED -> "Destination rejected by SMS policy"
-        else -> "SMS send failed ($code)"
     }
 
     companion object {
@@ -110,8 +86,10 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
         const val EXTRA_TRANSFER_ID = "transfer_id"
         const val EXTRA_PACKET_TYPE = "packet_type"
         const val EXTRA_INDEX = "packet_index"
-        private const val PACING_MILLIS = 1_500L
-        private const val MAX_RETRIES = 8
+        const val EXTRA_TEXT_CALLBACK_TOKEN = "text_callback_token"
+        const val EXTRA_TEXT_PART_INDEX = "text_part_index"
+        const val EXTRA_TEXT_PART_COUNT = "text_part_count"
+        private const val CALLBACK_RECOVERY_MILLIS = 30_000L
 
         fun enqueue(context: Context, transferId: String, delayMillis: Long = 0) {
             val request = OneTimeWorkRequestBuilder<AttachmentSendWorker>()
@@ -125,7 +103,5 @@ class AttachmentSmsStatusReceiver : BroadcastReceiver() {
                 request,
             )
         }
-
-        private fun retryDelay(retry: Int): Long = minOf(15L * 60_000L, 15_000L shl minOf(retry - 1, 5))
     }
 }

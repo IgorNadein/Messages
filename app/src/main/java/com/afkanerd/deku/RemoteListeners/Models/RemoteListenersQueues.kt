@@ -15,9 +15,9 @@ class RemoteListenersQueues {
     var binding2Name: String? = null
 
 
-    override fun equals(obj: Any?): Boolean {
-        if (obj is RemoteListenersQueues) {
-            val remoteListenersQueues = obj
+    override fun equals(other: Any?): Boolean {
+        if (other is RemoteListenersQueues) {
+            val remoteListenersQueues = other
 
             return remoteListenersQueues.id == this.id &&
                     remoteListenersQueues.name == this.name &&

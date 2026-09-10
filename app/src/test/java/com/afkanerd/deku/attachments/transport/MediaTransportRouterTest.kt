@@ -23,6 +23,26 @@ class MediaTransportRouterTest {
     }
 
     @Test
+    fun `ordinary sms media keeps protection independent from its envelope`() {
+        assertEquals(
+            MediaTransportRouter.Route.StandardSms(AttachmentProtection.UNPROTECTED),
+            MediaTransportRouter.resolve(
+                MediaTransport.STANDARD_SMS,
+                1,
+                secureOneToOne = false,
+            ),
+        )
+        assertEquals(
+            MediaTransportRouter.Route.StandardSms(AttachmentProtection.SECURE),
+            MediaTransportRouter.resolve(
+                MediaTransport.STANDARD_SMS,
+                1,
+                secureOneToOne = true,
+            ),
+        )
+    }
+
+    @Test
     fun `secure media can never be downgraded by transport selection`() {
         MediaTransport.entries.forEach { selected ->
             val route = MediaTransportRouter.resolve(selected, 1, secureOneToOne = true)

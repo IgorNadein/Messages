@@ -17,6 +17,7 @@ import com.klinker.android.send_message.Settings
 import org.xmlpull.v1.XmlPullParser
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import com.afkanerd.smswithoutborders_libsmsmms.transport.isInternalMmsTransportPart
 import java.text.MessageFormat
 
 object MmsParser {
@@ -226,7 +227,8 @@ object MmsParser {
     @SuppressLint("Range")
     fun parse(
         context: Context,
-        cursor: Cursor
+        cursor: Cursor,
+        includeInternalTransport: Boolean = false,
     ): Conversations? {
         val uri = "content://mms/part".toUri()
         val id = cursor.getLong(cursor
@@ -279,6 +281,9 @@ object MmsParser {
             partCursor.close()
         }
 
+        if(isInternalMmsTransportPart(parsedMms.mimeType, parsedMms.filename) &&
+            !includeInternalTransport
+        ) return null
         return parsedMms.getConversation(context, cursor)
     }
 

@@ -1,16 +1,28 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="attachment_menu">Send encrypted attachment</string>
+    <string name="attachment_menu">Send attachment</string>
     <string name="attachment_file">File</string>
     <string name="attachment_photo">Photo</string>
     <string name="attachment_camera">Camera</string>
     <string name="attachment_voice">Voice message</string>
+    <string name="voice_delete_recording">Delete recording</string>
+    <string name="voice_finish_recording">Finish recording</string>
     <string name="attachment_cancel">Cancel transfer</string>
+    <string name="attachment_actions">Attachment actions</string>
+    <string name="attachment_continue_anyway">Continue anyway</string>
+    <string name="attachment_continue_hint">Continue from the saved position. Confirmed parts will not be sent again.</string>
     <string name="attachment_accept">Accept</string>
     <string name="attachment_reject">Reject</string>
     <string name="attachment_offer_from_contact">Contact wants to send this encrypted attachment.</string>
     <string name="attachment_size_and_sms">%1$s · approximately %2$d SMS</string>
+    <string name="attachment_size_and_mms">%1$s · approximately %2$d MMS</string>
+    <string name="attachment_size_and_cloud">%1$s · internet storage</string>
+    <string name="attachment_group_transport_unsupported">This transport currently supports one recipient. Choose MMS for a group conversation.</string>
     <string name="attachment_progress_sms">%1$d / %2$d data SMS · %3$d%%</string>
+    <string name="attachment_progress_standard_sms">%1$d / %2$d compatible SMS packets · %3$d%%</string>
+    <string name="attachment_progress_mms">%1$d / %2$d MMS parts · %3$d%%</string>
+    <string name="attachment_progress_cloud">%1$d / %2$d cloud object · %3$d%%</string>
     <string name="attachment_play_voice">Play voice message</string>
+    <string name="attachment_voice_preview_failed">Couldn’t play this recording. You can record it again before sending.</string>
     <string name="attachment_status_preparing">Preparing</string>
     <string name="attachment_status_waiting">Waiting for acceptance</string>
     <string name="attachment_status_offered">Offer received</string>
@@ -22,10 +34,40 @@
     <string name="attachment_status_completed">Completed</string>
     <string name="attachment_status_failed">Failed</string>
     <string name="attachment_status_cancelled">Cancelled</string>
+    <string name="attachment_sms_rate_limited">Android or your carrier stopped a large series of SMS. Wait a moment, then continue the transfer.</string>
+    <string name="attachment_sms_no_service">No mobile service. Check the selected SIM and network.</string>
+    <string name="attachment_sms_radio_off">The mobile network is turned off.</string>
+    <string name="attachment_sms_generic_failure">Carrier IMS did not send this Data SMS</string>
+    <string name="attachment_sms_generic_failure_details">The carrier IMS accepted the Data SMS, then requested a fallback. Android could not switch to the mobile SMS channel. Wait and continue from the saved position, or select MMS for this SIM in settings.</string>
+    <string name="attachment_sms_send_failed">The media part could not be sent.</string>
+    <string name="attachment_continue_standard_sms">Continue using ordinary SMS</string>
+    <string name="attachment_video">Video</string>
+    <string name="attachment_document">Document</string>
     <string name="attachment_choose_file">Choose a file</string>
-    <string name="attachment_photo_quality">SMS photo quality</string>
+    <string name="attachment_photo_quality">Photo quality</string>
+    <string name="attachment_quality_low">Low</string>
+    <string name="attachment_quality_medium">Medium</string>
+    <string name="attachment_quality_high">High</string>
+    <string name="attachment_quality_original">Original</string>
     <string name="attachment_stop_recording">Stop recording</string>
     <string name="attachment_secure_required">Establish a secure session before sending attachments.</string>
+    <string name="attachment_protected">Protected transfer</string>
+    <string name="attachment_unprotected">Not encrypted · visible only in Messages</string>
+    <string name="oneui_cloud_storage_title">Internet storage</string>
+    <string name="oneui_cloud_storage_configured">Connected for encrypted media uploads</string>
+    <string name="oneui_cloud_storage_not_configured">Not connected</string>
+    <string name="oneui_cloud_storage_configure">Configure</string>
+    <string name="oneui_cloud_storage_disconnect">Disconnect</string>
+    <string name="oneui_cloud_storage_disconnect_blocked">Finish or clean up outgoing cloud transfers before disconnecting storage.</string>
+    <string name="oneui_cloud_storage_switch_blocked">Finish or clean up outgoing cloud transfers before switching storage providers.</string>
+    <string name="oneui_cloud_storage_save">Save</string>
+    <string name="oneui_cloud_endpoint">HTTPS server address</string>
+    <string name="oneui_cloud_folder">Folder</string>
+    <string name="oneui_cloud_access_token">Access token</string>
+    <string name="oneui_cloud_storage_privacy">Files are encrypted on this phone before upload. The access token is protected by Android Keystore and is never sent to the recipient.</string>
+    <string name="oneui_cloud_provider_self_hosted">Own server</string>
+    <string name="oneui_cloud_provider_yandex">Yandex Disk</string>
+    <string name="oneui_cloud_provider_google">Google Drive</string>
     <string name="attachment_confirm_title">Send this attachment?</string>
     <string name="attachment_send">Send</string>
     <string name="attachment_large_warning">This transfer uses many SMS. Your operator may charge for each SMS.</string>
@@ -206,9 +248,9 @@
     <string name="about_deku_motto">Open source SMS done right</string>
 
     <string name="about_deku_github_titile" translatable="false">GitHub</string>
-    <string name="about_deku_github_description">Deku SMS remains free and open sourced. We believe in giving back to the community that has given us so much. A lot on this app is experimental, but with great experiments comes great findings. Please support us by starring the project on Github and sharing it with your friends.</string>
+    <string name="about_deku_github_description">Messages is free and open source. Visit the project for releases, source code, documentation and issue tracking.</string>
     <string name="about_deku_github_btn">View on GitHub</string>
-    <string name="about_deku_github_url" translatable="false">https://github.com/deku-messaging/Deku-SMS-Android</string>
+    <string name="about_deku_github_url" translatable="false">https://github.com/IgorNadein/Messages</string>
 
     <string name="send_message_text_box_hint">Text Message</string>
     <string name="send_message_secured_text_box_hint">Text Message (secured)</string>
@@ -260,9 +302,9 @@
     <string name="conversation_secure_popup_request_menu_description">A secure communications request will send an SMS to this contact.   They will need have Deku SMS installed to receive this request.</string>
     <string name="conversation_secure_popup_request_menu_description_subtext">* SMS cost still applies</string>
 
-    <string name="conversation_shortcode_description">Can\'t reply to this short code</string>
+    <string name="conversation_shortcode_description">You can’t reply to this sender</string>
     <string name="conversation_shortcode_action_button">Learn more</string>
-    <string name="conversation_shortcode_learn_more_text">Short codes are local or personalized numbers for sending international SMS messages.  You can reply to numbers-only short codes, but not to codes with letters and numbers, like \"MSG007\".</string>
+    <string name="conversation_shortcode_learn_more_text">Some organizations send SMS from a name instead of a phone number. These sender addresses can send messages but cannot receive replies. Numeric short codes remain available when they can be used as an SMS destination.</string>
     <string name="conversation_shortcode_learn_more_ok" translatable="false">OK</string>
 
     <string name="thread_conversation_type_draft">Draft</string>
@@ -650,6 +692,7 @@
     <string name="oneui_drafts">Drafts</string>
     <string name="oneui_muted">Muted</string>
     <string name="oneui_blocked">Blocked</string>
+    <string name="oneui_unread">Unread</string>
     <string name="oneui_archived_description">Conversations kept out of the inbox</string>
     <string name="oneui_drafts_description">Conversations with an unsent draft</string>
     <string name="oneui_muted_description">Conversations with notifications turned off</string>
@@ -712,10 +755,58 @@
     <string name="oneui_media_transport">Media transport</string>
     <string name="oneui_media_transport_mms">MMS (default)</string>
     <string name="oneui_media_transport_data_sms">SMS packets</string>
+    <string name="oneui_media_transport_standard_sms">Compatible ordinary SMS</string>
     <string name="oneui_media_transport_cloud">Internet storage</string>
+    <string name="oneui_transport_sim_label">%1$s · SIM %2$d</string>
+    <string name="oneui_settings_appearance">Appearance</string>
+    <string name="oneui_settings_appearance_summary">%1$s · %2$s</string>
+    <string name="oneui_settings_transport">Sending and transport</string>
+    <string name="oneui_settings_transport_summary">Secure messages, media and internet storage</string>
+    <string name="oneui_settings_transport_multi_sim_summary">Settings are configured separately for each SIM card</string>
+    <string name="oneui_settings_storage">Message storage</string>
+    <string name="oneui_settings_storage_summary">System database, deletion and archive</string>
+    <string name="oneui_settings_preferences">Preferences</string>
+    <string name="oneui_settings_notifications_and_behavior">Notifications and status</string>
+    <string name="oneui_settings_notifications_and_behavior_summary">Delivery reports and smart replies</string>
+    <string name="oneui_settings_advanced_summary">Gateways, listeners and diagnostics</string>
+    <string name="oneui_about_messages">About Messages</string>
+    <string name="oneui_version_value">Version %1$s</string>
+    <string name="updates_title">Updates</string>
+    <string name="updates_settings_summary">Check, download and install releases from GitHub</string>
+    <string name="updates_subtitle">Secure updates from the official GitHub Releases page</string>
+    <string name="updates_checking">Checking GitHub…</string>
+    <string name="updates_available">Version %1$s is available</string>
+    <string name="updates_current">The latest version is installed</string>
+    <string name="updates_from_github">Updates from GitHub Releases</string>
+    <string name="updates_installed">Installed: %1$s (%2$d)</string>
+    <string name="updates_download_progress">Downloaded: %1$d%%</string>
+    <string name="updates_allow_install">Allow installs from Messages, return here, then tap “Install”.</string>
+    <string name="updates_install_failed">Could not open the Android installer</string>
+    <string name="updates_install">Install</string>
+    <string name="updates_download">Download update</string>
+    <string name="updates_check">Check</string>
+    <string name="updates_whats_new">What’s new</string>
+    <string name="updates_browser_failed">Could not open the browser</string>
+    <string name="updates_security_note">Before installation, Messages verifies the APK size, checksum when supplied by GitHub, package name, version and signing certificate. Android always asks you to confirm installation.</string>
+    <string name="oneui_settings_sim_card">SIM card</string>
+    <string name="oneui_settings_default_sim">Default</string>
+    <string name="oneui_settings_outgoing_transport">Outgoing transport</string>
+    <string name="oneui_settings_internet_storage">Internet storage</string>
+    <string name="oneui_settings_receive_transport_note">The selected transport controls sending only. Receiving is detected automatically from the incoming message.</string>
+    <string name="oneui_settings_system_database">Android system database</string>
+    <string name="oneui_settings_archive">Archive</string>
+    <string name="oneui_settings_delivery">Delivery</string>
+    <string name="oneui_settings_notifications">Notifications</string>
+    <string name="oneui_settings_gateway_tools">Gateways and routing</string>
     <string name="oneui_media_data_sms_warning_title">Send media as SMS packets?</string>
     <string name="oneui_media_data_sms_warning_message">Files will be split into many Data SMS messages and can only be received by this app. Carrier SMS charges may apply. Receiving remains automatic and does not require the other person to select the same outgoing transport.</string>
+    <string name="oneui_media_standard_sms_warning_title">Send media using ordinary SMS?</string>
+    <string name="oneui_media_standard_sms_warning_message">Media protocol packets will be encoded as ordinary multipart SMS. Secure-chat media stays encrypted. This works with more carriers, but may appear as encoded text in another SMS app and usually uses more billable SMS than Data SMS.</string>
+    <string name="oneui_enable_standard_sms">Use ordinary SMS</string>
     <string name="oneui_cloud_media_setup_required">Storage account or server required</string>
     <string name="oneui_cloud_media_not_configured_title">Internet storage is not configured</string>
     <string name="oneui_cloud_media_not_configured_message">Connect your own server, Yandex Disk, or Google Drive before choosing this transport.</string>
+    <string name="oneui_cloud_media_warning_title">Send media through internet storage?</string>
+    <string name="oneui_cloud_media_warning_message">The file is encrypted before upload. A scoped link and file key are sent through the app control channel. Without an established secure chat that control data is not end-to-end protected. The recipient needs this app, but does not need your storage account.</string>
+    <string name="oneui_enable_cloud_media">Use internet storage</string>
 </resources>

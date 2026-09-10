@@ -14,3 +14,16 @@ object InboundDataSmsHandlerRegistry {
     suspend fun consume(context: Context, address: String, subscriptionId: Int, payload: ByteArray): Boolean =
         handler?.consume(context, address, subscriptionId, payload) == true
 }
+
+fun interface InboundTextSmsHandler {
+    /** Return true to keep an application protocol envelope out of ordinary SMS storage. */
+    suspend fun consume(context: Context, address: String, subscriptionId: Int, text: String): Boolean
+}
+
+object InboundTextSmsHandlerRegistry {
+    @Volatile
+    var handler: InboundTextSmsHandler? = null
+
+    suspend fun consume(context: Context, address: String, subscriptionId: Int, text: String): Boolean =
+        handler?.consume(context, address, subscriptionId, text) == true
+}

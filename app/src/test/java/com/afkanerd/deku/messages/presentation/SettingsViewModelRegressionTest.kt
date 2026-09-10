@@ -67,7 +67,6 @@ private class FakeSettingsService : AppSettingsService {
         storeInSystemDatabase = false,
         deleteFromSystemDatabase = false,
         deliveryReports = false,
-        swipeActions = false,
         keepArchived = false,
         contextReplies = false,
         use24HourTime = false,
@@ -94,7 +93,6 @@ private class FakeSettingsService : AppSettingsService {
             BooleanSetting.STORE_IN_SYSTEM_DATABASE -> value.copy(storeInSystemDatabase = enabled)
             BooleanSetting.DELETE_FROM_SYSTEM_DATABASE -> value.copy(deleteFromSystemDatabase = enabled)
             BooleanSetting.DELIVERY_REPORTS -> value.copy(deliveryReports = enabled)
-            BooleanSetting.SWIPE_ACTIONS -> value.copy(swipeActions = enabled)
             BooleanSetting.KEEP_ARCHIVED -> value.copy(keepArchived = enabled)
             BooleanSetting.CONTEXT_REPLIES -> value.copy(contextReplies = enabled)
             BooleanSetting.USE_24_HOUR_TIME -> value.copy(use24HourTime = enabled)

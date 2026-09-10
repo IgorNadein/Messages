@@ -19,6 +19,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onAllNodesWithText
@@ -47,6 +48,7 @@ import com.afkanerd.deku.messages.domain.AttachmentPrepareResult
 import com.afkanerd.deku.messages.domain.AttachmentTransfer
 import com.afkanerd.deku.messages.domain.AttachmentTransferState
 import com.afkanerd.deku.messages.domain.ConversationHeader
+import com.afkanerd.deku.messages.domain.ConversationFolder
 import com.afkanerd.deku.messages.domain.ConversationGroup
 import com.afkanerd.deku.messages.domain.ConversationSecurityState
 import com.afkanerd.deku.messages.domain.ConversationThread
@@ -90,33 +92,76 @@ class VerticalSliceInstrumentedTest {
     val composeRule = createComposeRule()
 
     @Test
-    fun dataSmsTransportIsOptInAndRequiresPerRecipientBootstrap() {
+    fun dataSmsTransportIsOptInPerSimAndRequiresPerRecipientBootstrap() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        context.getSharedPreferences("secure_message_transport", android.content.Context.MODE_PRIVATE)
-            .edit().clear().commit()
+        val preferences = context.getSharedPreferences(
+            "secure_message_transport",
+            android.content.Context.MODE_PRIVATE,
+        )
+        val originalPreferences = preferences.all.toMap()
+        preferences.edit().clear().commit()
         val address = "+79990000001"
+        val firstSim = 2L
+        val secondSim = 12L
 
-        assertEquals(
-            SecureMessageTransport.STANDARD_SMS,
-            SecureMessageTransportPreference.selected(context),
-        )
-        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.DATA_SMS)
-        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
+        try {
+            assertEquals(
+                SecureMessageTransport.STANDARD_SMS,
+                SecureMessageTransportPreference.selected(context, firstSim),
+            )
+            SecureMessageTransportPreference.setSelected(
+                context,
+                firstSim,
+                SecureMessageTransport.DATA_SMS,
+            )
+            assertEquals(
+                SecureMessageTransport.STANDARD_SMS,
+                SecureMessageTransportPreference.selected(context, secondSim),
+            )
+            assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address, firstSim))
 
-        SecureMessageTransportPreference.markFirstLegacyMessageComplete(context, address)
-        assertTrue(SecureMessageTransportPreference.shouldUseData(context, address))
-        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, "+79990000002"))
+            SecureMessageTransportPreference.markFirstLegacyMessageComplete(
+                context,
+                address,
+                firstSim,
+            )
+            assertTrue(SecureMessageTransportPreference.shouldUseData(context, address, firstSim))
+            assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address, secondSim))
+            assertTrue(!SecureMessageTransportPreference.shouldUseData(
+                context,
+                "+79990000002",
+                firstSim,
+            ))
 
-        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.STANDARD_SMS)
-        SecureMessageTransportPreference.setSelected(context, SecureMessageTransport.DATA_SMS)
-        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
+            SecureMessageTransportPreference.setSelected(
+                context,
+                firstSim,
+                SecureMessageTransport.STANDARD_SMS,
+            )
+            SecureMessageTransportPreference.setSelected(
+                context,
+                firstSim,
+                SecureMessageTransport.DATA_SMS,
+            )
+            assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address, firstSim))
 
-        SecureMessageTransportPreference.resetPeer(context, address)
-        assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address))
-        SecureMessageTransportPreference.setSelected(
-            context,
-            SecureMessageTransport.STANDARD_SMS,
-        )
+            SecureMessageTransportPreference.resetPeer(context, address, firstSim)
+            assertTrue(!SecureMessageTransportPreference.shouldUseData(context, address, firstSim))
+        } finally {
+            val editor = preferences.edit().clear()
+            originalPreferences.forEach { (key, value) ->
+                when(value) {
+                    is Boolean -> editor.putBoolean(key, value)
+                    is Float -> editor.putFloat(key, value)
+                    is Int -> editor.putInt(key, value)
+                    is Long -> editor.putLong(key, value)
+                    is String -> editor.putString(key, value)
+                    is Set<*> -> @Suppress("UNCHECKED_CAST")
+                        editor.putStringSet(key, value as Set<String>)
+                }
+            }
+            editor.commit()
+        }
     }
 
     @Test
@@ -321,7 +366,11 @@ class VerticalSliceInstrumentedTest {
         ).assertIsDisplayed()
         composeRule.onNodeWithText(context.getString(R.string.oneui_view_unread)).performClick()
 
-        assertEquals(THREAD_ID, openedThread)
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            service.lastConversationFolder == ConversationFolder.UNREAD
+        }
+        composeRule.onNodeWithTag("oneui-inbox-folder-unread").assertIsDisplayed()
+        assertEquals(null, openedThread)
         assertEquals(emptyList<Pair<Int, ConversationThreadAction>>(), service.threadActions)
     }
 
@@ -366,10 +415,10 @@ class VerticalSliceInstrumentedTest {
             .assertIsDisplayed()
             .fetchSemanticsNode().boundsInRoot
         assertTrue("filter=$filter", filter.width / density in 355f..372f)
-        assertTrue("filter=$filter", filter.height / density in 390f..460f)
-        composeRule.onNodeWithText(context.getString(R.string.oneui_archived)).performClick()
+        assertTrue("filter=$filter", filter.height / density in 445f..520f)
+        composeRule.onNodeWithText(context.getString(R.string.oneui_unread)).performClick()
         composeRule.onNodeWithText(context.getString(android.R.string.ok)).performClick()
-        composeRule.onNodeWithTag("oneui-inbox-folder-archived").assertIsDisplayed()
+        composeRule.onNodeWithTag("oneui-inbox-folder-unread").assertIsDisplayed()
     }
 
     @Test
@@ -1008,6 +1057,47 @@ class VerticalSliceInstrumentedTest {
     }
 
     @Test
+    fun oneWaySenderShowsExplanationInsteadOfMessageComposer() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val service = VerticalSliceService(
+            defaultSms = true,
+            contactAccess = true,
+            replyAllowed = false,
+        )
+        val viewModel = ConversationViewModel(service, "VK.RU", THREAD_ID)
+
+        composeRule.setContent {
+            MessagesAppTheme {
+                ConversationScreen(
+                    viewModel = viewModel,
+                    onBack = {},
+                    onCall = {},
+                    onMore = {},
+                    onOpenMedia = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("oneui-reply-unavailable").assertIsDisplayed()
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithTag("oneui-message-input").fetchSemanticsNodes().size,
+        )
+        composeRule.onNodeWithText(
+            context.getString(R.string.conversation_shortcode_action_button)
+        ).performClick()
+        composeRule.onNodeWithText(
+            context.getString(R.string.conversation_shortcode_learn_more_text)
+        ).assertIsDisplayed()
+
+        viewModel.updateDraft("must not be sent")
+        viewModel.send()
+        composeRule.waitForIdle()
+        assertEquals("", viewModel.state.value.draft)
+        assertEquals(0, service.sendCalls)
+    }
+
+    @Test
     fun userCanSwitchFutureMessagesFromEncryptedToRegularSms() {
         val service = VerticalSliceService(defaultSms = true, contactAccess = true)
         val viewModel = ConversationViewModel(service, ADDRESS, THREAD_ID)
@@ -1536,6 +1626,16 @@ class VerticalSliceInstrumentedTest {
             .joinToString()
         assertTrue(spokenTransfer.contains(context.getString(R.string.oneui_received)))
         assertTrue(spokenTransfer.contains(context.getString(R.string.attachment_status_receiving)))
+        assertEquals(
+            0,
+            composeRule.onAllNodesWithText(
+                context.getString(R.string.attachment_cancel)
+            ).fetchSemanticsNodes().size,
+        )
+        transferNode.performTouchInput { longClick() }
+        composeRule.onNodeWithTag("oneui-attachment-actions").assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.attachment_cancel))
+            .assertIsDisplayed()
     }
 
     @Test
@@ -1723,6 +1823,7 @@ class VerticalSliceInstrumentedTest {
         private val secureFailedPreview: Boolean = false,
         private val regeneratingInbox: Boolean = false,
         private val delayedAppend: Boolean = false,
+        private val replyAllowed: Boolean = true,
     ) : MessageService {
         var promptCompleted = false
         var importCalls = 0
@@ -1753,6 +1854,7 @@ class VerticalSliceInstrumentedTest {
         private val appendRelease = CompletableDeferred<Unit>()
         @Volatile var appendStarted = false
         @Volatile var maxLoadedConversation = -1
+        @Volatile var lastConversationFolder: ConversationFolder? = null
 
         fun seedGroups(value: List<ConversationGroup>) {
             groups.value = value
@@ -1780,6 +1882,7 @@ class VerticalSliceInstrumentedTest {
         override fun conversationThreads(
             folder: com.afkanerd.deku.messages.domain.ConversationFolder,
         ): Flow<PagingData<ConversationThread>> {
+            lastConversationFolder = folder
             if(delayedAppend) return delayedConversationThreads()
             val page = {
                 PagingData.from(
@@ -2073,6 +2176,7 @@ class VerticalSliceInstrumentedTest {
                 relatedThreadIds = if(multipleContactNumbers) {
                     listOf(THREAD_ID, THREAD_ID + 1)
                 } else listOf(THREAD_ID),
+                canReply = replyAllowed,
             )
         override suspend fun conversationHeader(
             addresses: List<String>,

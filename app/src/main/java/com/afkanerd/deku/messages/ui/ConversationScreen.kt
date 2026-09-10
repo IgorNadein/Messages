@@ -3,6 +3,7 @@ package com.afkanerd.deku.messages.ui
 import android.text.format.DateFormat
 import android.media.MediaPlayer
 import android.graphics.Bitmap
+import androidx.core.content.FileProvider
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -106,6 +108,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -137,6 +140,8 @@ import com.afkanerd.deku.messages.domain.AttachmentTransfer
 import com.afkanerd.deku.messages.domain.AttachmentTransferState
 import com.afkanerd.deku.messages.domain.DeliveryState
 import com.afkanerd.deku.messages.domain.MessageDirection
+import com.afkanerd.deku.messages.domain.MediaTransport
+import com.afkanerd.deku.messages.domain.PreparedAttachment
 import com.afkanerd.deku.messages.domain.MessageAuthor
 import com.afkanerd.deku.messages.domain.SecurityEventKind
 import com.afkanerd.deku.messages.domain.SimSubscription
@@ -179,6 +184,7 @@ fun ConversationScreen(
     onShareMessage: (TimelineItem) -> Unit = {},
     onOpenMedia: (TimelineItem.Media) -> Unit,
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val messages = viewModel.timeline.collectAsLazyPagingItems()
     val attachments by viewModel.attachments.collectAsState(initial = emptyList())
@@ -188,9 +194,11 @@ fun ConversationScreen(
     var showSecuritySheet by rememberSaveable { mutableStateOf(false) }
     var showSecurityQr by rememberSaveable { mutableStateOf(false) }
     var showAttachmentSheet by rememberSaveable { mutableStateOf(false) }
-    var startVoiceRecording by rememberSaveable { mutableStateOf(false) }
+    var voiceDraft by remember { mutableStateOf<PreparedAttachment?>(null) }
     var showHeaderDetails by rememberSaveable { mutableStateOf(false) }
+    var showReplyUnavailableInfo by rememberSaveable { mutableStateOf(false) }
     var selectedMessage by remember { mutableStateOf<MessageActionSelection?>(null) }
+    var selectedTransfer by remember { mutableStateOf<TransferActionSelection?>(null) }
     var messageMenuMode by remember { mutableStateOf(MessageMenuMode.ACTIONS) }
     var favoriteOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
 
@@ -295,16 +303,34 @@ fun ConversationScreen(
                     when(entry) {
                         is ConversationTimelineEntry.Transfer -> AttachmentTransferBubble(
                             transfer = entry.transfer,
-                            onAction = { action ->
-                                viewModel.performAttachmentAction(
-                                    entry.transfer.stableId.removePrefix("attachment-"),
-                                    action,
+                            onOpen = attachmentViewerItem(entry.transfer) { path ->
+                                val file = File(path)
+                                if(!file.isFile) return@attachmentViewerItem null
+                                runCatching {
+                                    FileProvider.getUriForFile(
+                                        context,
+                                        "${context.packageName}.fileprovider",
+                                        file,
+                                    ).toString()
+                                }.getOrNull()
+                            }?.let { media -> { onOpenMedia(media) } },
+                            onLongClick = { anchorBounds ->
+                                selectedTransfer = TransferActionSelection(
+                                    entry.transfer,
+                                    anchorBounds,
                                 )
                             },
                         )
                         is ConversationTimelineEntry.Message -> {
                             // Preserve Paging prefetch while displaying transfers in timestamp order.
-                            val persistedItem = messages[entry.pagingIndex] ?: entry.item
+                            // Paging can publish a shorter generation while Compose is still
+                            // rendering entries remembered from the previous snapshot. Never let
+                            // that brief generation mismatch crash the conversation screen.
+                            val persistedItem = resolvePagedTimelineItem(
+                                entry = entry,
+                                currentItemCount = messages.itemCount,
+                                itemAt = { index -> messages[index] },
+                            )
                             val item = favoriteOverrides[persistedItem.stableId]?.let {
                                 persistedItem.withFavorite(it)
                             } ?: persistedItem
@@ -356,7 +382,9 @@ fun ConversationScreen(
                 .imePadding()
                 .testTag("oneui-conversation-bottom-overlay"),
         ) {
-            header?.takeUnless(ConversationHeader::isGroupConversation)?.let {
+            header?.takeUnless {
+                it.isGroupConversation || !it.canReply
+            }?.let {
                 SecurityInlineStatus(
                     state = it.securityState,
                     onClick = {
@@ -372,31 +400,36 @@ fun ConversationScreen(
                     .navigationBarsPadding()
                     .testTag("oneui-conversation-composer-background"),
             ) {
-                OneUiMessageComposer(
-                    value = state.draft,
-                    enabled = true,
-                    isSending = state.isSending,
-                    subscriptions = header?.subscriptions.orEmpty(),
-                    selectedSubscriptionId = header?.subscriptionId,
-                    onValueChange = viewModel::updateDraft,
-                    onSubscriptionSelected = viewModel::selectSubscription,
-                    onAttachment = { showAttachmentSheet = true },
-                    onVoice = {
-                        startVoiceRecording = true
-                        showAttachmentSheet = true
-                    },
-                    onSend = viewModel::send,
-                    messageEncrypted = header?.let {
-                        !it.isGroupConversation &&
-                            it.secureSendingEnabled &&
-                            (it.securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
-                                it.securityState == ConversationSecurityState.SECURE_VERIFIED)
-                    },
-                    onSecurityClick = if(header?.isGroupConversation == true) null else ({
-                        viewModel.loadSecurityQrPayload()
-                        showSecuritySheet = true
-                    }),
-                )
+                if(header?.canReply == false) {
+                    ReplyUnavailableNotice(
+                        onLearnMore = { showReplyUnavailableInfo = true },
+                    )
+                } else {
+                    OneUiMessageComposer(
+                        value = state.draft,
+                        enabled = header != null,
+                        isSending = state.isSending,
+                        subscriptions = header?.subscriptions.orEmpty(),
+                        selectedSubscriptionId = header?.subscriptionId,
+                        onValueChange = viewModel::updateDraft,
+                        onSubscriptionSelected = viewModel::selectSubscription,
+                        onAttachment = { showAttachmentSheet = true },
+                        voiceDraft = voiceDraft,
+                        onVoiceDraftChanged = { voiceDraft = it },
+                        onVoiceSubmit = { showAttachmentSheet = true },
+                        onSend = viewModel::send,
+                        messageEncrypted = header?.let {
+                            !it.isGroupConversation &&
+                                it.secureSendingEnabled &&
+                                (it.securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
+                                    it.securityState == ConversationSecurityState.SECURE_VERIFIED)
+                        },
+                        onSecurityClick = if(header?.isGroupConversation == true) null else ({
+                            viewModel.loadSecurityQrPayload()
+                            showSecuritySheet = true
+                        }),
+                    )
+                }
             }
         }
         OneUiConversationExpandedHeader(
@@ -467,6 +500,17 @@ fun ConversationScreen(
             },
         )
     }
+    if(showReplyUnavailableInfo) {
+        AlertDialog(
+            onDismissRequest = { showReplyUnavailableInfo = false },
+            text = { Text(stringResource(R.string.conversation_shortcode_learn_more_text)) },
+            confirmButton = {
+                TextButton(onClick = { showReplyUnavailableInfo = false }) {
+                    Text(stringResource(R.string.conversation_shortcode_learn_more_ok))
+                }
+            },
+        )
+    }
     val securityQrPayload = state.securityQrPayload
     if(showSecurityQr && securityQrPayload != null) {
         SecurityQrDialog(
@@ -479,13 +523,15 @@ fun ConversationScreen(
             show = true,
             address = header.address,
             subscriptionId = header.subscriptionId.toInt(),
-            secureEstablished = header.securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
-                header.securityState == ConversationSecurityState.SECURE_VERIFIED,
-            startVoiceRecording = startVoiceRecording,
+            secureEstablished = (
+                header.securityState == ConversationSecurityState.SECURE_UNVERIFIED ||
+                    header.securityState == ConversationSecurityState.SECURE_VERIFIED
+                ) && header.secureSendingEnabled,
+            initialAttachment = voiceDraft,
             onDismiss = {
-                startVoiceRecording = false
                 showAttachmentSheet = false
             },
+            onAttachmentSent = { voiceDraft = null },
             onSendAttachment = viewModel::prepareAttachment,
         )
     }
@@ -525,12 +571,143 @@ fun ConversationScreen(
             },
         )
     }
+    selectedTransfer?.let { selection ->
+        AttachmentTransferActionsPopup(
+            selection = selection,
+            onDismiss = { selectedTransfer = null },
+            onAction = { action ->
+                viewModel.performAttachmentAction(
+                    selection.transfer.stableId.removePrefix("attachment-"),
+                    action,
+                )
+                selectedTransfer = null
+            },
+        )
+    }
+}
+
+@Composable
+private fun ReplyUnavailableNotice(onLearnMore: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MessagesTheme.spacing.lg, vertical = MessagesTheme.spacing.sm)
+            .testTag("oneui-reply-unavailable"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
+    ) {
+        Text(
+            text = stringResource(R.string.conversation_shortcode_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        TextButton(onClick = onLearnMore) {
+            Text(stringResource(R.string.conversation_shortcode_action_button))
+        }
+    }
 }
 
 private data class MessageActionSelection(
     val item: TimelineItem,
     val anchorBounds: IntRect,
 )
+
+private data class TransferActionSelection(
+    val transfer: AttachmentTransfer,
+    val anchorBounds: IntRect,
+)
+
+@Composable
+private fun AttachmentTransferActionsPopup(
+    selection: TransferActionSelection,
+    onDismiss: () -> Unit,
+    onAction: (AttachmentAction) -> Unit,
+) {
+    val transfer = selection.transfer
+    val density = LocalDensity.current
+    val positionProvider = remember(selection.anchorBounds, density) {
+        MessagePopupPositionProvider(
+            selectedBounds = selection.anchorBounds,
+            marginPx = with(density) { 12.dp.roundToPx() },
+            overlapPx = with(density) { 10.dp.roundToPx() },
+        )
+    }
+    val terminal = transfer.state == AttachmentTransferState.COMPLETED ||
+        transfer.state == AttachmentTransferState.FAILED ||
+        transfer.state == AttachmentTransferState.CANCELLED
+    Popup(
+        popupPositionProvider = positionProvider,
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true),
+    ) {
+        Surface(
+            modifier = Modifier.width(280.dp).testTag("oneui-attachment-actions"),
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer.copy(
+                alpha = ONE_UI_POPUP_MENU_ALPHA,
+            ),
+            tonalElevation = 8.dp,
+            shadowElevation = 12.dp,
+        ) {
+            Column(Modifier.padding(vertical = 10.dp)) {
+                if(transfer.hasError) {
+                    Text(
+                        text = attachmentErrorDetailsLabel(transfer.errorMessage),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    )
+                    DashedMessageMenuDivider()
+                }
+                when {
+                    transfer.state == AttachmentTransferState.OFFERED -> {
+                        MessagePopupTextAction(
+                            label = stringResource(R.string.attachment_accept),
+                            testTag = "oneui-attachment-accept",
+                            onClick = { onAction(AttachmentAction.ACCEPT) },
+                        )
+                        MessagePopupTextAction(
+                            label = stringResource(R.string.attachment_reject),
+                            testTag = "oneui-attachment-reject",
+                            onClick = { onAction(AttachmentAction.REJECT) },
+                        )
+                    }
+                    attachmentCanContinue(transfer.state) -> {
+                        if(transfer.direction == MessageDirection.OUTGOING &&
+                            transfer.transport == MediaTransport.DATA_SMS
+                        ) {
+                            MessagePopupTextAction(
+                                label = stringResource(R.string.attachment_continue_standard_sms),
+                                testTag = "oneui-attachment-continue-standard-sms",
+                                onClick = {
+                                    onAction(AttachmentAction.CONTINUE_WITH_STANDARD_SMS)
+                                },
+                            )
+                        }
+                        MessagePopupTextAction(
+                            label = stringResource(R.string.attachment_continue_anyway),
+                            testTag = "oneui-attachment-continue",
+                            onClick = { onAction(AttachmentAction.CONTINUE) },
+                        )
+                        if(!terminal) {
+                            MessagePopupTextAction(
+                                label = stringResource(R.string.attachment_cancel),
+                                testTag = "oneui-attachment-cancel",
+                                onClick = { onAction(AttachmentAction.CANCEL) },
+                            )
+                        }
+                    }
+                    !terminal -> MessagePopupTextAction(
+                        label = stringResource(R.string.attachment_cancel),
+                        testTag = "oneui-attachment-cancel",
+                        onClick = { onAction(AttachmentAction.CANCEL) },
+                    )
+                }
+            }
+        }
+    }
+}
 
 private enum class MessageMenuMode {
     ACTIONS,
@@ -1024,19 +1201,36 @@ internal fun mergeConversationTimeline(
         .thenBy { it.stableId }
 )
 
+internal fun resolvePagedTimelineItem(
+    entry: ConversationTimelineEntry.Message,
+    currentItemCount: Int,
+    itemAt: (Int) -> TimelineItem?,
+): TimelineItem {
+    if(entry.pagingIndex !in 0 until currentItemCount) return entry.item
+
+    // itemCount and get(index) come from a live Paging presenter. A refresh can land between
+    // those two reads, so retain the snapshot item if the generation changes mid-composition.
+    return runCatching { itemAt(entry.pagingIndex) }.getOrNull() ?: entry.item
+}
+
 @Composable
 private fun AttachmentTransferBubble(
     transfer: AttachmentTransfer,
-    onAction: (AttachmentAction) -> Unit,
+    onOpen: (() -> Unit)?,
+    onLongClick: (IntRect) -> Unit,
 ) {
     val outgoing = transfer.direction == MessageDirection.OUTGOING
-    val terminal = transfer.state == AttachmentTransferState.COMPLETED ||
-        transfer.state == AttachmentTransferState.FAILED ||
-        transfer.state == AttachmentTransferState.CANCELLED
     val progress = if(transfer.totalSms <= 0) 0f else {
         transfer.completedSms.toFloat() / transfer.totalSms
     }
     val transferState = attachmentStateLabel(transfer.state)
+    val context = LocalContext.current
+    val transferTime = remember(transfer.timestampMillis) {
+        DateFormat.getTimeFormat(context).format(Date(transfer.timestampMillis))
+    }
+    val visualKind = attachmentMediaVisualKind(transfer.kind, transfer.mimeType)
+    val actionsLabel = stringResource(R.string.attachment_actions)
+    val hasActions = attachmentHasActions(transfer.state)
     val accessibilityLabel = timelineAccessibilityDescription(
         direction = transfer.direction,
         content = listOf(
@@ -1046,67 +1240,59 @@ private fun AttachmentTransferBubble(
         ),
         timestampMillis = transfer.timestampMillis,
     )
+    var bubbleBounds by remember { mutableStateOf(IntRect.Zero) }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if(outgoing) Alignment.End else Alignment.Start,
     ) {
         Surface(
-            modifier = Modifier.widthIn(max = 330.dp),
+            modifier = Modifier
+                .widthIn(max = 330.dp)
+                .testTag("oneui-attachment-transfer-${transfer.stableId}")
+                .onGloballyPositioned { coordinates ->
+                    bubbleBounds = coordinates.boundsInWindow().toIntRect()
+                }
+                .then(
+                    if(hasActions) Modifier.combinedClickable(
+                        onClick = { onOpen?.invoke() },
+                        onLongClickLabel = actionsLabel,
+                        onLongClick = { onLongClick(bubbleBounds) },
+                    ) else if(onOpen != null) Modifier.clickable(onClick = onOpen)
+                    else Modifier
+                ),
             shape = RoundedCornerShape(MessagesTheme.dimensions.bubbleRadius),
             color = if(outgoing) MaterialTheme.colorScheme.primaryContainer
                 else MaterialTheme.colorScheme.surfaceVariant,
         ) {
             Column(
-                modifier = Modifier.padding(MessagesTheme.spacing.md),
+                modifier = Modifier.padding(MessagesTheme.spacing.sm),
                 verticalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
             ) {
-                Row(
+                Box(
                     modifier = Modifier.semantics(mergeDescendants = true) {
                         contentDescription = accessibilityLabel
                     },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
                 ) {
-                    Icon(
-                        imageVector = when(transfer.kind) {
-                            AttachmentKind.PHOTO -> Icons.Default.Photo
-                            AttachmentKind.VOICE -> Icons.Default.Mic
-                            AttachmentKind.FILE -> Icons.Default.Description
-                        },
-                        contentDescription = null,
-                    )
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            transfer.fileName,
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            formatTransferBytes(transfer.encodedBytes),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    TransferMediaPreview(transfer, visualKind)
                 }
-                if(transfer.state == AttachmentTransferState.COMPLETED &&
-                    transfer.kind == AttachmentKind.PHOTO &&
-                    transfer.completedPath != null
+                if(transfer.totalSms > 0 &&
+                    transfer.state != AttachmentTransferState.OFFERED &&
+                    transfer.state != AttachmentTransferState.PREPARING &&
+                    transfer.state != AttachmentTransferState.WAITING
                 ) {
-                    AsyncImage(
-                        model = File(transfer.completedPath),
-                        contentDescription = transfer.fileName,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                if(!terminal && transfer.state != AttachmentTransferState.OFFERED) {
                     LinearProgressIndicator(
                         progress = { progress.coerceIn(0f, 1f) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Text(
                         stringResource(
-                            R.string.attachment_progress_sms,
+                            when(transfer.transport) {
+                                MediaTransport.MMS -> R.string.attachment_progress_mms
+                                MediaTransport.CLOUD_STORAGE -> R.string.attachment_progress_cloud
+                                MediaTransport.DATA_SMS -> R.string.attachment_progress_sms
+                                MediaTransport.STANDARD_SMS ->
+                                    R.string.attachment_progress_standard_sms
+                            },
                             transfer.completedSms,
                             transfer.totalSms,
                             (progress * 100).toInt(),
@@ -1114,39 +1300,47 @@ private fun AttachmentTransferBubble(
                         style = MaterialTheme.typography.labelMedium,
                     )
                 }
-                Text(
-                    transferState,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if(transfer.state == AttachmentTransferState.FAILED) {
-                        MaterialTheme.colorScheme.error
-                    } else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if(transfer.state == AttachmentTransferState.OFFERED) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs)) {
-                        Button(onClick = { onAction(AttachmentAction.ACCEPT) }) {
-                            Text(stringResource(R.string.attachment_accept))
-                        }
-                        OutlinedButton(onClick = { onAction(AttachmentAction.REJECT) }) {
-                            Text(stringResource(R.string.attachment_reject))
-                        }
-                    }
-                } else if(!terminal) {
-                    OutlinedButton(onClick = { onAction(AttachmentAction.CANCEL) }) {
-                        Text(stringResource(R.string.attachment_cancel))
-                    }
-                }
-                if(transfer.state == AttachmentTransferState.COMPLETED &&
-                    transfer.kind == AttachmentKind.VOICE &&
-                    transfer.completedPath != null
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    AttachmentVoicePlayer(
-                        path = transfer.completedPath,
-                        expectedDurationMillis = transfer.durationMillis,
+                    Text(
+                        transferState,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if(transfer.state == AttachmentTransferState.FAILED) {
+                            MaterialTheme.colorScheme.error
+                        } else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        transferTime,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if(transfer.hasError && transfer.state != AttachmentTransferState.FAILED) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
+                ) {
+                    Icon(
+                        imageVector = if(transfer.isSecure) Icons.Default.Lock else Icons.Default.LockOpen,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     Text(
-                        stringResource(R.string.attachment_status_failed),
+                        stringResource(
+                            if(transfer.isSecure) R.string.attachment_protected
+                            else R.string.attachment_unprotected
+                        ),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if(transfer.hasError) {
+                    Text(
+                        attachmentErrorLabel(transfer.errorMessage),
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.error,
                     )
                 }
@@ -1156,19 +1350,270 @@ private fun AttachmentTransferBubble(
     }
 }
 
+internal fun attachmentCanContinue(state: AttachmentTransferState): Boolean =
+    state == AttachmentTransferState.FAILED ||
+        state == AttachmentTransferState.RETRYING ||
+        state == AttachmentTransferState.PAUSED
+
+internal fun attachmentHasActions(state: AttachmentTransferState): Boolean =
+    state == AttachmentTransferState.OFFERED ||
+        attachmentCanContinue(state) ||
+        state !in setOf(
+            AttachmentTransferState.COMPLETED,
+            AttachmentTransferState.FAILED,
+            AttachmentTransferState.CANCELLED,
+        )
+
+private enum class AttachmentMediaVisualKind { IMAGE, VIDEO, VOICE, DOCUMENT }
+
+internal fun attachmentViewerItem(
+    transfer: AttachmentTransfer,
+    uriForPath: (String) -> String?,
+): TimelineItem.Media? {
+    if(transfer.state != AttachmentTransferState.COMPLETED) return null
+    val visualKind = attachmentMediaVisualKind(
+        transfer.kind,
+        transfer.mimeType,
+        transfer.fileName,
+    )
+    if(visualKind != AttachmentMediaVisualKind.IMAGE &&
+        visualKind != AttachmentMediaVisualKind.VIDEO
+    ) return null
+    val path = transfer.completedPath ?: transfer.previewPath ?: return null
+    val uri = uriForPath(path)?.takeIf(String::isNotBlank) ?: return null
+    return TimelineItem.Media(
+        stableId = "attachment-viewer-${transfer.stableId}",
+        timestampMillis = transfer.timestampMillis,
+        uri = uri,
+        fileName = transfer.fileName,
+        mimeType = transfer.mimeType,
+        caption = null,
+        direction = transfer.direction,
+        deliveryState = if(transfer.direction == MessageDirection.INCOMING) {
+            DeliveryState.RECEIVED
+        } else {
+            DeliveryState.DELIVERED
+        },
+        isSecure = transfer.isSecure,
+    )
+}
+
+private fun attachmentMediaVisualKind(
+    kind: AttachmentKind,
+    mimeType: String?,
+    fileName: String? = null,
+): AttachmentMediaVisualKind = when {
+    kind == AttachmentKind.VOICE || mimeType.orEmpty().startsWith("audio/", true) ||
+        fileName.orEmpty().endsWith(".ogg", true) ||
+        fileName.orEmpty().endsWith(".amr", true) ||
+        fileName.orEmpty().endsWith(".m4a", true) ->
+        AttachmentMediaVisualKind.VOICE
+    kind == AttachmentKind.PHOTO || mimeType.orEmpty().startsWith("image/", true) ->
+        AttachmentMediaVisualKind.IMAGE
+    mimeType.orEmpty().startsWith("video/", true) -> AttachmentMediaVisualKind.VIDEO
+    else -> AttachmentMediaVisualKind.DOCUMENT
+}
+
+@Composable
+private fun TransferMediaPreview(
+    transfer: AttachmentTransfer,
+    visualKind: AttachmentMediaVisualKind,
+) {
+    when(visualKind) {
+        AttachmentMediaVisualKind.IMAGE,
+        AttachmentMediaVisualKind.VIDEO -> {
+            val path = transfer.previewPath
+            if(path != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 156.dp, max = 220.dp)
+                        .clip(RoundedCornerShape(18.dp)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    AsyncImage(
+                        model = File(path),
+                        contentDescription = transfer.fileName,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth().height(184.dp),
+                    )
+                    if(visualKind == AttachmentMediaVisualKind.VIDEO) {
+                        Surface(shape = CircleShape, color = Color.Black.copy(alpha = 0.58f)) {
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                contentDescription = stringResource(R.string.attachment_video),
+                                tint = Color.White,
+                                modifier = Modifier.padding(10.dp).size(30.dp),
+                            )
+                        }
+                    }
+                }
+                MediaFileCaption(transfer.fileName, transfer.encodedBytes)
+            } else {
+                DocumentTransferHeader(
+                    fileName = transfer.fileName,
+                    bytes = transfer.encodedBytes,
+                    icon = if(visualKind == AttachmentMediaVisualKind.VIDEO) {
+                        Icons.Default.PlayArrow
+                    } else Icons.Default.Photo,
+                )
+            }
+        }
+        AttachmentMediaVisualKind.VOICE -> {
+            val playbackSource = attachmentVoicePlaybackSource(transfer)
+            if(playbackSource != null) {
+                AttachmentVoicePlayer(
+                    source = playbackSource,
+                    expectedDurationMillis = transfer.durationMillis,
+                )
+            } else {
+                VoiceMessageSummary(
+                    durationMillis = transfer.durationMillis,
+                    enabled = false,
+                )
+            }
+        }
+        AttachmentMediaVisualKind.DOCUMENT -> DocumentTransferHeader(
+            fileName = transfer.fileName,
+            bytes = transfer.encodedBytes,
+            icon = Icons.Default.Description,
+        )
+    }
+}
+
+/**
+ * Outgoing transfers retain their immutable local source for the entire send/retry lifecycle.
+ * Incoming media is playable only after it has been verified and committed.
+ */
+internal fun attachmentVoicePlaybackSource(transfer: AttachmentTransfer): String? = when {
+    transfer.completedPath != null -> transfer.completedPath
+    transfer.direction == MessageDirection.OUTGOING -> transfer.previewPath
+    else -> null
+}
+
+@Composable
+private fun DocumentTransferHeader(
+    fileName: String,
+    bytes: Long,
+    icon: ImageVector,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+        ) {
+            Box(Modifier.size(52.dp), contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Column(Modifier.weight(1f)) {
+            Text(
+                fileName,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                "${documentExtension(fileName)} · ${formatTransferBytes(bytes)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MediaFileCaption(fileName: String, bytes: Long) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 2.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            fileName,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            formatTransferBytes(bytes),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun VoiceMessageSummary(durationMillis: Long, enabled: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.xs),
+    ) {
+        Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primary) {
+            Icon(
+                Icons.Default.PlayArrow,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(10.dp).size(24.dp),
+            )
+        }
+        Column(Modifier.weight(1f)) {
+            VoicePlaybackWaveform(0f)
+            Text(
+                formatVoicePlaybackDuration(durationMillis),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                    alpha = if(enabled) 1f else 0.82f,
+                ),
+            )
+        }
+    }
+}
+
+@Composable
+private fun attachmentErrorLabel(error: String?): String = when {
+    error?.contains("rate limit", true) == true ->
+        stringResource(R.string.attachment_sms_rate_limited)
+    error?.contains("no mobile service", true) == true ->
+        stringResource(R.string.attachment_sms_no_service)
+    error?.contains("radio is off", true) == true ->
+        stringResource(R.string.attachment_sms_radio_off)
+    error?.contains("SMS send failed (1)", true) == true ->
+        stringResource(R.string.attachment_sms_generic_failure)
+    else -> stringResource(R.string.attachment_sms_send_failed)
+}
+
+@Composable
+private fun attachmentErrorDetailsLabel(error: String?): String = when {
+    error?.contains("SMS send failed (1)", true) == true ->
+        stringResource(R.string.attachment_sms_generic_failure_details)
+    else -> attachmentErrorLabel(error)
+}
+
+private fun documentExtension(fileName: String): String = fileName
+    .substringAfterLast('.', missingDelimiterValue = "FILE")
+    .take(6)
+    .uppercase()
+
 @Composable
 private fun AttachmentVoicePlayer(
-    path: String,
+    source: String,
     expectedDurationMillis: Long,
 ) {
-    var player by remember(path) { mutableStateOf<MediaPlayer?>(null) }
-    var prepared by remember(path) { mutableStateOf(false) }
-    var playing by remember(path) { mutableStateOf(false) }
-    var positionMillis by remember(path) { mutableLongStateOf(0L) }
-    var durationMillis by remember(path) {
+    val context = LocalContext.current
+    var player by remember(source) { mutableStateOf<MediaPlayer?>(null) }
+    var prepared by remember(source) { mutableStateOf(false) }
+    var playing by remember(source) { mutableStateOf(false) }
+    var positionMillis by remember(source) { mutableLongStateOf(0L) }
+    var durationMillis by remember(source) {
         mutableLongStateOf(expectedDurationMillis.coerceAtLeast(0L))
     }
-    DisposableEffect(path) {
+    DisposableEffect(source) {
         onDispose {
             player?.release()
             player = null
@@ -1191,21 +1636,31 @@ private fun AttachmentVoicePlayer(
             val active = player
             when {
                 active == null -> {
-                    val created = MediaPlayer().apply {
-                        setDataSource(path)
-                        setOnPreparedListener { ready ->
-                            prepared = true
-                            durationMillis = ready.duration.toLong().coerceAtLeast(durationMillis)
-                            ready.start()
-                            playing = true
+                    runCatching {
+                        MediaPlayer().apply {
+                            if(source.contains("://")) {
+                                setDataSource(context, android.net.Uri.parse(source))
+                            } else {
+                                setDataSource(source)
+                            }
+                            setOnPreparedListener { ready ->
+                                prepared = true
+                                durationMillis = ready.duration.toLong().coerceAtLeast(durationMillis)
+                                ready.start()
+                                playing = true
+                            }
+                            setOnCompletionListener {
+                                playing = false
+                                positionMillis = 0L
+                            }
+                            prepareAsync()
                         }
-                        setOnCompletionListener {
-                            playing = false
-                            positionMillis = 0L
-                        }
-                        prepareAsync()
+                    }.onSuccess { created ->
+                        player = created
+                    }.onFailure {
+                        player?.release()
+                        player = null
                     }
-                    player = created
                 }
                 !prepared -> Unit
                 active.isPlaying -> {
@@ -1289,7 +1744,8 @@ private fun attachmentStateLabel(state: AttachmentTransferState): String = strin
 
 private fun formatTransferBytes(bytes: Long): String = when {
     bytes < 1024 -> "$bytes B"
-    else -> "%.1f KB".format(bytes / 1024.0)
+    bytes < 1024 * 1024 -> "%.1f KB".format(bytes / 1024.0)
+    else -> "%.1f MB".format(bytes / (1024.0 * 1024.0))
 }
 
 @Composable
@@ -1419,6 +1875,15 @@ private fun MediaBubble(
     onLongClick: (TimelineItem, IntRect) -> Unit,
 ) {
     val outgoing = item.direction == MessageDirection.OUTGOING
+    val visualKind = attachmentMediaVisualKind(
+        kind = when {
+            item.mimeType.orEmpty().startsWith("audio/", true) -> AttachmentKind.VOICE
+            item.mimeType.orEmpty().startsWith("image/", true) -> AttachmentKind.PHOTO
+            else -> AttachmentKind.FILE
+        },
+        mimeType = item.mimeType,
+        fileName = item.fileName,
+    )
     val accessibilityLabel = timelineAccessibilityDescription(
         direction = item.direction,
         content = listOfNotNull(
@@ -1454,25 +1919,83 @@ private fun MediaBubble(
                 else MaterialTheme.colorScheme.surfaceVariant,
         ) {
             Column(
-                modifier = Modifier.padding(MessagesTheme.spacing.md),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                if(showSender && !outgoing) SenderLabel(item.author)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(Icons.Default.Description, contentDescription = null)
-                    Column {
-                        Text(
-                            text = item.fileName ?: stringResource(R.string.oneui_attachment),
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                if(showSender && !outgoing) {
+                    Box(Modifier.padding(
+                        start = MessagesTheme.spacing.md,
+                        end = MessagesTheme.spacing.md,
+                        top = MessagesTheme.spacing.sm,
+                    )) {
+                        SenderLabel(item.author)
+                    }
+                }
+                when(visualKind) {
+                    AttachmentMediaVisualKind.IMAGE,
+                    AttachmentMediaVisualKind.VIDEO -> {
+                        if(!item.uri.isNullOrBlank()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(210.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                AsyncImage(
+                                    model = item.uri,
+                                    contentDescription = item.fileName
+                                        ?: stringResource(R.string.oneui_attachment),
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                                if(visualKind == AttachmentMediaVisualKind.VIDEO) {
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = Color.Black.copy(alpha = 0.58f),
+                                    ) {
+                                        Icon(
+                                            Icons.Default.PlayArrow,
+                                            contentDescription = stringResource(R.string.attachment_video),
+                                            tint = Color.White,
+                                            modifier = Modifier.padding(12.dp).size(32.dp),
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            DocumentMessageHeader(
+                                item.fileName ?: stringResource(R.string.oneui_attachment),
+                                if(visualKind == AttachmentMediaVisualKind.VIDEO) {
+                                    Icons.Default.PlayArrow
+                                } else Icons.Default.Photo,
+                            )
+                        }
                         item.caption?.takeIf(String::isNotBlank)?.let {
-                            Text(it, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                it,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(
+                                    horizontal = MessagesTheme.spacing.md,
+                                    vertical = MessagesTheme.spacing.xs,
+                                ),
+                            )
                         }
                     }
+                    AttachmentMediaVisualKind.VOICE -> {
+                        Box(Modifier.padding(MessagesTheme.spacing.sm)) {
+                            if(!item.uri.isNullOrBlank()) {
+                                AttachmentVoicePlayer(
+                                    source = item.uri,
+                                    expectedDurationMillis = 0L,
+                                )
+                            } else {
+                                VoiceMessageSummary(0L, enabled = false)
+                            }
+                        }
+                    }
+                    AttachmentMediaVisualKind.DOCUMENT -> DocumentMessageHeader(
+                        item.fileName ?: stringResource(R.string.oneui_attachment),
+                        Icons.Default.Description,
+                    )
                 }
                 if(showMetadata) {
                     MessageMetadata(
@@ -1494,12 +2017,48 @@ private fun MediaBubble(
                         isFavorite = item.isFavorite,
                         modifier = Modifier
                             .align(Alignment.End)
+                            .padding(
+                                start = MessagesTheme.spacing.md,
+                                end = MessagesTheme.spacing.md,
+                                bottom = MessagesTheme.spacing.xs,
+                            )
                             .testTag("oneui-message-metadata-${item.stableId}"),
                     )
                 }
             }
         }
         Spacer(Modifier.height(10.dp))
+    }
+}
+
+@Composable
+private fun DocumentMessageHeader(fileName: String, icon: ImageVector) {
+    Row(
+        modifier = Modifier.padding(MessagesTheme.spacing.md),
+        horizontalArrangement = Arrangement.spacedBy(MessagesTheme.spacing.sm),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+        ) {
+            Box(Modifier.size(54.dp), contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Column(Modifier.weight(1f)) {
+            Text(
+                fileName,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                documentExtension(fileName),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 

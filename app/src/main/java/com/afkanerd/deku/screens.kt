@@ -13,6 +13,9 @@ object RemoteListenersScreen
 object AboutScreen
 
 @Serializable
+object UpdatesScreenRoute
+
+@Serializable
 object RemoteForwardingScreen
 
 @Serializable

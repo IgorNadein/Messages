@@ -9,12 +9,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 
 
 @RunWith(AndroidJUnit4.class)
+@Ignore("Manual Telephony-provider diagnostic dumps private SMS data and has no assertions")
 public class DatabaseTest {
 
     Context context;

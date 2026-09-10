@@ -19,15 +19,21 @@ class AttachmentFileStore(context: Context) {
         return file
     }
 
-    fun writeVerifiedChunk(file: File, manifest: AttachmentManifest, index: Int, plaintext: ByteArray) {
+    fun writeVerifiedChunk(
+        file: File,
+        manifest: AttachmentManifest,
+        index: Int,
+        plaintext: ByteArray,
+        chunkPlaintextBytes: Int = com.afkanerd.deku.attachments.protocol.TransferLimits.CHUNK_PLAINTEXT_BYTES,
+    ) {
         require(file.parentFile?.canonicalFile == partialDirectory.canonicalFile) { "Invalid partial path" }
         require(index in 0 until manifest.totalChunks)
         val expected = if (index == manifest.totalChunks - 1) {
-            (manifest.encodedSize - index.toLong() * com.afkanerd.deku.attachments.protocol.TransferLimits.CHUNK_PLAINTEXT_BYTES).toInt()
-        } else com.afkanerd.deku.attachments.protocol.TransferLimits.CHUNK_PLAINTEXT_BYTES
+            (manifest.encodedSize - index.toLong() * chunkPlaintextBytes).toInt()
+        } else chunkPlaintextBytes
         require(plaintext.size == expected) { "Unexpected chunk length" }
         RandomAccessFile(file, "rw").use {
-            it.seek(index.toLong() * com.afkanerd.deku.attachments.protocol.TransferLimits.CHUNK_PLAINTEXT_BYTES)
+            it.seek(index.toLong() * chunkPlaintextBytes)
             it.write(plaintext)
             it.fd.sync()
         }

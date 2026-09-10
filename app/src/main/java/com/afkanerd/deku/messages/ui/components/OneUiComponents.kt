@@ -45,6 +45,7 @@ fun OneUiCompactBar(
     title: String,
     showTitle: Boolean,
     modifier: Modifier = Modifier,
+    titleModifier: Modifier = Modifier,
     navigation: (@Composable () -> Unit)? = null,
     actions: @Composable () -> Unit = {},
 ) {
@@ -86,7 +87,9 @@ fun OneUiCompactBar(
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(horizontal = MessagesTheme.spacing.xs),
+                        modifier = titleModifier.padding(
+                            horizontal = MessagesTheme.spacing.xs,
+                        ),
                     )
                 }
             }

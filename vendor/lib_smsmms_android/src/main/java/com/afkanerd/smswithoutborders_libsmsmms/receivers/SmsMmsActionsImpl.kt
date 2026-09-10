@@ -76,6 +76,7 @@ class SmsMmsActionsImpl : BroadcastReceiver() {
                                             conversation,
                                             self = true,
                                             type = NotificationTxType.TEXT,
+                                            showNotification = true,
                                         )
                                     }
                                 }

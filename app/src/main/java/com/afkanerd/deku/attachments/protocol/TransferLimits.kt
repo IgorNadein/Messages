@@ -9,6 +9,8 @@ object TransferLimits {
     const val CHUNK_PLAINTEXT_BYTES: Int = FRAME_PAYLOAD_BYTES - AEAD_TAG_BYTES
 
     const val MAX_TRANSFER_BYTES: Int = 256 * 1024
+    const val MAX_MMS_TRANSFER_BYTES: Int = 25 * 1024 * 1024
+    const val MMS_PART_PLAINTEXT_BYTES: Int = 64 * 1024
     const val CONFIRM_TRANSFER_BYTES: Int = 32 * 1024
     const val MAX_TOTAL_CHUNKS: Int = 4096
     const val CONFIRM_SMS_COUNT: Int = 500
@@ -25,6 +27,19 @@ object TransferLimits {
         require(encodedBytes in 0..MAX_TRANSFER_BYTES.toLong()) { "Encoded size is out of bounds" }
         if (encodedBytes == 0L) return 0
         return ((encodedBytes + CHUNK_PLAINTEXT_BYTES - 1) / CHUNK_PLAINTEXT_BYTES).toInt()
+    }
+
+    fun mmsPartCount(encodedBytes: Long): Int = partCount(
+        encodedBytes = encodedBytes,
+        partBytes = MMS_PART_PLAINTEXT_BYTES,
+        maxBytes = MAX_MMS_TRANSFER_BYTES,
+    )
+
+    fun partCount(encodedBytes: Long, partBytes: Int, maxBytes: Int): Int {
+        require(partBytes > 0)
+        require(encodedBytes in 0..maxBytes.toLong()) { "Encoded size is out of bounds" }
+        if(encodedBytes == 0L) return 0
+        return ((encodedBytes + partBytes - 1) / partBytes).toInt()
     }
 
     fun estimatedDataSms(encodedBytes: Long, offerBytes: Int = 0): Int {

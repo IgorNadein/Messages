@@ -23,6 +23,7 @@ import com.afkanerd.smswithoutborders_libsmsmms.activities.NotificationsInitiali
 import com.afkanerd.smswithoutborders_libsmsmms.data.entities.Conversations
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsMmsActionsImpl
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsTextReceivedReceiver.Companion.SMS_SENT_BROADCAST_INTENT_LIB
+import com.afkanerd.smswithoutborders_libsmsmms.security.SECURE_TRANSPORT_TEXT_EXTRA
 import com.google.gson.Gson
 import java.util.Properties
 
@@ -190,7 +191,7 @@ fun Context.getNotificationBuilder(
         getString(R.string.incoming_messages_channel_id))
         .setWhen(System.currentTimeMillis())
         .setDefaults(Notification.DEFAULT_ALL)
-        .setSmallIcon(R.drawable.dekusms_icon_default)
+        .setSmallIcon(R.drawable.ic_notification_messages)
         .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
@@ -445,17 +446,21 @@ enum class NotificationTxType {
     MMS,
 }
 
+const val SHOW_NOTIFICATION_EXTRA = "showNotification"
+
 fun Context.sendNotificationBroadcast(
     conversation: Conversations,
     type: NotificationTxType,
     self: Boolean = false,
-    showNotification: Boolean = true,
+    showNotification: Boolean = !self,
+    secureTransportText: String? = null,
 ) {
     sendBroadcast(Intent(SMS_SENT_BROADCAST_INTENT_LIB).apply{
         putExtra("id", conversation.id)
         putExtra("self", self)
         putExtra("type", type.name)
-        putExtra("showNotification", showNotification)
+        putExtra(SHOW_NOTIFICATION_EXTRA, showNotification)
+        secureTransportText?.let { putExtra(SECURE_TRANSPORT_TEXT_EXTRA, it) }
         setPackage(packageName)
     })
 }

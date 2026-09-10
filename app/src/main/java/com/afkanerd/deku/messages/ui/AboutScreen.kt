@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -31,8 +33,10 @@ import com.afkanerd.deku.DefaultSMS.R
 import com.afkanerd.deku.messages.ui.components.OneUiCompactBar
 import com.afkanerd.deku.messages.ui.components.OneUiExpandedTitle
 import com.afkanerd.deku.messages.ui.theme.MessagesTheme
+import com.afkanerd.deku.updates.ProjectLinks
 
-const val OPEN_SOURCE_PROJECT_URL = "https://github.com/deku-messaging/Deku-SMS-Android"
+val OPEN_SOURCE_PROJECT_URL: String
+    get() = ProjectLinks.repository
 
 @Composable
 fun AboutOneUiScreen(
@@ -72,12 +76,18 @@ fun AboutOneUiScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(
-                        // Adaptive-icon XML cannot be decoded by painterResource on Android 8+.
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = null,
+                    Surface(
                         modifier = Modifier.size(88.dp),
-                    )
+                        shape = RoundedCornerShape(22.dp),
+                        color = colorResource(R.color.ic_launcher_background),
+                    ) {
+                        Image(
+                            // Adaptive-icon XML cannot be decoded by painterResource on Android 8+.
+                            painter = painterResource(R.drawable.ic_launcher_foreground),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                     Spacer(Modifier.size(MessagesTheme.spacing.sm))
                     Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge)
                     Text(

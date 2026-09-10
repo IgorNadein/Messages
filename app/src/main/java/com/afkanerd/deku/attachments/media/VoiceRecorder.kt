@@ -18,7 +18,9 @@ class VoiceRecorder(private val context: Context) {
 
     private var recorder: MediaRecorder? = null
     private var output: File? = null
-    private var startedAt: Long = 0
+    private var resumedAt: Long = 0
+    private var recordedMillis: Long = 0
+    private var paused: Boolean = false
 
     fun start() {
         check(recorder == null) { "Recording is already active" }
@@ -44,15 +46,34 @@ class VoiceRecorder(private val context: Context) {
         mediaRecorder.prepare()
         mediaRecorder.start()
         recorder = mediaRecorder
-        startedAt = SystemClock.elapsedRealtime()
+        resumedAt = SystemClock.elapsedRealtime()
+        recordedMillis = 0L
+        paused = false
+    }
+
+    fun pause() {
+        val active = requireNotNull(recorder) { "Recording is not active" }
+        if(paused) return
+        active.pause()
+        recordedMillis += (SystemClock.elapsedRealtime() - resumedAt).coerceAtLeast(0L)
+        paused = true
+    }
+
+    fun resume() {
+        val active = requireNotNull(recorder) { "Recording is not active" }
+        if(!paused) return
+        active.resume()
+        resumedAt = SystemClock.elapsedRealtime()
+        paused = false
     }
 
     fun stop(): Result {
         val active = requireNotNull(recorder) { "Recording is not active" }
-        val duration = SystemClock.elapsedRealtime() - startedAt
+        val duration = elapsedMillis()
         try { active.stop() } finally {
             active.release()
             recorder = null
+            paused = false
         }
         val file = requireNotNull(output)
         output = null
@@ -68,9 +89,8 @@ class VoiceRecorder(private val context: Context) {
         )
     }
 
-    fun elapsedMillis(): Long = if(recorder == null) 0L else {
-        (SystemClock.elapsedRealtime() - startedAt).coerceAtLeast(0L)
-    }
+    fun elapsedMillis(): Long = if(recorder == null) 0L else recordedMillis +
+        if(paused) 0L else (SystemClock.elapsedRealtime() - resumedAt).coerceAtLeast(0L)
 
     fun maxAmplitude(): Int = runCatching { recorder?.maxAmplitude ?: 0 }
         .getOrDefault(0)
@@ -80,6 +100,8 @@ class VoiceRecorder(private val context: Context) {
         recorder = null
         output?.delete()
         output = null
+        recordedMillis = 0L
+        paused = false
     }
 
     companion object {

@@ -21,7 +21,9 @@ class AttachmentManifestCodecTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun rejectsHugeDeclaredFile() {
-        AttachmentManifestCodec.encode(manifest(size = TransferLimits.MAX_TRANSFER_BYTES.toLong() + 1))
+        AttachmentManifestCodec.encode(
+            manifest(size = TransferLimits.MAX_MMS_TRANSFER_BYTES.toLong() + 1)
+        )
     }
 
     @Test(expected = IllegalArgumentException::class)

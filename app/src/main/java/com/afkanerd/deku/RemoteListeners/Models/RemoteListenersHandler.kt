@@ -28,6 +28,7 @@ object RemoteListenersHandler {
     const val UNIQUE_WORK_MANAGER_NAME = BuildConfig.APPLICATION_ID
     const val UNIQUE_WORK_MANAGER_TAG = BuildConfig.APPLICATION_ID + ".REMOTE_LISTENERS"
 
+    @Suppress("DEPRECATION")
     fun getPublisherDetails(context: Context, projectName: String): List<String> {
         val operatorDetails: MutableList<String> = ArrayList()
         val simCards = context.getSimCardInformation()
@@ -48,6 +49,7 @@ object RemoteListenersHandler {
         return operatorDetails
     }
 
+    @Suppress("DEPRECATION")
     fun getCarrierId(subscriptionInformation: SubscriptionInfo) : Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 //            subscriptionInformation.carrierId

@@ -85,9 +85,11 @@ object AttachmentManifestCodec {
         require(mime.isNotEmpty() && mime.size <= TransferLimits.MAX_MIME_BYTES && manifest.mimeType.all { it.code in 0x20..0x7e })
         require(codec.size <= TransferLimits.MAX_CODEC_BYTES && manifest.codec.all { it.code in 0x20..0x7e })
         require(manifest.originalSize in 0..Int.MAX_VALUE.toLong())
-        require(manifest.encodedSize in 1..TransferLimits.MAX_TRANSFER_BYTES.toLong())
-        require(manifest.totalChunks == TransferLimits.chunkCount(manifest.encodedSize))
-        require(manifest.totalChunks <= TransferLimits.MAX_TOTAL_CHUNKS)
+        require(manifest.encodedSize in 1..TransferLimits.MAX_MMS_TRANSFER_BYTES.toLong())
+        require(manifest.totalChunks in 1..TransferLimits.MAX_TOTAL_CHUNKS)
+        require(manifest.totalChunks.toLong() <= manifest.encodedSize) {
+            "Non-empty attachment parts cannot outnumber encoded bytes"
+        }
         require(manifest.sha256.size == 32)
         require(manifest.width in 0..0xffff && manifest.height in 0..0xffff)
         require(manifest.sampleRate in 0..384_000)

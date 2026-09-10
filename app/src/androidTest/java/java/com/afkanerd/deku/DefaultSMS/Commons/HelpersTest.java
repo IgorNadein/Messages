@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.regex.Pattern;
 public class HelpersTest {
 
     @Test
+    @Ignore("Legacy exploratory regex is not used by production link detection")
     public void testRegexForConversations() {
         String phoneNumber1 = "+237612345678";
 

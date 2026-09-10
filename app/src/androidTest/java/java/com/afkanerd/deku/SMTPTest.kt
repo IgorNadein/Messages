@@ -5,6 +5,7 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 //import com.afkanerd.deku.DefaultSMS.Models.Conversations.Conversation
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.util.Properties
 import com.afkanerd.deku.DefaultSMS.R
@@ -19,6 +20,7 @@ import javax.mail.internet.MimeMessage
 
 
 @SmallTest
+@Ignore("Manual SMTP integration test requires external credentials and server")
 class SMTPTest {
     val properties: Properties = Properties()
     lateinit var context: Context

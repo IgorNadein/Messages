@@ -17,6 +17,7 @@ import com.klinker.android.send_message.MmsReceivedReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.afkanerd.smswithoutborders_libsmsmms.transport.InboundMmsHandlerRegistry
 
 class MmsReceivedReceiverImpl: MmsReceivedReceiver() {
     override fun onMessageReceived(context: Context?, contentUri: Uri?) {
@@ -29,17 +30,23 @@ class MmsReceivedReceiverImpl: MmsReceivedReceiver() {
         context: Context,
         contentUri: Uri?,
     ) {
-        contentUri?.let {
-            context.contentResolver?.query(
-                contentUri,
-                null,
-                null,
-                null,
-                null,
-            )?.let { cursor ->
-                if(cursor.moveToFirst()) {
-                    MmsParser.parse(context, cursor)?.let{ conversation ->
-                        CoroutineScope(Dispatchers.IO).launch {
+        contentUri?.let { uri ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if(InboundMmsHandlerRegistry.consume(context.applicationContext, uri)) {
+                    // Internal encrypted parts must not remain visible as unknown
+                    // attachments when the user temporarily switches SMS apps.
+                    runCatching { context.contentResolver.delete(uri, null, null) }
+                    return@launch
+                }
+                context.contentResolver?.query(
+                    uri,
+                    null,
+                    null,
+                    null,
+                    null,
+                )?.use { cursor ->
+                    if(cursor.moveToFirst()) {
+                        MmsParser.parse(context, cursor)?.let{ conversation ->
                             // Android already persisted the received MMS at contentUri.
                             // Only mirror it into the app database; inserting an SMS row
                             // here duplicated/corrupted MMS threads on some OEM providers.

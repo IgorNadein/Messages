@@ -35,6 +35,8 @@ import com.afkanerd.smswithoutborders_libsmsmms.security.FORCE_PLAIN_TEXT_EXTRA
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.MmsSentReceiverImpl
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsTextReceivedReceiver
 import com.afkanerd.smswithoutborders_libsmsmms.transport.DataSmsFragmentCodec
+import com.afkanerd.smswithoutborders_libsmsmms.transport.INTERNAL_MMS_PART_INDEX_EXTRA
+import com.afkanerd.smswithoutborders_libsmsmms.transport.INTERNAL_MMS_TRANSFER_ID_EXTRA
 import com.google.gson.GsonBuilder
 import com.klinker.android.send_message.Message
 import com.klinker.android.send_message.Transaction
@@ -412,6 +414,7 @@ private fun Context.getSmsPendingIntents(
     dataPartCount: Int = 1,
 ): Pair<PendingIntent, PendingIntent> {
     val requestCode = conversation.id.toInt() * 67 + dataPartIndex
+    val callbackFlags = smsStatusPendingIntentFlags()
     val sentPendingIntent = PendingIntent.getBroadcast(
         this,
         requestCode,
@@ -430,7 +433,7 @@ private fun Context.getSmsPendingIntents(
             this.putExtra(DATA_PART_COUNT_EXTRA, dataPartCount)
             this.putExtras(bundle)
         },
-        PendingIntent.FLAG_IMMUTABLE
+        callbackFlags
     )
 
     val deliveredPendingIntent = PendingIntent.getBroadcast(
@@ -450,10 +453,19 @@ private fun Context.getSmsPendingIntents(
             this.putExtra(DATA_PART_INDEX_EXTRA, dataPartIndex)
             this.putExtra(DATA_PART_COUNT_EXTRA, dataPartCount)
         },
-        PendingIntent.FLAG_IMMUTABLE
+        callbackFlags
     )
 
     return Pair(sentPendingIntent, deliveredPendingIntent)
+}
+
+/** SmsManager adds result details and the delivery-report PDU as fill-in extras. */
+fun smsStatusPendingIntentFlags(
+    sdkInt: Int = Build.VERSION.SDK_INT,
+): Int = PendingIntent.FLAG_UPDATE_CURRENT or if(sdkInt >= Build.VERSION_CODES.S) {
+    PendingIntent.FLAG_MUTABLE
+} else {
+    0
 }
 
 internal const val DATA_PART_INDEX_EXTRA = "data_part_index"
@@ -487,7 +499,14 @@ suspend fun Context.sendMms(
     contentUri: Uri? = null,
     filename: String? = null,
     mimeType: String? = null,
+    verifiedSecurePayload: Boolean = false,
+    internalTransport: Boolean = false,
+    internalTransferId: String? = null,
+    internalPartIndex: Int = -1,
 ): Conversations? {
+    require(!internalTransport || !internalTransferId.isNullOrBlank()) {
+        "Internal MMS transport requires a transfer id"
+    }
     val normalizedAddresses = addresses
         .map(::makeE16PhoneNumber)
         .filter(String::isNotBlank)
@@ -505,6 +524,7 @@ suspend fun Context.sendMms(
                 // A non-null marker makes MMS transport impossible to mistake for
                 // an encryptable text SMS in a secure session.
                 transportData = byteArrayOf(),
+                verifiedSecurePayload = verifiedSecurePayload,
             ),
         )) {
             is OutboundSmsDecision.Allow -> Unit
@@ -562,7 +582,7 @@ suspend fun Context.sendMms(
     }
 
     try {
-        insertMms(conversation)
+        if(!internalTransport) insertMms(conversation)
         val sendSettings = MmsParser.getSendMessageSettings(
             group = normalizedAddresses.size > 1,
         )
@@ -576,6 +596,10 @@ suspend fun Context.sendMms(
                     MmsSentReceiverImpl.EXTRA_ORIGINAL_RESENT_MESSAGE_ID,
                     conversation.id,
                 )
+                internalTransferId?.let {
+                    putExtra(INTERNAL_MMS_TRANSFER_ID_EXTRA, it)
+                    putExtra(INTERNAL_MMS_PART_INDEX_EXTRA, internalPartIndex)
+                }
             }
         sendTransaction.setExplicitBroadcastForSentMms(intent)
 
@@ -591,13 +615,17 @@ suspend fun Context.sendMms(
         try {
             sendTransaction.sendNewMessage(mMessage)
         } catch(e: Exception) {
-            conversation.sms?.status = Telephony.Sms.STATUS_FAILED
-            conversation.sms?.type = Telephony.Sms.MESSAGE_TYPE_FAILED
-            updateMms(conversation)
+            if(!internalTransport) {
+                conversation.sms?.status = Telephony.Sms.STATUS_FAILED
+                conversation.sms?.type = Telephony.Sms.MESSAGE_TYPE_FAILED
+                updateMms(conversation)
+            }
             throw e
         }
-        conversation.sms?.type = Telephony.Sms.MESSAGE_TYPE_OUTBOX
-        updateMms(conversation)
+        if(!internalTransport) {
+            conversation.sms?.type = Telephony.Sms.MESSAGE_TYPE_OUTBOX
+            updateMms(conversation)
+        }
 
     } catch (e: Exception) {
         throw e

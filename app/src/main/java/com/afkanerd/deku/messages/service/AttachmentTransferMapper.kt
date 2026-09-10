@@ -45,8 +45,10 @@ internal object AttachmentTransferMapper {
                 AttachmentTransferStatus.CANCELLED -> AttachmentTransferState.CANCELLED
             },
             completedPath = entity.completedPath,
+            previewPath = entity.completedPath ?: entity.sourcePath,
             durationMillis = entity.durationMs,
             hasError = !entity.lastError.isNullOrBlank(),
+            errorMessage = entity.lastError,
             isSecure = entity.protection == "SECURE",
             transport = runCatching { MediaTransport.valueOf(entity.transport) }
                 .getOrDefault(MediaTransport.DATA_SMS),

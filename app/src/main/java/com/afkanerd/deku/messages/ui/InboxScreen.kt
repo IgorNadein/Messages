@@ -544,9 +544,7 @@ private fun ConversationList(
                                         it != dismissedUnreadCount
                                 } ?: 0,
                                 onViewUnread = {
-                                    threads.itemSnapshotList.items
-                                        .firstOrNull { it.unreadCount > 0 }
-                                        ?.let(onConversationClick)
+                                    viewModel.selectFolder(ConversationFolder.UNREAD)
                                 },
                                 onDismissUnread = {
                                     dismissedUnreadCount = unreadMessageCount
@@ -2303,6 +2301,7 @@ private fun folderTitle(folder: ConversationFolder): String = stringResource(
         ConversationFolder.DRAFTS -> R.string.oneui_drafts
         ConversationFolder.MUTED -> R.string.oneui_muted
         ConversationFolder.BLOCKED -> R.string.oneui_blocked
+        ConversationFolder.UNREAD -> R.string.oneui_unread
     }
 )
 
@@ -2314,6 +2313,7 @@ private fun FolderIcon(folder: ConversationFolder) {
         ConversationFolder.DRAFTS -> Icons.Default.Drafts
         ConversationFolder.MUTED -> Icons.Default.NotificationsOff
         ConversationFolder.BLOCKED -> Icons.Default.Block
+        ConversationFolder.UNREAD -> Icons.Default.Notifications
     }
     Icon(icon, contentDescription = null)
 }

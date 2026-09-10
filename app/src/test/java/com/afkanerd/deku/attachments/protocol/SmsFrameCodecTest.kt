@@ -75,9 +75,17 @@ class SmsFrameCodecTest {
         )
 
         val unknownFlag = SmsFrameCodec.encode(unprotected).also { encoded ->
-            encoded[4] = 0x02
+            encoded[4] = 0x08
         }
         assertTrue(SmsFrameCodec.decode(unknownFlag) is SmsFrameCodec.DecodeResult.Rejected)
+
+        val conflictingPayloadFlags = SmsFrameCodec.encode(unprotected).also { encoded ->
+            encoded[4] = (AttachmentProtocolFlags.MMS_PAYLOAD or
+                AttachmentProtocolFlags.CLOUD_PAYLOAD).toByte()
+        }
+        assertTrue(
+            SmsFrameCodec.decode(conflictingPayloadFlags) is SmsFrameCodec.DecodeResult.Rejected
+        )
     }
 
     @Test

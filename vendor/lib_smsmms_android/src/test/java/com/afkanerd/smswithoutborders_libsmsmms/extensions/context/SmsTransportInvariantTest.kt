@@ -2,7 +2,11 @@ package com.afkanerd.smswithoutborders_libsmsmms.extensions.context
 
 import android.telephony.SmsManager
 import android.app.Activity
+import android.app.PendingIntent
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.SmsDeliveryReportOutcome
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.classifyDeliveryReportStatus
 import com.afkanerd.smswithoutborders_libsmsmms.receivers.isSuccessfulSmsCallback
+import com.afkanerd.smswithoutborders_libsmsmms.receivers.resolveDeliveryCallbackOutcome
 import com.afkanerd.smswithoutborders_libsmsmms.data.data.models.MmsParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -23,6 +27,53 @@ class SmsTransportInvariantTest {
         assertEquals(false, isSuccessfulSmsCallback(SmsManager.RESULT_ERROR_GENERIC_FAILURE))
         assertEquals(false, isSuccessfulSmsCallback(SmsManager.RESULT_ERROR_RADIO_OFF))
         assertEquals(false, isSuccessfulSmsCallback(SmsManager.RESULT_ERROR_NO_SERVICE))
+    }
+
+    @Test
+    fun deliveryReportStatusRangesAreNotConfusedWithSuccess() {
+        assertEquals(SmsDeliveryReportOutcome.UNKNOWN, classifyDeliveryReportStatus(null))
+        assertEquals(SmsDeliveryReportOutcome.DELIVERED, classifyDeliveryReportStatus(0))
+        assertEquals(SmsDeliveryReportOutcome.UNKNOWN, classifyDeliveryReportStatus(1))
+        assertEquals(SmsDeliveryReportOutcome.UNKNOWN, classifyDeliveryReportStatus(31))
+        assertEquals(SmsDeliveryReportOutcome.PENDING, classifyDeliveryReportStatus(32))
+        assertEquals(SmsDeliveryReportOutcome.PENDING, classifyDeliveryReportStatus(63))
+        assertEquals(SmsDeliveryReportOutcome.FAILED, classifyDeliveryReportStatus(64))
+        assertEquals(SmsDeliveryReportOutcome.FAILED, classifyDeliveryReportStatus(127))
+        assertEquals(SmsDeliveryReportOutcome.UNKNOWN, classifyDeliveryReportStatus(128))
+    }
+
+    @Test
+    fun callbackWithoutStatusPduNeverClaimsDelivery() {
+        assertNull(
+            resolveDeliveryCallbackOutcome(
+                SmsDeliveryReportOutcome.UNKNOWN,
+                SmsManager.RESULT_ERROR_NONE,
+            )
+        )
+        assertNull(
+            resolveDeliveryCallbackOutcome(
+                SmsDeliveryReportOutcome.UNKNOWN,
+                Activity.RESULT_OK,
+            )
+        )
+        assertEquals(
+            false,
+            resolveDeliveryCallbackOutcome(
+                SmsDeliveryReportOutcome.UNKNOWN,
+                SmsManager.RESULT_ERROR_NO_SERVICE,
+            )
+        )
+    }
+
+    @Test
+    fun smsCallbacksAllowTelephonyToAttachDeliveryReport() {
+        val modernFlags = smsStatusPendingIntentFlags(31)
+        assertEquals(PendingIntent.FLAG_MUTABLE, modernFlags and PendingIntent.FLAG_MUTABLE)
+        assertEquals(
+            PendingIntent.FLAG_UPDATE_CURRENT,
+            modernFlags and PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        assertEquals(0, smsStatusPendingIntentFlags(30) and PendingIntent.FLAG_MUTABLE)
     }
 
     @Test

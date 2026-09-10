@@ -8,8 +8,10 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.runner.RunWith;
+import org.junit.Ignore;
 
 @RunWith(AndroidJUnit4.class)
+@Ignore("Manual RabbitMQ integration scaffold; all test cases are commented out")
 public class RMQConnectionTest {
 //
 //    Context context;

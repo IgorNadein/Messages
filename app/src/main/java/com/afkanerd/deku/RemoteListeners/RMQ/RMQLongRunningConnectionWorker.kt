@@ -44,7 +44,7 @@ class RMQLongRunningConnectionWorker(context: Context, parameters: WorkerParamet
                 applicationContext.getString(R.string.running_gateway_clients_channel_id))
                 .setContentTitle(title)
                 .setContentText("Status")
-                .setSmallIcon(R.drawable.ic_stat_name)
+                .setSmallIcon(R.drawable.ic_notification_messages)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setSilent(true)
                 .setOngoing(true)

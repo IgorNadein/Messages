@@ -1,0 +1,613 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 34,
+    "identityHash": "54d242069205bb446d29ea971fa614de",
+    "entities": [
+      {
+        "tableName": "GatewayServer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `URL` TEXT, `protocol` TEXT, `tag` TEXT NOT NULL, `format` TEXT, `date` INTEGER, `smtp_host` TEXT, `smtp_username` TEXT, `smtp_password` TEXT, `smtp_recipient` TEXT, `smtp_from` TEXT, `smtp_subject` TEXT, `smtp_port` INTEGER, `ftp_host` TEXT, `ftp_username` TEXT, `ftp_password` TEXT, `ftp_remote_path` TEXT, `ftp_working_directory` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "URL",
+            "columnName": "URL",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "protocol",
+            "columnName": "protocol",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "tag",
+            "columnName": "tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "format",
+            "columnName": "format",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "smtp.smtp_host",
+            "columnName": "smtp_host",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_username",
+            "columnName": "smtp_username",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_password",
+            "columnName": "smtp_password",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_recipient",
+            "columnName": "smtp_recipient",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_from",
+            "columnName": "smtp_from",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_subject",
+            "columnName": "smtp_subject",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "smtp.smtp_port",
+            "columnName": "smtp_port",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "ftp.ftp_host",
+            "columnName": "ftp_host",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ftp.ftp_username",
+            "columnName": "ftp_username",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ftp.ftp_password",
+            "columnName": "ftp_password",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ftp.ftp_remote_path",
+            "columnName": "ftp_remote_path",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ftp.ftp_working_directory",
+            "columnName": "ftp_working_directory",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RemoteListenersQueues",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gatewayClientId` INTEGER NOT NULL, `name` TEXT, `binding1Name` TEXT, `binding2Name` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gatewayClientId",
+            "columnName": "gatewayClientId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "binding1Name",
+            "columnName": "binding1Name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "binding2Name",
+            "columnName": "binding2Name",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "RemoteListeners",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `hostUrl` TEXT, `username` TEXT, `password` TEXT, `port` INTEGER NOT NULL, `friendlyConnectionName` TEXT, `virtualHost` TEXT, `connectionTimeout` INTEGER NOT NULL, `prefetch_count` INTEGER NOT NULL, `heartbeat` INTEGER NOT NULL, `protocol` TEXT NOT NULL, `projectName` TEXT, `projectBinding` TEXT, `projectBinding2` TEXT, `activated` INTEGER NOT NULL DEFAULT 0, `state` INTEGER NOT NULL DEFAULT 0)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hostUrl",
+            "columnName": "hostUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "port",
+            "columnName": "port",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "friendlyConnectionName",
+            "columnName": "friendlyConnectionName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "virtualHost",
+            "columnName": "virtualHost",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "connectionTimeout",
+            "columnName": "connectionTimeout",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prefetch_count",
+            "columnName": "prefetch_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heartbeat",
+            "columnName": "heartbeat",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protocol",
+            "columnName": "protocol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectName",
+            "columnName": "projectName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "projectBinding",
+            "columnName": "projectBinding",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "projectBinding2",
+            "columnName": "projectBinding2",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "activated",
+            "columnName": "activated",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "AttachmentTransfer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transferId` TEXT NOT NULL, `address` TEXT NOT NULL, `identityFingerprint` BLOB NOT NULL, `subscriptionId` INTEGER NOT NULL, `outgoing` INTEGER NOT NULL, `protection` TEXT NOT NULL DEFAULT 'SECURE', `transport` TEXT NOT NULL DEFAULT 'DATA_SMS', `chunkPlaintextBytes` INTEGER NOT NULL DEFAULT 78, `remoteProvider` TEXT, `remoteLocator` TEXT, `remoteDeleteLocator` TEXT, `mediaType` TEXT NOT NULL, `mimeType` TEXT NOT NULL, `filename` TEXT NOT NULL, `originalSize` INTEGER NOT NULL, `encodedSize` INTEGER NOT NULL, `totalChunks` INTEGER NOT NULL, `sha256` BLOB NOT NULL, `codec` TEXT NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `sampleRate` INTEGER NOT NULL, `durationMs` INTEGER NOT NULL, `status` TEXT NOT NULL, `sourcePath` TEXT, `partialPath` TEXT, `completedPath` TEXT, `ratchetOffer` BLOB, `receivedBitmap` BLOB NOT NULL, `sentBitmap` BLOB NOT NULL, `acknowledgedBitmap` BLOB NOT NULL, `controlSequence` INTEGER NOT NULL, `smsSent` INTEGER NOT NULL, `smsDelivered` INTEGER NOT NULL, `smsReceived` INTEGER NOT NULL, `retryCount` INTEGER NOT NULL, `lastError` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `expiresAt` INTEGER NOT NULL, PRIMARY KEY(`transferId`))",
+        "fields": [
+          {
+            "fieldPath": "transferId",
+            "columnName": "transferId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "identityFingerprint",
+            "columnName": "identityFingerprint",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subscriptionId",
+            "columnName": "subscriptionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "outgoing",
+            "columnName": "outgoing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protection",
+            "columnName": "protection",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'SECURE'"
+          },
+          {
+            "fieldPath": "transport",
+            "columnName": "transport",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'DATA_SMS'"
+          },
+          {
+            "fieldPath": "chunkPlaintextBytes",
+            "columnName": "chunkPlaintextBytes",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "78"
+          },
+          {
+            "fieldPath": "remoteProvider",
+            "columnName": "remoteProvider",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "remoteLocator",
+            "columnName": "remoteLocator",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "remoteDeleteLocator",
+            "columnName": "remoteDeleteLocator",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "mediaType",
+            "columnName": "mediaType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mimeType",
+            "columnName": "mimeType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filename",
+            "columnName": "filename",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "originalSize",
+            "columnName": "originalSize",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "encodedSize",
+            "columnName": "encodedSize",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalChunks",
+            "columnName": "totalChunks",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sha256",
+            "columnName": "sha256",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "codec",
+            "columnName": "codec",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "width",
+            "columnName": "width",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sampleRate",
+            "columnName": "sampleRate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationMs",
+            "columnName": "durationMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourcePath",
+            "columnName": "sourcePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "partialPath",
+            "columnName": "partialPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "completedPath",
+            "columnName": "completedPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "ratchetOffer",
+            "columnName": "ratchetOffer",
+            "affinity": "BLOB"
+          },
+          {
+            "fieldPath": "receivedBitmap",
+            "columnName": "receivedBitmap",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sentBitmap",
+            "columnName": "sentBitmap",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acknowledgedBitmap",
+            "columnName": "acknowledgedBitmap",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "controlSequence",
+            "columnName": "controlSequence",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsSent",
+            "columnName": "smsSent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsDelivered",
+            "columnName": "smsDelivered",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smsReceived",
+            "columnName": "smsReceived",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "retryCount",
+            "columnName": "retryCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastError",
+            "columnName": "lastError",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expiresAt",
+            "columnName": "expiresAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "transferId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_AttachmentTransfer_address",
+            "unique": false,
+            "columnNames": [
+              "address"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_AttachmentTransfer_address` ON `${TABLE_NAME}` (`address`)"
+          },
+          {
+            "name": "index_AttachmentTransfer_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_AttachmentTransfer_status` ON `${TABLE_NAME}` (`status`)"
+          },
+          {
+            "name": "index_AttachmentTransfer_updatedAt",
+            "unique": false,
+            "columnNames": [
+              "updatedAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_AttachmentTransfer_updatedAt` ON `${TABLE_NAME}` (`updatedAt`)"
+          }
+        ]
+      },
+      {
+        "tableName": "AttachmentOfferFragment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transferId` TEXT NOT NULL, `fragmentIndex` INTEGER NOT NULL, `totalFragments` INTEGER NOT NULL, `address` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `flags` INTEGER NOT NULL DEFAULT 0, `payload` BLOB NOT NULL, `receivedAt` INTEGER NOT NULL, PRIMARY KEY(`transferId`, `fragmentIndex`))",
+        "fields": [
+          {
+            "fieldPath": "transferId",
+            "columnName": "transferId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fragmentIndex",
+            "columnName": "fragmentIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalFragments",
+            "columnName": "totalFragments",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subscriptionId",
+            "columnName": "subscriptionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flags",
+            "columnName": "flags",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "payload",
+            "columnName": "payload",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "receivedAt",
+            "columnName": "receivedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "transferId",
+            "fragmentIndex"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_AttachmentOfferFragment_receivedAt",
+            "unique": false,
+            "columnNames": [
+              "receivedAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_AttachmentOfferFragment_receivedAt` ON `${TABLE_NAME}` (`receivedAt`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '54d242069205bb446d29ea971fa614de')"
+    ]
+  }
+}

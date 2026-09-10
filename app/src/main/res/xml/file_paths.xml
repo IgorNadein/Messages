@@ -1,3 +1,5 @@
 <paths>
     <cache-path name="mms_image" path="." />
+    <cache-path name="updates" path="updates/" />
+    <files-path name="received_attachments" path="attachments/completed/" />
 </paths>
